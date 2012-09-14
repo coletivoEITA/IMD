@@ -1,0 +1,44 @@
+module ImportHelper
+
+  ['Nome','Classe', 'CNPJ', 'Pais Sede', 'Ativo /|Cancelado', 'ID da|empresa',
+   'Setor NAICS|ult disponiv', 'Setor|Economática',
+   'Tipo de Ativo', 'Bolsa', 'Código', 'ISIN',
+   'Meses|Dez 2011|no exercício|consolid:sim*',
+   'Ativo Tot|Dez 2011|em moeda orig|em milhares|consolid:sim*',
+   'Patrim Liq|Dez 2011|em moeda orig|em milhares|consolid:sim*',
+   'Receita|Dez 2011|em moeda orig|em milhares|no exercício|consolid:sim*',
+   'Lucro Bruto|Dez 2011|em moeda orig|em milhares|no exercício|consolid:sim*',
+   'Lucro Liq|Dez 2011|em moeda orig|em milhares|no exercício|consolid:sim*', 'Moeda dos|Balanços',
+'Qtd Ações|Outstanding|da empresa|em milhares|31Dez11', 
+'LPA|Dez 2011|em moeda orig|de 12 meses|consolid:sim*|ajust p/ prov',
+ 'VPA|Dez 2011|em moeda orig|consolid:sim*|ajust p/ prov',
+ 'Vendas/Acao|Dez 2011|em moeda orig|de 12 meses|consolid:sim*|ajust p/ prov',
+ 'Divid por Ação|31Dez11|1 anos|em moeda orig', 'Div Yld (fim)|31Dez11|no Ano|em moeda orig', 'Div Yld (inic)|31Dez11|1 anos|em moeda orig',
+'PrinAcion|31/12/2011|1.Maior|Sem Voto', '%AcPoss|31/12/2011|1.Maior|Sem Voto',
+'PrinAcion|31/12/2011|2.Maior|Sem Voto', '%AcPoss|31/12/2011|2.Maior|Sem Voto',
+'PrinAcion|31/12/2011|3.Maior|Sem Voto', '%AcPoss|31/12/2011|3.Maior|Sem Voto',
+'PrinAcion|31/12/2011|4.Maior|Sem Voto', '%AcPoss|31/12/2011|4.Maior|Sem Voto',
+'PrinAcion|31/12/2011|5.Maior|Sem Voto', '%AcPoss|31/12/2011|5.Maior|Sem Voto',
+'PrinAcion|31/12/2011|6.Maior|Sem Voto', '%AcPoss|31/12/2011|6.Maior|Sem Voto',
+'PrinAcion|31/12/2011|7.Maior|Sem Voto', '%AcPoss|31/12/2011|7.Maior|Sem Voto',
+'PrinAcion|31/12/2011|8.Maior|Sem Voto', '%AcPoss|31/12/2011|8.Maior|Sem Voto',
+'PrinAcion|31/12/2011|9.Maior|Sem Voto', '%AcPoss|31/12/2011|9.Maior|Sem Voto',
+'PrinAcion|31/12/2011|10.Maior|Sem Voto', '%AcPoss|31/12/2011|10.Maior|Sem Voto',
+'PrinAcion|31/12/2011|1.Maior|Com Voto', '%AcPoss|31/12/2011|1.Maior|Com Voto',
+'PrinAcion|31/12/2011|2.Maior|Com Voto', '%AcPoss|31/12/2011|2.Maior|Com Voto',
+'PrinAcion|31/12/2011|3.Maior|Com Voto', '%AcPoss|31/12/2011|3.Maior|Com Voto',
+'PrinAcion|31/12/2011|4.Maior|Com Voto', '%AcPoss|31/12/2011|4.Maior|Com Voto',
+'PrinAcion|31/12/2011|5.Maior|Com Voto', '%AcPoss|31/12/2011|5.Maior|Com Voto',
+'PrinAcion|31/12/2011|6.Maior|Com Voto', '%AcPoss|31/12/2011|6.Maior|Com Voto',
+'PrinAcion|31/12/2011|7.Maior|Com Voto', '%AcPoss|31/12/2011|7.Maior|Com Voto',
+'PrinAcion|31/12/2011|8.Maior|Com Voto', '%AcPoss|31/12/2011|8.Maior|Com Voto',
+'PrinAcion|31/12/2011|9.Maior|Com Voto', '%AcPoss|31/12/2011|9.Maior|Com Voto',
+'PrinAcion|31/12/2011|10.Maior|Com Voto', '%AcPoss|31/12/2011|10.Maior|Com Voto'
+
+  def self.import_csv(file)
+    arr_of_arrs = FasterCSV.read(file)
+    pp arr_of_arrs
+  end
+
+
+end

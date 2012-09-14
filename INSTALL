@@ -1,0 +1,4 @@
+rvm install ree
+rvm ree@imd --create
+sudo apt-get install mongodb
+bundle install
