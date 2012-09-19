@@ -85,7 +85,11 @@ module ImportHelper
   def self.import_economatica_csv(file, reference_date)
     csv = FasterCSV.table file, :headers => true, :header_converters => nil, :converters => nil
     csv.each_with_index do |row, i|
-      company = Owner.new_from_name row.values_at(0).first, row.values_at(2).first
+      name = row.values_at(0).first
+      cnpj = row.values_at(2).first
+      next if cnpj == '-'
+
+      company = Owner.find_or_create name, nil, cnpj
       balance = nil
       shareholder = nil
 
@@ -120,10 +124,39 @@ module ImportHelper
     end
   end
 
-  def self.import_mdic_companies(file)
-    csv = FasterCSV.table file, :headers => true, :header_converters => nil, :converters => nil
-    csv.each_with_index do |row, i|
-      company = Owner.new_from_formal_name row.values_at(1).first, row.values_at(0).first
+  def self.import_companies(*files)
+    csvs = *files.map do |file|
+      FasterCSV.table file, :converters => nil
+    end
+    hash = {}
+    csvs.each do |csv|
+      csv.each_with_index do |row, i|
+        formal_name = row.values_at(1).first
+        cnpj = row.values_at(0).first
+        hash[formal_name] ||= []
+        hash[formal_name] << cnpj
+      end
+    end
+
+    hash.each do |formal_name, cnpj_list|
+      next if formal_name.blank?
+
+      company = nil
+      cnpj_list.each do |cnpj|
+        company = Owner.find_by_cnpj(cnpj)
+        break if company
+      end
+      formal_name_d = formal_name.downcase
+      company ||= Owner.find_by_formal_name_d formal_name_d
+      company ||= Owner.find_by_name_d formal_name_d
+      company ||= Owner.new :formal_name => formal_name
+
+      company.formal_name = formal_name
+      cnpj_list.each do |cnpj|
+        company.add_cnpj cnpj
+      end
+
+      pp company
       company.save!
     end
   end

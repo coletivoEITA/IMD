@@ -3,12 +3,12 @@ class Owner
   include MongoMapper::Document
 
   key :name, String, :unique => true, :required => true
-
   key :country, String
 
   # for companies
   key :formal_name, String
-  key :cnpj, Array, :unique => true
+  key :cnpj, Array
+  key :cnpj_root, String
   key :traded, Boolean
   key :classes, Array
   key :shares_quantity, Integer
@@ -19,25 +19,36 @@ class Owner
   many :balances, :dependent => :destroy_all
   many :shareholders, :class_name => 'CompanyShareholder', :foreign_key => :company_id, :dependent => :destroy_all
 
-  validates_uniqueness_of :formal_name, :allow_nil => :true
-  before_validation :assign_defaults
+  # downcase versions
+  key :name_d, String
+  key :formal_name_d, String
 
-  def self.new_from_name(name, cnpj = nil)
-    if cnpj
-      owner = self.find_by_cnpj(cnpj)
-      owner ||= self.new(:cnpj => cnpj)
-      # do not replace original name
-      owner.name ||= name
-      owner
-    else
-      owner = self.find_by_name(name)
-      owner ||= self.new(:name => name)
-    end
-  end
-  def self.new_from_formal_name(formal_name, cnpj = nil)
-    owner = self.all(:formal_name => formal_name, :cnpj => cnpj).first || self.new(:formal_name => formal_name)
-    owner.add_cnpj if cnpj
+  validates_uniqueness_of :formal_name, :allow_nil => :true
+  validates_uniqueness_of :cnpj, :allow_nil => :true
+  validates_uniqueness_of :cnpj_root, :allow_nil => :true
+  before_validation :assign_defaults
+  before_save :assign_downcases
+
+  def self.find_or_create(name, formal_name = nil, cnpj = nil)
+    name_d = name.downcase if name
+    formal_name_d = formal_name.downcase if formal_name
+
+    owner_by_cnpj = self.find_by_cnpj(cnpj)
+    owner_by_name = self.find_by_name_d(name_d) || self.find_by_name_d(formal_name_d) if name
+    owner_by_formal_name = self.find_by_formal_name_d(formal_name_d) || self.find_by_formal_name_d(name_d) if formal_name
+    owner = owner_by_cnpj || owner_by_name || owner_by_formal_name || self.new
+
+    owner.name ||= name
+    owner.add_cnpj(cnpj) if cnpj
+    owner.formal_name ||= formal_name
     owner
+  end
+
+  def self.extract_cnpj_root(cnpj)
+    cnpj[0,8] if cnpj
+  end
+  def self.find_by_cnpj(cnpj)
+    self.find_by_cnpj_root self.extract_cnpj_root(cnpj)
   end
 
   def self.match_shareholders
@@ -71,6 +82,12 @@ class Owner
 
   def assign_defaults
     self.name ||= self.formal_name
+    self.cnpj_root ||= Owner.extract_cnpj_root(self.cnpj.first)
+  end
+
+  def assign_downcases
+    self.name_d = self.name.downcase
+    self.formal_name_d = self.formal_name.downcase if self.formal_name
   end
 
 end

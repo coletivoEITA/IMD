@@ -38,7 +38,8 @@ class CompanyShareholder
   protected
 
   def assign_defaults
-    self.owner ||= Owner.new_from_formal_name self.name
+    self.owner ||= Owner.find_or_create self.name
+    self.owner.save!
   end
 
 end
