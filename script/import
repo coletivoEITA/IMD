@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+require File.dirname(__FILE__) + '/../config/boot'
+
+ImportHelper.clear_db
+ImportHelper.import_economatica_csv 'db/economatica-period-2012-12-31.csv', '2012-12-31'
+ImportHelper.import_companies_mdic 'db/mdic-importers.csv'
+ImportHelper.import_companies_mdic 'db/mdic-exporters.csv'
+Owner.match_shareholders
+CompanyShareholder.match_companies
+
+

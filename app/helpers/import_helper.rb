@@ -1,17 +1,23 @@
 module ImportHelper
 
-  CSVColumns = ActiveSupport::OrderedHash[
+  def self.clear_db
+    Owner.destroy_all
+    CompanyShareholder.destroy_all
+    Balance.destroy_all
+  end
+
+  EconomaticaCSVColumns = ActiveSupport::OrderedHash[
     'Nome', :name,
-    'Classe', nil,
+    'Classe', :classes,
     'CNPJ', :cnpj,
-    'Pais Sede', nil,
-    'Ativo /|Cancelado', nil,
+    'Pais Sede', :country,
+    'Ativo /|Cancelado', :traded,
     'ID da|empresa', nil,
-    'Setor NAICS|ult disponiv', nil,
+    'Setor NAICS|ult disponiv', :naics,
     'Setor|Economática', nil,
     'Tipo de Ativo', nil,
-    'Bolsa', nil,
-    'Código', nil,
+    'Bolsa', :stock_market,
+    'Código', :stock_code,
     'ISIN', nil,
     'Meses|Dez 2011|no exercício|consolid:sim*', :balance_months,
     'Ativo Tot|Dez 2011|em moeda orig|em milhares|consolid:sim*', :balance_total_active,
@@ -68,21 +74,18 @@ module ImportHelper
     'PrinAcion|31/12/2011|10.Maior|Com Voto', :shareholder_ON_10_name,
     '%AcPoss|31/12/2011|10.Maior|Com Voto', :shareholder_ON_10_percentage,
   ]
-
   def self.header_to_field(header)
-    CSVColumns[header]
+    EconomaticaCSVColumns[header]
   end
-
   def self.column_to_field(csv, column_index)
     header = csv.headers[column_index]
     header_to_field(header)
   end
 
-  def self.import_csv(file, date)
+  def self.import_economatica_csv(file, reference_date)
     csv = FasterCSV.table file, :headers => true, :header_converters => nil, :converters => nil
-
     csv.each_with_index do |row, i|
-      company = Company.new
+      company = Owner.new_from_name row.values_at(0).first, row.values_at(2).first
       balance = nil
       shareholder = nil
 
@@ -90,24 +93,39 @@ module ImportHelper
         field = header_to_field(header).to_s
         next if field.blank?
 
-        balance = company.balances.build(:period => date) if field == 'balance_months'
+        balance = company.balances.build(:reference_date => reference_date) if field == 'balance_months'
         if field =~ /shareholder_(.+)_(.+)_name/
-          company.company_shareholders << shareholder if shareholder and shareholder.valid?
-          shareholder = CompanyShareholder.new(:period => date, :type => $1)
+          company.shareholders << shareholder if shareholder and shareholder.valid?
+          shareholder = CompanyShareholder.new(:reference_date => reference_date, :type => $1)
         end
+
+        next if value.blank? or value == '-'
 
         if field.starts_with?('balance')
           balance.send "#{$1}=", value if field =~ /balance_(.+)/
         elsif field.starts_with?('shareholder')
           shareholder.send "#{$3}=", value if field =~ /shareholder_(.+)_(.+)_(.+)/
         else
-          company.send "#{field}=", value
+          old_value = company.send(field)
+          if Owner.keys[field].type != Array
+            company.send "#{field}=", value
+          else
+            old_value << value unless old_value.include?(value)
+          end
         end
       end
 
-      company.save
+      pp company
+      company.save!
     end
   end
 
+  def self.import_mdic_companies(file)
+    csv = FasterCSV.table file, :headers => true, :header_converters => nil, :converters => nil
+    csv.each_with_index do |row, i|
+      company = Owner.new_from_formal_name row.values_at(1).first, row.values_at(0).first
+      company.save!
+    end
+  end
 
 end
