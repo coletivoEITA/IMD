@@ -10,12 +10,17 @@ class CompanyShareholder
 
   key :name, String
   key :percentage, Float
-  key :owner_id, ObjectId, :required => :true
+  key :owner_id, ObjectId
   belongs_to :owner
 
-  validates_uniqueness_of :name, :scope => :company_id
+  validates_presence_of :company
+  validates_uniqueness_of :name, :scope => [:company_id, :type, :reference_date]
   validates_numericality_of :percentage, :greater_than => 0.0
-  before_validation :assign_defaults
+
+  before_save :create_owner
+
+  scope :on, :type => 'ON'
+  scope :pn, :type => 'PN'
 
   def self.match_companies
     self.all.map do |company|
@@ -30,14 +35,14 @@ class CompanyShareholder
     end
   end
 
-  def value
+  def value(attr)
     return 0 unless company
-    self.percentage * other_company.value
+    self.percentage * self.company.value(attr)
   end
 
   protected
 
-  def assign_defaults
+  def create_owner
     self.owner ||= Owner.find_or_create self.name
     self.owner.save!
   end

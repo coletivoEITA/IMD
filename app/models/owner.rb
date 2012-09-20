@@ -16,16 +16,21 @@ class Owner
   key :stock_market, String
   key :stock_code, String
 
+  key :direct_revenue, Float
+  key :indirect_revenue, Float
+  key :total_revenue, Float
+
   many :balances, :dependent => :destroy_all
   many :shareholders, :class_name => 'CompanyShareholder', :foreign_key => :company_id, :dependent => :destroy_all
+  many :owners_shareholders, :class_name => 'CompanyShareholder', :foreign_key => :owner_id, :dependent => :destroy_all
 
   # downcase versions
   key :name_d, String
   key :formal_name_d, String
 
-  validates_uniqueness_of :formal_name, :allow_nil => :true
-  validates_uniqueness_of :cnpj, :allow_nil => :true
-  validates_uniqueness_of :cnpj_root, :allow_nil => :true
+  validates_uniqueness_of :formal_name, :allow_nil => true
+  validates_uniqueness_of :cnpj, :allow_nil => true
+  validates_uniqueness_of :cnpj_root, :allow_nil => true
   before_validation :assign_defaults
   before_save :assign_downcases
 
@@ -33,7 +38,8 @@ class Owner
     name_d = name.downcase if name
     formal_name_d = formal_name.downcase if formal_name
 
-    owner_by_cnpj = self.find_by_cnpj(cnpj)
+    owner_by_cnpj = owner_by_name = owner_by_formal_name = nil
+    owner_by_cnpj = self.find_by_cnpj(cnpj) if cnpj
     owner_by_name = self.find_by_name_d(name_d) || self.find_by_name_d(formal_name_d) if name
     owner_by_formal_name = self.find_by_formal_name_d(formal_name_d) || self.find_by_formal_name_d(name_d) if formal_name
     owner = owner_by_cnpj || owner_by_name || owner_by_formal_name || self.new
@@ -67,11 +73,39 @@ class Owner
     end
   end
 
-  def value
-    balances.first.revenue
+  def calculate_direct_value(attr)
+    value(attr)
   end
-  def shareholders_value
-    shareholders.inject(0){ |sum, sh| sum + sh.value }
+  def calculate_indirect_value(attr)
+    visited = []
+    def __recursion(company, attr, visited)
+      company.shareholders.on.all.inject(0) do |sum, shareholder|
+        pp shareholder
+        if visited.include? shareholder.company
+          0
+        else
+          visited << shareholder.company
+          sum + shareholder.company.value(attr) + __recursion(shareholder.company, attr, visited)
+        end
+      end
+    end
+    __recursion(self, attr, visited)
+  end
+  def calculate_total_value(attr)
+    calculate_direct_value(attr) + calculate_indirect_value(attr)
+  end
+
+  def calculate_revenue
+    self.direct_revenue = self.calculate_direct_value(:revenue)
+    self.indirect_revenue = self.calculate_indirect_value(:revenue)
+    self.total_revenue = self.calculate_total_value(:revenue)
+  end
+
+  def value(attr)
+    balances.first.send(attr)
+  end
+  def shareholders_value(attr)
+    shareholders.inject(0){ |sum, sh| sum + sh.value(attr) }
   end
 
   def add_cnpj(cnpj)

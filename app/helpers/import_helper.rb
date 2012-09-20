@@ -97,13 +97,16 @@ module ImportHelper
         field = header_to_field(header).to_s
         next if field.blank?
 
-        balance = company.balances.build(:reference_date => reference_date) if field == 'balance_months'
+        if field == 'balance_months'
+          balance.save if balance
+          balance = company.balances.build(:reference_date => reference_date)
+        end
         if field =~ /shareholder_(.+)_(.+)_name/
-          company.shareholders << shareholder if shareholder and shareholder.valid?
-          shareholder = CompanyShareholder.new(:reference_date => reference_date, :type => $1)
+          shareholder.save if shareholder
+          shareholder = company.shareholders.build(:reference_date => reference_date, :type => $1)
         end
 
-        next if value.blank? or value == '-'
+        next if value.blank? or value == '-' or value == '0.0'
 
         if field.starts_with?('balance')
           balance.send "#{$1}=", value if field =~ /balance_(.+)/
@@ -120,6 +123,8 @@ module ImportHelper
       end
 
       pp company
+      balance.save if balance
+      shareholder.save if shareholder
       company.save!
     end
   end
@@ -142,11 +147,12 @@ module ImportHelper
       next if formal_name.blank?
 
       company = nil
+      formal_name_d = formal_name.downcase
+
       cnpj_list.each do |cnpj|
         company = Owner.find_by_cnpj(cnpj)
         break if company
       end
-      formal_name_d = formal_name.downcase
       company ||= Owner.find_by_formal_name_d formal_name_d
       company ||= Owner.find_by_name_d formal_name_d
       company ||= Owner.new :formal_name => formal_name
