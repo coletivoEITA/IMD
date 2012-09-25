@@ -89,7 +89,7 @@ module ImportHelper
       cnpj = row.values_at(2).first
       next if cnpj == '-'
 
-      company = Owner.find_or_create name, nil, cnpj
+      company = Owner.find_or_create cnpj, name
       balance = nil
       shareholder = nil
 

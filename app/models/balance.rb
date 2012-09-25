@@ -22,7 +22,7 @@ class Balance
   validates_presence_of :revenue
 
   def value(attr)
-    (MonthsReference / self.months) * send(attr)
+    (MonthsReference / self.months) * self.send(attr)
   end
 
 end

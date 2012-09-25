@@ -16,9 +16,13 @@ class Owner
   key :stock_market, String
   key :stock_code, String
 
-  key :direct_revenue, Float, :default => 0
+  key :own_revenue, Float, :default => 0
   key :indirect_revenue, Float, :default => 0
   key :total_revenue, Float, :default => 0
+
+  key :own_patrimony, Float, :default => 0
+  key :indirect_patrimony, Float, :default => 0
+  key :total_patrimony, Float, :default => 0
 
   many :balances, :foreign_key => :company_id, :dependent => :destroy_all
   many :owners_shares, :class_name => 'Share', :foreign_key => :company_id, :dependent => :destroy_all
@@ -29,29 +33,30 @@ class Owner
   key :formal_name_d, String
 
   validates_uniqueness_of :formal_name, :allow_nil => true
-  validates_uniqueness_of :cgc
+  validates_uniqueness_of :cgc, :allow_nil => true
   validates_uniqueness_of :cnpj_root, :allow_nil => true
   before_validation :assign_defaults
   before_save :assign_downcases
   validate :validate_cgc
 
-  def self.find_or_create(cgc, name, formal_name)
+  def self.find_or_create(cgc = nil, name = nil, formal_name = nil)
     name_d = name.downcase if name
     formal_name_d = formal_name.downcase if formal_name
 
     owner_by_cgc = owner_by_name = owner_by_formal_name = nil
-    owner_by_cgc = self.find_by_cgc(cgc)
+    owner_by_cgc = self.find_by_cgc(cgc) if cgc
     owner_by_name = self.find_by_name_d(name_d) || self.find_by_name_d(formal_name_d) if name
     owner_by_formal_name = self.find_by_formal_name_d(formal_name_d) || self.find_by_formal_name_d(name_d) if formal_name
     owner = owner_by_cgc || owner_by_name || owner_by_formal_name || self.new
 
-    owner.name ||= name
     owner.add_cgc(cgc)
+    owner.name ||= name
     owner.formal_name ||= formal_name
     owner
   end
 
   def self.find_by_cgc(cgc)
+    return nil if cgc.nil?
     if CgcHelper.cnpj?(cgc)
       self.find_by_cnpj_root CgcHelper.extract_cnpj_root(cgc)
     else
@@ -66,60 +71,91 @@ class Owner
     CgcHelper.cpf?(self.cgc.first)
   end
 
-  def calculate_direct_value(attr)
+  def value(attr)
+    return 0 if self.balances.first.nil?
+    self.balances.first.value(attr)
+  end
+
+  def owned_shares_by_type(share_type = :on)
+    case share_type
+    when :on
+      self.owned_shares.on.all
+    when :pn
+      self.owned_shares.pn.all
+    else
+      self.owned_shares.all
+    end
+  end
+
+  def controlled_companies(share_type = :on)
+    def __recursion(company, share_type = :on, visited = [])
+      company.owned_shares_by_type(share_type).each do |owned_share|
+        company = owned_share.company
+        next if visited.include? company
+        visited << company
+        __recursion(company, share_type = :on, visited)
+      end
+      visited
+    end
+
+    visited = []
+    __recursion(self, share_type, visited)
+    visited
+  end
+
+  def calculate_own_value(attr)
     v = value(attr)
-    self.send "direct_#{attr}=", v
+    self.send "own_#{attr}=", v
     self.save
     v
   end
-  def calculate_indirect_value(attr)
-    def __recursion(company, attr, visited)
-      pp company
-      company.owned_shares.on.all.inject(0) do |sum, owned_share|
-        if visited.include? owned_share.company
+  def calculate_indirect_value(attr, share_type = :on)
+    def __recursion(company, attr = :revenue, share_type = :on, visited = [])
+      company.owned_shares_by_type(share_type).inject(0) do |sum, owned_share|
+        company = owned_share.company
+        if visited.include? company
           0
         else
-          visited << owned_share.company
+          visited << company
 
-          direct_value = owned_share.company.send("direct_#{attr}")
-          direct_value = calculate_indirect_value(attr) if direct_value.zero?
+          total_value = company.send("total_#{attr}")
+          if total_value.zero?
+            own_value = company.send("own_#{attr}")
+            own_value = company.calculate_own_value(attr)
 
-          indirect_value = owned_share.company.send("indirect_#{attr}")
-          if indirect_value.zero?
-            indirect_value = __recursion(owned_share.company, attr, visited)
+            indirect_value = company.send("indirect_#{attr}")
+            if indirect_value.zero?
+              indirect_value = __recursion(company, attr, share_type, visited)
+              # cache value
+              company.send("indirect_#{attr}=", indirect_value)
+            end
+
+            total_value = own_value + indirect_value
             # cache value
-            owned_share.company.send("indirect_#{attr}=", indirect_value)
-            owned_share.company.save
+            company.send("total_#{attr}=", total_value)
+            company.save
           end
 
-          sum + owned_share.percentage * (direct_value + indirect_value)
+          sum + (owned_share.percentage/100) * total_value
         end
       end
     end
 
-    visited = [self] # only indirect value, don't get own value
-    v = __recursion(self, attr, visited)
+    v = __recursion(self, attr, share_type, [self])
     self.send "indirect_#{attr}=", v
     self.save
     v
   end
-  def calculate_total_value(attr)
-    calculate_direct_value(attr) + calculate_indirect_value(attr)
-  end
 
-  def calculate_revenue
-    self.calculate_direct_value(:revenue)
-    self.calculate_indirect_value(:revenue)
-    self.total_revenue = self.direct_revenue + self.indirect_revenue
+  def calculate_value(attr = :revenue, share_type = :on)
+    self.calculate_own_value(attr)
+    self.calculate_indirect_value(attr, share_type)
+    self.send "total_#{attr}=", self.send("own_#{attr}") + self.send("indirect_#{attr}")
     self.save
   end
 
-  def value(attr)
-    return 0 if balances.first.nil?
-    balances.first.value(attr)
-  end
-
   def add_cgc(cgc)
+    return if cgc.nil?
     self.cgc << cgc unless self.cgc.include?(cgc)
   end
 
@@ -136,7 +172,8 @@ class Owner
   end
 
   def validate_cgc
-    self.errors.add 'Not a CPF or a CNPJ' if !self.cnpj? and !self.cpf?
+    return if cgc.nil? or cgc.empty?
+    #self.errors[:cgc] << 'Not a CPF or a CNPJ' if !self.cnpj? and !self.cpf?
   end
 
 end

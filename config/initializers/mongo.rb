@@ -18,3 +18,11 @@ Share.ensure_index :reference_date
 
 Balance.ensure_index :reference_date
 Balance.ensure_index :owner_id
+
+# for sorting
+Owner.ensure_index :own_revenue
+Owner.ensure_index :indirect_revenue
+Owner.ensure_index :total_revenue
+Owner.ensure_index :own_patrimony
+Owner.ensure_index :indirect_patrimony
+Owner.ensure_index :total_patrimony

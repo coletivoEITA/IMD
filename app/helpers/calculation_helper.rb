@@ -1,9 +1,12 @@
 module CalculationHelper
 
-  def self.calculate_owners_revenue
-    Owner.set({:direct_revenue => 0}, {:indirect_revenue => 0}, {:total_revenue => 0})
+  def self.calculate_owners_value(attr = :revenue, share_type = :on)
+    Owner.set({}, "own_#{attr}" => 0)
+    Owner.set({}, "indirect_#{attr}" => 0)
+    Owner.set({}, "total_#{attr}" => 0)
     Owner.each do |o|
-      o.calculate_revenue
+      pp o
+      o.calculate_value(attr, share_type)
     end
   end
 

@@ -22,28 +22,14 @@ class Share
   scope :on, :type => 'ON'
   scope :pn, :type => 'PN'
 
-  def self.match_companies
-    self.all.map do |company|
-      company.match_company
-    end.compact
-  end
-  def match_company
-    self.company = Owner.all(:formal_name => self.name).first || Owner.all(:name => self.name).first
-    if self.company
-      self.save
-      {self.company => self}
-    end
-  end
-
   def value(attr)
-    return 0 unless company
-    self.percentage * self.company.value(attr)
+    (self.percentage/100) * self.company.value(attr)
   end
 
   protected
 
   def create_owner
-    self.owner ||= Owner.find_or_create self.name
+    self.owner ||= Owner.find_or_create nil, self.name, self.name
     self.owner.save!
   end
 
