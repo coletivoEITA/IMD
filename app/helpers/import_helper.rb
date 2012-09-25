@@ -2,14 +2,14 @@ module ImportHelper
 
   def self.clear_db
     Owner.destroy_all
-    CompanyShareholder.destroy_all
+    Share.destroy_all
     Balance.destroy_all
   end
 
   EconomaticaCSVColumns = ActiveSupport::OrderedHash[
     'Nome', :name,
     'Classe', :classes,
-    'CNPJ', :cnpj,
+    'CNPJ', :cgc,
     'Pais Sede', :country,
     'Ativo /|Cancelado', :traded,
     'ID da|empresa', nil,
@@ -103,7 +103,7 @@ module ImportHelper
         end
         if field =~ /shareholder_(.+)_(.+)_name/
           shareholder.save if shareholder
-          shareholder = company.shareholders.build(:reference_date => reference_date, :type => $1)
+          shareholder = company.owners_shares.build(:reference_date => reference_date, :type => $1)
         end
 
         next if value.blank? or value == '-' or value == '0.0'
@@ -137,20 +137,20 @@ module ImportHelper
     csvs.each do |csv|
       csv.each_with_index do |row, i|
         formal_name = row.values_at(1).first
-        cnpj = row.values_at(0).first
+        cgc = row.values_at(0).first
         hash[formal_name] ||= []
-        hash[formal_name] << cnpj
+        hash[formal_name] << cgc
       end
     end
 
-    hash.each do |formal_name, cnpj_list|
+    hash.each do |formal_name, cgc_list|
       next if formal_name.blank?
 
       company = nil
       formal_name_d = formal_name.downcase
 
-      cnpj_list.each do |cnpj|
-        company = Owner.find_by_cnpj(cnpj)
+      cgc_list.each do |cgc|
+        company = Owner.find_by_cgc(cgc)
         break if company
       end
       company ||= Owner.find_by_formal_name_d formal_name_d
@@ -158,8 +158,8 @@ module ImportHelper
       company ||= Owner.new :formal_name => formal_name
 
       company.formal_name = formal_name
-      cnpj_list.each do |cnpj|
-        company.add_cnpj cnpj
+      cgc_list.each do |cgc|
+        company.add_cgc cgc
       end
 
       pp company

@@ -1,9 +1,6 @@
-class CompanyShareholder
+class Share
 
   include MongoMapper::Document
-
-  key :company_id, ObjectId, :required => :true
-  belongs_to :company, :class_name => 'Owner'
 
   key :type, String
   key :reference_date, String
@@ -12,6 +9,9 @@ class CompanyShareholder
   key :percentage, Float
   key :owner_id, ObjectId
   belongs_to :owner
+
+  key :company_id, ObjectId, :required => :true
+  belongs_to :company, :class_name => 'Owner'
 
   validates_presence_of :company
   validates_uniqueness_of :name, :scope => [:company_id, :type, :reference_date]
