@@ -45,3 +45,6 @@ gem 'fastercsv'
 gem 'bson_ext'
 gem 'mongo_mapper'
 
+gem 'execjs'
+gem 'therubyracer'
+
