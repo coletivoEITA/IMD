@@ -1,4 +1,6 @@
 module ImportHelper
+	
+  require 'mechanize'  
 
   def self.clear_db
     Owner.destroy_all
@@ -165,6 +167,133 @@ module ImportHelper
       pp company
       company.save!
     end
+  end
+
+  def self.import_asclaras()
+	url_home = 'http://www.asclaras.org.br/'
+	url_update_session = url_home + 'atualiza_sessao.php?ano='
+	url_candancy = url_home + 'partes/index/candidatos_frame.php?CAoffset='
+	url_donation = url_home + 'candidato.php?CACodigo='
+
+	m = Mechanize.new
+	#array of years to import data
+    years = [2008, 2010]
+	#cont to manage candidates pages
+	i = 0 
+
+	years.each do |year|
+		#Output current year of data import 
+		pp year
+
+		#set session attributte 'year' 
+		page = m.get(url_update_session + year.to_s)
+
+		#TODO:add check how to get next page with others 20 candidacie and iterate each page
+		page2 = m.get(url_candancy + i.to_s)
+
+		#Get all link on a page as a Mechanize.Page.Link object
+		page2.links().each do |link|		
+			#Data used to manage a candidate at asclaras.org
+			candidate_id = link.href[-7..-3]
+			candidate_name = link.text()
+
+			#TODO:refactor - how to check is a object exist and if yes set to a variable, if not run a block-code
+			#In case owner_name exist get it's object, case not create a new owner
+			#owner = nil
+			#if Owner.find_by_name(candidate_name.strip)?
+			#	owner = Owner.find_by_name(candidate_name.strip)
+			#else
+			#	owner = Owner.new
+			#	owner.name = candidate_name
+			#	if owner.valid?
+			#		owner.save()
+			#	end
+			#end
+			
+			#TODO:remove - print the owner related to candidate
+			#pp owner					
+			
+			#TODO:refactor - how to check is a object exist and if yes set to a variable, if not run a block-code
+			#candidacy = nil
+			#if Candidacy.find_by_owner_id(owner.id)? 
+			#	candidacy = Candidacy.find_by_owner_id(owner.id)
+			#else
+			#	candidacy = Candidacy.new
+			#	candidacy.owner_id = owner.id
+			#	candidacy.year = year
+			#end	
+
+			candidacy = Candidacy.new
+			candidacy.year = year
+
+			page3 = m.get(url_donation + candidate_id.to_s)						
+			page3.parser.xpath("//table[@class='tabelaPrincipal']//tr//td[@colspan='2']//table//tr//th[@align='left']").each do |candidate_td|
+				th = 0		
+				puts candidate_td.text()
+				case th
+					when 2, 3, 4
+						#do nothing
+						th = th + 1
+					when 0
+						candidacy.roll = candidate_td.text()
+						th = th + 1
+					when 1
+						candidacy.party = candidate_td.text()
+						th = th + 1
+					when 5						
+						candidacy.status = candidate_td.text()						
+						if candidacy.valid?									
+							puts candidacy.to_s
+						else
+							puts 'Candidacy not valid!'
+						end
+						th = th + 1
+				end
+
+				left, center, right = false
+				url_grantor, name_grantor, cgc_grantor, vl_donated = ""
+
+				File.open('data_from_asclaras/test_'+year.to_s+'_'+candidate_id.to_s+'_grantors.csv', 'w') do |f2|
+					#TODO: remove - add header CSV to file
+					f2.puts 'url_grantor;name_grantor;cgc_grantor;vl_donated;'
+
+					#return a noteset of Nokogiri nodes element 
+	 				page3.parser.xpath("//table[@class='tabelaPrincipal']//tr[@id='doadores3']//td[@class='linhas']",
+									   "//table[@class='tabelaPrincipal']//tr[@id='doadores3']//td[@class='linhas2']").each do |element|
+
+						if (element.attr('align') == 'left')
+							url_grantor = element.children().attr('href').value
+							name_grantor = element.content
+							left = true
+						end
+
+						if (element.attr('align') == 'center')
+							cgc_grantor = element.content
+							center = true
+						end
+
+						if (element.attr('align') == 'right')
+							vl_donated = element.content
+							right = true
+						end
+										
+						if (left && center && right)
+
+							f2.puts url_grantor.to_s.strip+
+								';'+name_grantor.to_s.strip+
+								';'+cgc_grantor.to_s.strip+
+								';'+vl_donated.to_s.strip+";"
+							#repalce file 'f2' for database persistence
+						
+							#restart controller variables
+							left, center, right = false
+							url_grantor, name_grantor, cgc_grantor, vl_donated = ""
+						end
+					end
+				end
+			end
+		end	
+	end
   end
 
 end

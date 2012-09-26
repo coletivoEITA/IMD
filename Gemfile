@@ -48,3 +48,4 @@ gem 'mongo_mapper'
 gem 'execjs'
 gem 'therubyracer'
 
+gem 'mechanize'
