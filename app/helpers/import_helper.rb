@@ -1,11 +1,13 @@
 module ImportHelper
-	
-  require 'mechanize'  
+
+  require 'mechanize'
 
   def self.clear_db
     Owner.destroy_all
     Share.destroy_all
     Balance.destroy_all
+    Candidacy.destroy_all
+    Donation.destroy_all
   end
 
   EconomaticaCSVColumns = ActiveSupport::OrderedHash[
@@ -99,9 +101,12 @@ module ImportHelper
         field = header_to_field(header).to_s
         next if field.blank?
 
+        # only brazilian companies
+        next if field == 'country' and value != 'BR'
+
         if field == 'balance_months'
           balance.save if balance
-          balance = company.balances.build(:reference_date => reference_date)
+          balance = company.balances.build(:source => 'Economatica', :reference_date => reference_date)
         end
         if field =~ /shareholder_(.+)_(.+)_name/
           shareholder.save if shareholder
@@ -169,6 +174,47 @@ module ImportHelper
     end
   end
 
+  def self.import_exame_maiores
+    url = "http://exame.abril.com.br/negocios/melhores-e-maiores/empresas/maiores/%{page}/%{year}/%{attr}"
+    pages = 125
+    years = [2011]
+    attributes = {
+      'vendas' => :revenue,
+      'total-do-ativo' => :total_active,
+    }
+
+    m = Mechanize.new
+
+    years.each do |year|
+      reference_date = Time.mktime(2011).end_of_year.to_date.strftime('%Y-%m-%d')
+
+      attributes.each do |attr, key|
+        (1..pages).each do |page|
+          page = m.get(url % {:year => year, :attr => attr, :page => page})
+
+          trs = page.parser.css 'table.table_mm_g tr[class*=row]'
+          trs.each do |tr|
+            tds = tr.children.select{ |td| td.element? }
+            name = tds[3].text
+            formal_name = tds[2].text
+
+            owner = Owner.find_or_create nil, name, formal_name
+            owner.sector = tds[4].text
+            owner.capital_type = tds[5].text == 'Privada' ? 'private' : 'state'
+            owner.save!
+            pp owner
+
+            balance = Balance.first_or_new(:company_id => owner.id, :source => 'Exame', :reference_date => reference_date)
+            value = tds[7].text.gsub('.', '').gsub(',', '.').to_f * 1000
+            balance.send "#{key}=", value
+            balance.save!
+            pp balance
+          end
+        end
+      end
+    end
+  end
+
   def self.import_asclaras()
 	url_home = 'http://www.asclaras.org.br/'
 	url_update_session = url_home + 'atualiza_sessao.php?ano='
@@ -179,20 +225,20 @@ module ImportHelper
 	#array of years to import data
     years = [2008, 2010]
 	#cont to manage candidates pages
-	i = 0 
+	i = 0
 
 	years.each do |year|
-		#Output current year of data import 
+		#Output current year of data import
 		pp year
 
-		#set session attributte 'year' 
+		#set session attributte 'year'
 		page = m.get(url_update_session + year.to_s)
 
 		#TODO:add check how to get next page with others 20 candidacie and iterate each page
 		page2 = m.get(url_candancy + i.to_s)
 
 		#Get all link on a page as a Mechanize.Page.Link object
-		page2.links().each do |link|		
+		page2.links().each do |link|
 			#Data used to manage a candidate at asclaras.org
 			candidate_id = link.href[-7..-3]
 			candidate_name = link.text()
@@ -209,26 +255,26 @@ module ImportHelper
 			#		owner.save()
 			#	end
 			#end
-			
+
 			#TODO:remove - print the owner related to candidate
-			#pp owner					
-			
+			#pp owner
+
 			#TODO:refactor - how to check is a object exist and if yes set to a variable, if not run a block-code
 			#candidacy = nil
-			#if Candidacy.find_by_owner_id(owner.id)? 
+			#if Candidacy.find_by_owner_id(owner.id)?
 			#	candidacy = Candidacy.find_by_owner_id(owner.id)
 			#else
 			#	candidacy = Candidacy.new
 			#	candidacy.owner_id = owner.id
 			#	candidacy.year = year
-			#end	
+			#end
 
 			candidacy = Candidacy.new
 			candidacy.year = year
 
-			page3 = m.get(url_donation + candidate_id.to_s)						
+			page3 = m.get(url_donation + candidate_id.to_s)
 			page3.parser.xpath("//table[@class='tabelaPrincipal']//tr//td[@colspan='2']//table//tr//th[@align='left']").each do |candidate_td|
-				th = 0		
+				th = 0
 				puts candidate_td.text()
 				case th
 					when 2, 3, 4
@@ -240,9 +286,9 @@ module ImportHelper
 					when 1
 						candidacy.party = candidate_td.text()
 						th = th + 1
-					when 5						
-						candidacy.status = candidate_td.text()						
-						if candidacy.valid?									
+					when 5
+						candidacy.status = candidate_td.text()
+						if candidacy.valid?
 							puts candidacy.to_s
 						else
 							puts 'Candidacy not valid!'
@@ -257,7 +303,7 @@ module ImportHelper
 					#TODO: remove - add header CSV to file
 					f2.puts 'url_grantor;name_grantor;cgc_grantor;vl_donated;'
 
-					#return a noteset of Nokogiri nodes element 
+					#return a noteset of Nokogiri nodes element
 	 				page3.parser.xpath("//table[@class='tabelaPrincipal']//tr[@id='doadores3']//td[@class='linhas']",
 									   "//table[@class='tabelaPrincipal']//tr[@id='doadores3']//td[@class='linhas2']").each do |element|
 
@@ -276,7 +322,7 @@ module ImportHelper
 							vl_donated = element.content
 							right = true
 						end
-										
+
 						if (left && center && right)
 
 							f2.puts url_grantor.to_s.strip+
@@ -284,7 +330,7 @@ module ImportHelper
 								';'+cgc_grantor.to_s.strip+
 								';'+vl_donated.to_s.strip+";"
 							#repalce file 'f2' for database persistence
-						
+
 							#restart controller variables
 							left, center, right = false
 							url_grantor, name_grantor, cgc_grantor, vl_donated = ""
@@ -292,7 +338,7 @@ module ImportHelper
 					end
 				end
 			end
-		end	
+		end
 	end
   end
 

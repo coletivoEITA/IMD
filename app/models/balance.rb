@@ -2,10 +2,11 @@ class Balance
 
   include MongoMapper::Document
 
+  key :source, String, :required => :true
+  key :reference_date, String
+
   key :company_id, ObjectId, :required => :true
   belongs_to :company, :class_name => 'Owner'
-
-  key :reference_date, String
 
   MonthsReference = 12
 
@@ -18,8 +19,7 @@ class Balance
   key :currency, String
 
   validates_presence_of :company
-  validates_uniqueness_of :reference_date, :scope => :company_id
-  validates_presence_of :revenue
+  validates_uniqueness_of :reference_date, :scope => [:company_id, :source]
 
   def value(attr)
     (MonthsReference / self.months) * self.send(attr)
