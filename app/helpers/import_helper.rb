@@ -98,9 +98,14 @@ module ImportHelper
     csv.each_with_index do |row, i|
       name = row.values_at(0).first
       cnpj = row.values_at(2).first
+      country = row.values_at(3).first
+
+      next if country != 'BR' # only brazilian companies
       next if cnpj == '-'
 
-      cnpj = '%014d' % cnpj # fix CNPJ format
+      cnpj = cnpj.to_i
+      cnpj = cnpj.zero? ? nil : ('%014d' % cnpj) # fix CNPJ format
+
       company = Owner.find_or_create cnpj, name
       balance = nil
       shareholder = nil
@@ -113,9 +118,6 @@ module ImportHelper
 
         # jump preprocessed
         next if ['cgc', 'name'].include?(field)
-
-        # only brazilian companies
-        #next if field == 'country' and value != 'BR'
 
         if field == 'balance_months'
           balance.save if balance
