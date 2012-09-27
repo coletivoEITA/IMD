@@ -5,7 +5,7 @@ module ExportHelper
       CalculationHelper.calculate_owners_value attr, share_type
       owners = Owner.all(:order => "total_#{attr}".to_sym.desc)
 
-      FasterCSV.open("db/#{attr}-ranking-#{share_type.uppercase}-shares.csv", "w") do |csv|
+      FasterCSV.open("db/#{attr}-ranking-#{share_type.to_s.uppercase}-shares.csv", "w") do |csv|
         csv << ['nome', 'razão social', 'cnpj',
                 'valor próprio', 'valor indireto', 'valor total',
                 'empresas controladas']

@@ -11,8 +11,10 @@ class Owner
   key :cnpj_root, String
   key :traded, Boolean
   key :classes, Array
+  key :capital_type, String
   key :shares_quantity, Integer
   key :naics, Array
+  key :sector, String
   key :stock_market, String
   key :stock_code, String
 
@@ -38,6 +40,7 @@ class Owner
   validates_uniqueness_of :formal_name, :allow_nil => true
   validates_uniqueness_of :cgc, :allow_nil => true
   validates_uniqueness_of :cnpj_root, :allow_nil => true
+  validates_inclusion_of :capital_type, :in => %w(private state), :allow_nil => true
   before_validation :assign_defaults
   before_save :assign_downcases
   validate :validate_cgc

@@ -2,6 +2,7 @@
 require File.dirname(__FILE__) + '/../config/boot'
 
 ImportHelper.clear_db
+ImportHelper.import_exame_maiores
 ImportHelper.import_companies 'db/mdic-importers.csv', 'db/mdic-exporters.csv'
 ImportHelper.import_economatica_csv 'db/economatica-period-2012-12-31.csv', '2012-12-31'
 

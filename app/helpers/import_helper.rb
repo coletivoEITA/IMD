@@ -4,6 +4,8 @@ module ImportHelper
     Owner.destroy_all
     Share.destroy_all
     Balance.destroy_all
+    Candidacy.destroy_all
+    Donation.destroy_all
   end
 
   EconomaticaCSVColumns = ActiveSupport::OrderedHash[
@@ -97,9 +99,12 @@ module ImportHelper
         field = header_to_field(header).to_s
         next if field.blank?
 
+        # only brazilian companies
+        next if field == 'country' and value != 'BR'
+
         if field == 'balance_months'
           balance.save if balance
-          balance = company.balances.build(:reference_date => reference_date)
+          balance = company.balances.build(:source => 'Economatica', :reference_date => reference_date)
         end
         if field =~ /shareholder_(.+)_(.+)_name/
           shareholder.save if shareholder
@@ -241,6 +246,47 @@ module ImportHelper
 
       pp company
       company.save!
+    end
+  end
+
+  def self.import_exame_maiores
+    url = "http://exame.abril.com.br/negocios/melhores-e-maiores/empresas/maiores/%{page}/%{year}/%{attr}"
+    pages = 125
+    years = [2011]
+    attributes = {
+      'vendas' => :revenue,
+      'total-do-ativo' => :total_active,
+    }
+
+    m = Mechanize.new
+
+    years.each do |year|
+      reference_date = Time.mktime(2011).end_of_year.to_date.strftime('%Y-%m-%d')
+
+      attributes.each do |attr, key|
+        (1..pages).each do |page|
+          page = m.get(url % {:year => year, :attr => attr, :page => page})
+
+          trs = page.parser.css 'table.table_mm_g tr[class*=row]'
+          trs.each do |tr|
+            tds = tr.children.select{ |td| td.element? }
+            name = tds[3].text
+            formal_name = tds[2].text
+
+            owner = Owner.find_or_create nil, name, formal_name
+            owner.sector = tds[4].text
+            owner.capital_type = tds[5].text == 'Privada' ? 'private' : 'state'
+            owner.save!
+            pp owner
+
+            balance = Balance.first_or_new(:company_id => owner.id, :source => 'Exame', :reference_date => reference_date)
+            value = tds[7].text.gsub('.', '').gsub(',', '.').to_f * 1000
+            balance.send "#{key}=", value
+            balance.save!
+            pp balance
+          end
+        end
+      end
     end
   end
 
