@@ -1,6 +1,4 @@
 module ImportHelper
-	
-  require 'mechanize'  
 
   def self.clear_db
     Owner.destroy_all
@@ -131,6 +129,83 @@ module ImportHelper
     end
   end
 
+  def self.import_receita_companies_members
+    cnpj = '42150391000170'
+
+    def self.get_page(cnpj)
+      m = Mechanize.new
+      referer = "http://www.receita.fazenda.gov.br/pessoajuridica/cnpj/fcpj/link097.asp"
+      url = "http://www.receita.fazenda.gov.br/pessoajuridica/cnpj/CNPJConsul/consulta.asp"
+      frame = "http://www.receita.fazenda.gov.br/pessoajuridica/cnpj/CNPJConsul/consulta_socios.asp"
+      captcha = 'http://www.receita.fazenda.gov.br/Scripts/srf/img/srfimg.dll'
+
+      page = m.post url, {'cnpj' => cnpj}, {'Referer' => referer}
+      page = page.frames[1].click
+
+      captcha_img = m.get(captcha).content.read
+      captcha_path = '/tmp/captch_path.jpg'
+      File.open(captcha_path, 'w'){ |f| f.write captcha_img }
+      pid = -Process.fork do
+        Process.setpgrp
+        system "qiv #{captcha_path}"
+        #system "jp2a #{captcha_path}"
+      end
+
+      print "Type captcha: "
+      captcha_code = gets.split("\n").first
+      Process.kill 9, pid
+
+      form = page.forms.first
+      captcha_input = form.fields.last
+      captcha_input.value = captcha_code
+      page = form.submit
+
+      return nil if page.content.index('Acesso negado')
+      page
+    end
+
+    def self.parse_page(cnpj, page)
+      formal_name = page.parser.css("td[valign=center] font[size='3']")[1].text.strip
+      company = Owner.find_or_create cnpj, nil, formal_name
+      mapping = {
+        'CPF/CNPJ:' => :cgc,
+        'Nome/Nome Empresarial:' => :formal_name,
+        'Entrada na Sociedade:' => :entrance_date,
+        'Qualificação:' => :qualification,
+        'Part. Capital Social:' => :participation,
+      }
+      page.parser.css('table[bordercolor=LightGrey]').each do |table|
+        attributes = {}
+
+        table.css('table td font').each do |font|
+          field = font.children[0].text.strip
+          content = font.children[1].text.strip
+          attributes[mapping[field]] = content
+        end
+
+        cgc = attributes[:cgc].gsub(/[,.\-\/]/, '')
+        formal_name = attributes[:formal_name]
+        member = CompanyMember.new
+        member.member = Owner.find_or_create cgc, nil, formal_name
+        member.entrance_date = attributes[:entrance_date]
+        member.qualification = attributes[:qualification]
+        member.participation = attributes[:participation]
+
+        company.members << member
+      end
+    end
+
+    page = nil
+    loop do
+      page = get_page(cnpj)
+      break if page
+      puts 'Error while getting page, try again'
+    end
+    parse_page(cnpj, page)
+
+  end
+
+
   def self.import_companies(*files)
     csvs = *files.map do |file|
       FasterCSV.table file, :converters => nil
@@ -179,20 +254,20 @@ module ImportHelper
 	#array of years to import data
     years = [2008, 2010]
 	#cont to manage candidates pages
-	i = 0 
+	i = 0
 
 	years.each do |year|
-		#Output current year of data import 
+		#Output current year of data import
 		pp year
 
-		#set session attributte 'year' 
+		#set session attributte 'year'
 		page = m.get(url_update_session + year.to_s)
 
 		#TODO:add check how to get next page with others 20 candidacie and iterate each page
 		page2 = m.get(url_candancy + i.to_s)
 
 		#Get all link on a page as a Mechanize.Page.Link object
-		page2.links().each do |link|		
+		page2.links().each do |link|
 			#Data used to manage a candidate at asclaras.org
 			candidate_id = link.href[-7..-3]
 			candidate_name = link.text()
@@ -209,26 +284,26 @@ module ImportHelper
 			#		owner.save()
 			#	end
 			#end
-			
+
 			#TODO:remove - print the owner related to candidate
-			#pp owner					
-			
+			#pp owner
+
 			#TODO:refactor - how to check is a object exist and if yes set to a variable, if not run a block-code
 			#candidacy = nil
-			#if Candidacy.find_by_owner_id(owner.id)? 
+			#if Candidacy.find_by_owner_id(owner.id)?
 			#	candidacy = Candidacy.find_by_owner_id(owner.id)
 			#else
 			#	candidacy = Candidacy.new
 			#	candidacy.owner_id = owner.id
 			#	candidacy.year = year
-			#end	
+			#end
 
 			candidacy = Candidacy.new
 			candidacy.year = year
 
-			page3 = m.get(url_donation + candidate_id.to_s)						
+			page3 = m.get(url_donation + candidate_id.to_s)
 			page3.parser.xpath("//table[@class='tabelaPrincipal']//tr//td[@colspan='2']//table//tr//th[@align='left']").each do |candidate_td|
-				th = 0		
+				th = 0
 				puts candidate_td.text()
 				case th
 					when 2, 3, 4
@@ -240,9 +315,9 @@ module ImportHelper
 					when 1
 						candidacy.party = candidate_td.text()
 						th = th + 1
-					when 5						
-						candidacy.status = candidate_td.text()						
-						if candidacy.valid?									
+					when 5
+						candidacy.status = candidate_td.text()
+						if candidacy.valid?
 							puts candidacy.to_s
 						else
 							puts 'Candidacy not valid!'
@@ -257,7 +332,7 @@ module ImportHelper
 					#TODO: remove - add header CSV to file
 					f2.puts 'url_grantor;name_grantor;cgc_grantor;vl_donated;'
 
-					#return a noteset of Nokogiri nodes element 
+					#return a noteset of Nokogiri nodes element
 	 				page3.parser.xpath("//table[@class='tabelaPrincipal']//tr[@id='doadores3']//td[@class='linhas']",
 									   "//table[@class='tabelaPrincipal']//tr[@id='doadores3']//td[@class='linhas2']").each do |element|
 
@@ -276,7 +351,7 @@ module ImportHelper
 							vl_donated = element.content
 							right = true
 						end
-										
+
 						if (left && center && right)
 
 							f2.puts url_grantor.to_s.strip+
@@ -284,7 +359,7 @@ module ImportHelper
 								';'+cgc_grantor.to_s.strip+
 								';'+vl_donated.to_s.strip+";"
 							#repalce file 'f2' for database persistence
-						
+
 							#restart controller variables
 							left, center, right = false
 							url_grantor, name_grantor, cgc_grantor, vl_donated = ""
@@ -292,7 +367,7 @@ module ImportHelper
 					end
 				end
 			end
-		end	
+		end
 	end
   end
 

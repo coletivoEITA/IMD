@@ -28,6 +28,9 @@ class Owner
   many :owners_shares, :class_name => 'Share', :foreign_key => :company_id, :dependent => :destroy_all
   many :owned_shares, :class_name => 'Share', :foreign_key => :owner_id, :dependent => :destroy_all
 
+  many :members, :class_name => 'CompanyMember', :foreign_key => :company_id, :dependent => :destroy_all
+  many :members_of, :class_name => 'CompanyMember', :foreign_key => :member_id, :dependent => :destroy_all
+
   # downcase versions
   key :name_d, String
   key :formal_name_d, String
