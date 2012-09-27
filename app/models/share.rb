@@ -14,6 +14,7 @@ class Share
   belongs_to :company, :class_name => 'Owner'
 
   validates_presence_of :company
+  validates_presence_of :name
   validates_uniqueness_of :name, :scope => [:company_id, :type, :reference_date]
   validates_numericality_of :percentage, :greater_than => 0.0
 

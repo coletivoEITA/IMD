@@ -21,67 +21,76 @@ module ImportHelper
     'Bolsa', :stock_market,
     'Código', :stock_code,
     'ISIN', nil,
-    'Meses|Dez 2011|no exercício|consolid:sim*', :balance_months,
-    'Ativo Tot|Dez 2011|em moeda orig|em milhares|consolid:sim*', :balance_total_active,
-    'Patrim Liq|Dez 2011|em moeda orig|em milhares|consolid:sim*', :balance_patrimony,
-    'Receita|Dez 2011|em moeda orig|em milhares|no exercício|consolid:sim*', :balance_revenue,
-    'Lucro Bruto|Dez 2011|em moeda orig|em milhares|no exercício|consolid:sim*', :balance_gross_profit,
-    'Lucro Liq|Dez 2011|em moeda orig|em milhares|no exercício|consolid:sim*', :balance_net_profit,
-    'Moeda dos|Balanços', :balance_currency,
-    'Qtd Ações|Outstanding|da empresa|em milhares|31Dez11', :shares_quantity,
-    'LPA|Dez 2011|em moeda orig|de 12 meses|consolid:sim*|ajust p/ prov', nil,
-    'VPA|Dez 2011|em moeda orig|consolid:sim*|ajust p/ prov', nil,
-    'Vendas/Acao|Dez 2011|em moeda orig|de 12 meses|consolid:sim*|ajust p/ prov', nil,
-    'Divid por Ação|31Dez11|1 anos|em moeda orig', nil,
-    'Div Yld (fim)|31Dez11|no Ano|em moeda orig', nil,
-    'Div Yld (inic)|31Dez11|1 anos|em moeda orig',nil,
-    'PrinAcion|31/12/2011|1.Maior|Sem Voto', :shareholder_PN_01_name,
-    '%AcPoss|31/12/2011|1.Maior|Sem Voto', :shareholder_PN_01_percentage,
-    'PrinAcion|31/12/2011|2.Maior|Sem Voto', :shareholder_PN_02_name,
-    '%AcPoss|31/12/2011|2.Maior|Sem Voto', :shareholder_PN_02_percentage,
-    'PrinAcion|31/12/2011|3.Maior|Sem Voto', :shareholder_PN_03_name,
-    '%AcPoss|31/12/2011|3.Maior|Sem Voto', :shareholder_PN_03_percentage,
-    'PrinAcion|31/12/2011|4.Maior|Sem Voto', :shareholder_PN_04_name,
-    '%AcPoss|31/12/2011|4.Maior|Sem Voto', :shareholder_PN_04_percentage,
-    'PrinAcion|31/12/2011|5.Maior|Sem Voto', :shareholder_PN_05_name,
-    '%AcPoss|31/12/2011|5.Maior|Sem Voto', :shareholder_PN_05_percentage,
-    'PrinAcion|31/12/2011|6.Maior|Sem Voto', :shareholder_PN_06_name,
-    '%AcPoss|31/12/2011|6.Maior|Sem Voto', :shareholder_PN_06_percentage,
-    'PrinAcion|31/12/2011|7.Maior|Sem Voto', :shareholder_PN_07_name,
-    '%AcPoss|31/12/2011|7.Maior|Sem Voto', :shareholder_PN_07_percentage,
-    'PrinAcion|31/12/2011|8.Maior|Sem Voto', :shareholder_PN_08_name,
-    '%AcPoss|31/12/2011|8.Maior|Sem Voto', :shareholder_PN_08_percentage,
-    'PrinAcion|31/12/2011|9.Maior|Sem Voto', :shareholder_PN_09_name,
-    '%AcPoss|31/12/2011|9.Maior|Sem Voto', :shareholder_PN_09_percentage,
-    'PrinAcion|31/12/2011|10.Maior|Sem Voto', :shareholder_PN_10_name,
-    '%AcPoss|31/12/2011|10.Maior|Sem Voto', :shareholder_PN_10_percentage,
-    'PrinAcion|31/12/2011|1.Maior|Com Voto', :shareholder_ON_01_name,
-    '%AcPoss|31/12/2011|1.Maior|Com Voto', :shareholder_ON_01_percentage,
-    'PrinAcion|31/12/2011|2.Maior|Com Voto', :shareholder_ON_02_name,
-    '%AcPoss|31/12/2011|2.Maior|Com Voto', :shareholder_ON_02_percentage,
-    'PrinAcion|31/12/2011|3.Maior|Com Voto', :shareholder_ON_03_name,
-    '%AcPoss|31/12/2011|3.Maior|Com Voto', :shareholder_ON_03_percentage,
-    'PrinAcion|31/12/2011|4.Maior|Com Voto', :shareholder_ON_04_name,
-    '%AcPoss|31/12/2011|4.Maior|Com Voto', :shareholder_ON_04_percentage,
-    'PrinAcion|31/12/2011|5.Maior|Com Voto', :shareholder_ON_05_name,
-    '%AcPoss|31/12/2011|5.Maior|Com Voto', :shareholder_ON_05_percentage,
-    'PrinAcion|31/12/2011|6.Maior|Com Voto', :shareholder_ON_06_name,
-    '%AcPoss|31/12/2011|6.Maior|Com Voto', :shareholder_ON_06_percentage,
-    'PrinAcion|31/12/2011|7.Maior|Com Voto', :shareholder_ON_07_name,
-    '%AcPoss|31/12/2011|7.Maior|Com Voto', :shareholder_ON_07_percentage,
-    'PrinAcion|31/12/2011|8.Maior|Com Voto', :shareholder_ON_08_name,
-    '%AcPoss|31/12/2011|8.Maior|Com Voto', :shareholder_ON_08_percentage,
-    'PrinAcion|31/12/2011|9.Maior|Com Voto', :shareholder_ON_09_name,
-    '%AcPoss|31/12/2011|9.Maior|Com Voto', :shareholder_ON_09_percentage,
-    'PrinAcion|31/12/2011|10.Maior|Com Voto', :shareholder_ON_10_name,
-    '%AcPoss|31/12/2011|10.Maior|Com Voto', :shareholder_ON_10_percentage,
+    /Meses|.+|no exercício|consolid:sim*/, :balance_months,
+    /Ativo Tot|.+|em moeda orig|em milhares|consolid:sim*/, :balance_total_active,
+    /Patrim Liq|.+|em moeda orig|em milhares|consolid:sim*/, :balance_patrimony,
+    /Receita|.+|em moeda orig|em milhares|no exercício|consolid:sim*/, :balance_revenue,
+    /Lucro Bruto|.+|em moeda orig|em milhares|no exercício|consolid:sim*/, :balance_gross_profit,
+    /Lucro Liq|.+|em moeda orig|em milhares|no exercício|consolid:sim*/, :balance_net_profit,
+    /Moeda dos|Balanços/, :balance_currency,
+    /Qtd Ações|Outstanding|da empresa|em milhares|.+/, :shares_quantity,
+    /LPA|.+|em moeda orig|de 12 meses|consolid:sim*|ajust p\/ prov/, nil,
+    /VPA|.+|em moeda orig|consolid:sim*|ajust p\/ prov/, nil,
+    /Vendas\/Acao|.+|em moeda orig|de 12 meses|consolid:sim*|ajust p\/ prov/, nil,
+    /Divid por Ação|.+|1 anos|em moeda orig/, nil,
+    /Div Yld (fim)|.+|no Ano|em moeda orig/, nil,
+    /Div Yld (inic)|.+|1 anos|em moeda orig/,nil,
+    /PrinAcion|.+|1.Maior|Sem Voto/, :shareholder_PN_01_name,
+    /%AcPoss|.+|1.Maior|Sem Voto/, :shareholder_PN_01_percentage,
+    /PrinAcion|.+|2.Maior|Sem Voto/, :shareholder_PN_02_name,
+    /%AcPoss|.+|2.Maior|Sem Voto/, :shareholder_PN_02_percentage,
+    /PrinAcion|.+|3.Maior|Sem Voto/, :shareholder_PN_03_name,
+    /%AcPoss|.+|3.Maior|Sem Voto/, :shareholder_PN_03_percentage,
+    /PrinAcion|.+|4.Maior|Sem Voto/, :shareholder_PN_04_name,
+    /%AcPoss|.+|4.Maior|Sem Voto/, :shareholder_PN_04_percentage,
+    /PrinAcion|.+|5.Maior|Sem Voto/, :shareholder_PN_05_name,
+    /%AcPoss|.+|5.Maior|Sem Voto/, :shareholder_PN_05_percentage,
+    /PrinAcion|.+|6.Maior|Sem Voto/, :shareholder_PN_06_name,
+    /%AcPoss|.+|6.Maior|Sem Voto/, :shareholder_PN_06_percentage,
+    /PrinAcion|.+|7.Maior|Sem Voto/, :shareholder_PN_07_name,
+    /%AcPoss|.+|7.Maior|Sem Voto/, :shareholder_PN_07_percentage,
+    /PrinAcion|.+|8.Maior|Sem Voto/, :shareholder_PN_08_name,
+    /%AcPoss|.+|8.Maior|Sem Voto/, :shareholder_PN_08_percentage,
+    /PrinAcion|.+|9.Maior|Sem Voto/, :shareholder_PN_09_name,
+    /%AcPoss|.+|9.Maior|Sem Voto/, :shareholder_PN_09_percentage,
+    /PrinAcion|.+|10.Maior|Sem Voto/, :shareholder_PN_10_name,
+    /%AcPoss|.+|10.Maior|Sem Voto/, :shareholder_PN_10_percentage,
+    /PrinAcion|.+|1.Maior|Com Voto/, :shareholder_ON_01_name,
+    /%AcPoss|.+|1.Maior|Com Voto/, :shareholder_ON_01_percentage,
+    /PrinAcion|.+|2.Maior|Com Voto/, :shareholder_ON_02_name,
+    /%AcPoss|.+|2.Maior|Com Voto/, :shareholder_ON_02_percentage,
+    /PrinAcion|.+|3.Maior|Com Voto/, :shareholder_ON_03_name,
+    /%AcPoss|.+|3.Maior|Com Voto/, :shareholder_ON_03_percentage,
+    /PrinAcion|.+|4.Maior|Com Voto/, :shareholder_ON_04_name,
+    /%AcPoss|.+|4.Maior|Com Voto/, :shareholder_ON_04_percentage,
+    /PrinAcion|.+|5.Maior|Com Voto/, :shareholder_ON_05_name,
+    /%AcPoss|.+|5.Maior|Com Voto/, :shareholder_ON_05_percentage,
+    /PrinAcion|.+|6.Maior|Com Voto/, :shareholder_ON_06_name,
+    /%AcPoss|.+|6.Maior|Com Voto/, :shareholder_ON_06_percentage,
+    /PrinAcion|.+|7.Maior|Com Voto/, :shareholder_ON_07_name,
+    /%AcPoss|.+|7.Maior|Com Voto/, :shareholder_ON_07_percentage,
+    /PrinAcion|.+|8.Maior|Com Voto/, :shareholder_ON_08_name,
+    /%AcPoss|.+|8.Maior|Com Voto/, :shareholder_ON_08_percentage,
+    /PrinAcion|.+|9.Maior|Com Voto/, :shareholder_ON_09_name,
+    /%AcPoss|.+|9.Maior|Com Voto/, :shareholder_ON_09_percentage,
+    /PrinAcion|.+|10.Maior|Com Voto/, :shareholder_ON_10_name,
+    /%AcPoss|.+|10.Maior|Com Voto/, :shareholder_ON_10_percentage,
   ]
   def self.header_to_field(header)
-    EconomaticaCSVColumns[header]
+    field = EconomaticaCSVColumns[header]
+    if field.nil?
+      EconomaticaCSVColumns.each do |regexp, f|
+        next unless regexp.is_a(Regexp)
+        if header =~ regexp
+          field = f
+          break
+        end
+      end
+    end
+    field
   end
-  def self.column_to_field(csv, column_index)
-    header = csv.headers[column_index]
-    header_to_field(header)
+  def self.column_index_to_field(column_index)
+    EconomaticaCSVColumns.values[column_index]
   end
 
   def self.import_economatica_csv(file, reference_date)
@@ -91,16 +100,22 @@ module ImportHelper
       cnpj = row.values_at(2).first
       next if cnpj == '-'
 
+      cnpj = '%014d' % cnpj # fix CNPJ format
       company = Owner.find_or_create cnpj, name
       balance = nil
       shareholder = nil
 
+      column_index = 0
       row.each do |header, value|
-        field = header_to_field(header).to_s
+        field = column_index_to_field(column_index).to_s
+        column_index += 1
         next if field.blank?
 
+        # jump preprocessed
+        next if ['cgc', 'name'].include?(field)
+
         # only brazilian companies
-        next if field == 'country' and value != 'BR'
+        #next if field == 'country' and value != 'BR'
 
         if field == 'balance_months'
           balance.save if balance
@@ -135,8 +150,6 @@ module ImportHelper
   end
 
   def self.import_receita_companies_members
-    cnpj = '42150391000170'
-
     def self.get_page(cnpj)
       m = Mechanize.new
       referer = "http://www.receita.fazenda.gov.br/pessoajuridica/cnpj/fcpj/link097.asp"
@@ -200,13 +213,15 @@ module ImportHelper
       end
     end
 
-    page = nil
-    loop do
-      page = get_page(cnpj)
-      break if page
-      puts 'Error while getting page, try again'
+    Owner.all.collect{ |o| o.cgc.first }.compact.each do |cnpj|
+      page = nil
+      loop do
+        page = get_page(cnpj)
+        break if page
+        puts 'Error while getting page, try again'
+      end
+      parse_page(cnpj, page)
     end
-    parse_page(cnpj, page)
 
   end
 

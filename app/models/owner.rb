@@ -178,8 +178,8 @@ class Owner
   end
 
   def validate_cgc
-    return if cgc.nil? or cgc.empty?
-    #self.errors[:cgc] << 'Not a CPF or a CNPJ' if !self.cnpj? and !self.cpf?
+    return if cgc.blank?
+    self.errors[:cgc] << 'Not a CPF or a CNPJ' if !self.cnpj? and !self.cpf?
   end
 
 end
