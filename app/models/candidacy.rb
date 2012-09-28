@@ -6,11 +6,14 @@ class Candidacy
   belongs_to :owner
 
   key :year, Integer
-  key :roll, String
+  key :role, String
   key :party, String
   key :state, String
+  key :city, String
   key :status, String
 
-  validates_inclusion_of :status, :in => %w(elected not_elected), :allow_nil => true
+  #validates_inclusion_of :status, :in => %w(elected not_elected), :allow_nil => true
+
+  validates_uniqueness_of :year, :scope => [:owner_id]
 
 end
