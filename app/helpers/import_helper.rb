@@ -233,6 +233,10 @@ module ImportHelper
       company.save!
     end
 
+    # mark as cheched to FII companies which
+    # tipycally has no members
+    #Owner.each{ |o| next unless o.name_d.starts_with?('fii '); o.members_count = 0; o .save }
+
     Owner.each do |owner|
       next if owner.cgc.first.nil?
       next if !owner.cnpj?
