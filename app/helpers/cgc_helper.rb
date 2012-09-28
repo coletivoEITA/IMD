@@ -23,7 +23,7 @@ module CgcHelper
   end
 
   def self.remove_non_numbers(cgc)
-    cgc.gsub(/[^\d.]/, '')
+    cgc.gsub(/[^\d]/, '')
   end
 
 end
