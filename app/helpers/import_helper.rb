@@ -339,12 +339,12 @@ module ImportHelper
   def self.import_asclaras()
 	url_home = 'http://www.asclaras.org.br/'
 	url_update_session = url_home + 'atualiza_sessao.php?ano='
-	url_candancy = url_home + 'partes/index/candidatos_frame.php?CAoffset='
+	url_candidacy = url_home + 'partes/index/candidatos_frame.php?CAoffset='
 	url_donation = url_home + 'candidato.php?CACodigo='
 
 	m = Mechanize.new
 	#array of years to import data
-    years = [2008, 2010]
+    years = [2008,2010]
 	#cont to manage candidates pages
 	i = 0
 
@@ -356,111 +356,109 @@ module ImportHelper
 		page = m.get(url_update_session + year.to_s)
 
 		#TODO:add check how to get next page with others 20 candidacie and iterate each page
-		page2 = m.get(url_candancy + i.to_s)
+		page2 = m.get(url_candidacy + i.to_s)
 
+		#TODO:remove candidate_id = "221720"
+		candidate_id = "221720"
+		
 		#Get all link on a page as a Mechanize.Page.Link object
-		page2.links().each do |link|
-			#Data used to manage a candidate at asclaras.org
-			candidate_id = link.href[-7..-3]
+		page2.links().each do |link|		
+			#Data used to manage a candidate at asclaras.org	
+			if candidate_id.nil?
+				candidate_id = link.href[-7..-3]				
+			end			
 			candidate_name = link.text()
+			import_asclaras_donation(m,year,url_donation,candidate_id,candidate_name)
+		end	
+	end
+  end
+	
+  def self.import_asclaras_donation(m,year,url_donation,candidate_id,candidate_name)	
+	page3 = m.get(url_donation + candidate_id.to_s)
 
-			#TODO:refactor - how to check is a object exist and if yes set to a variable, if not run a block-code
-			#In case owner_name exist get it's object, case not create a new owner
-			#owner = nil
-			#if Owner.find_by_name(candidate_name.strip)?
-			#	owner = Owner.find_by_name(candidate_name.strip)
-			#else
-			#	owner = Owner.new
-			#	owner.name = candidate_name
-			#	if owner.valid?
-			#		owner.save()
-			#	end
-			#end
+	#In case there is owner referenced by owner_name get it's object, case not create a new one
+	owner = Owner.find_or_create(nil, candidate_name.strip, nil)
 
-			#TODO:remove - print the owner related to candidate
-			#pp owner
+	#In case there is candidacy referenced by owner get it's object
+	candidacy = Candidacy.first(:year => year, :owner_id => owner.id)
 
-			#TODO:refactor - how to check is a object exist and if yes set to a variable, if not run a block-code
-			#candidacy = nil
-			#if Candidacy.find_by_owner_id(owner.id)?
-			#	candidacy = Candidacy.find_by_owner_id(owner.id)
-			#else
-			#	candidacy = Candidacy.new
-			#	candidacy.owner_id = owner.id
-			#	candidacy.year = year
-			#end
+	#In case not create a new one based on candidate_Data parsed  by Mechanize
+	if candidacy.nil?
+		candidacy = Candidacy.new(:year => year, :owner_id => owner.id) 
+		candidate_data = page3.parser.css("table tr:nth-child(3) table th")
+		candidacy.role = candidate_data[0].text().strip
+		candidacy.party = candidate_data[1].text().strip	
+		#index to control data index to import
+		data_index = 0
+		if "Vereador" == candidate_data[0].text().strip
+			uf = candidate_data[2].text().strip
+			candidacy.city = uf.split("-")[0].strip
+			candidacy.state = uf.split("-")[1].strip
+			data_index = 6
+		else "Presidente" == candidate_data[0].text().strip
+			candidacy.state = "BR"
+			data_index = 5
+		end
+		if "Eleito" == candidate_data[data_index].text().strip
+			candidacy.status = "elected"
+		elsif "Não Eleito" == candidate_data[5].text().strip
+			candidacy.status = "not elected"
+		elsif "Suplente" == candidate_data[5].text().strip
+			candidacy.status = "substitute"
+		end				
+	end
+							
+	left, center, right = false
+	url_grantor, name_grantor, cgc_grantor, vl_donated = ""
+	#return a nodeset from Nokogiri
+	page3.parser.xpath("//table//tr[@id='doadores3']//td[@class='conteudo']//table//tr//td[@class='linhas']").each do |element|
 
-			candidacy = Candidacy.new
-			candidacy.year = year
+		if (element.attr('align') == 'left')
+			url_grantor = element.children().attr('href').value
+			name_grantor = element.content.strip
+			left = true
+		end
 
-			page3 = m.get(url_donation + candidate_id.to_s)
-			page3.parser.xpath("//table[@class='tabelaPrincipal']//tr//td[@colspan='2']//table//tr//th[@align='left']").each do |candidate_td|
-				th = 0
-				puts candidate_td.text()
-				case th
-					when 2, 3, 4
-						#do nothing
-						th = th + 1
-					when 0
-						candidacy.roll = candidate_td.text()
-						th = th + 1
-					when 1
-						candidacy.party = candidate_td.text()
-						th = th + 1
-					when 5
-						candidacy.status = candidate_td.text()
-						if candidacy.valid?
-							puts candidacy.to_s
-						else
-							puts 'Candidacy not valid!'
-						end
-						th = th + 1
-				end
+		if (element.attr('align') == 'center')
+			cgc_grantor = element.content.strip
+			center = true
+		end
 
-				left, center, right = false
-				url_grantor, name_grantor, cgc_grantor, vl_donated = ""
+		if (element.attr('align') == 'right')
+			vl_donated = element.content.strip
+			right = true
+		end
+						
+		if (left && center && right)
+			#In case there is owner referenced by owner_name get it's object, case not create a new one
+			owner_grantor = Owner.find_or_create(cgc_grantor.gsub(/[,.\-\/]/, ''), name_grantor, nil)						
+			owner_grantor.save!()									
 
-				File.open('data_from_asclaras/test_'+year.to_s+'_'+candidate_id.to_s+'_grantors.csv', 'w') do |f2|
-					#TODO: remove - add header CSV to file
-					f2.puts 'url_grantor;name_grantor;cgc_grantor;vl_donated;'
+			#In case there is candidacy referenced by owner get it's object, case not create a new one
+			donation = Donation.first(:candidacy_id => candidacy.owner_id, 
+									  :owner_id => owner_grantor.id)
 
-					#return a noteset of Nokogiri nodes element
-	 				page3.parser.xpath("//table[@class='tabelaPrincipal']//tr[@id='doadores3']//td[@class='linhas']",
-									   "//table[@class='tabelaPrincipal']//tr[@id='doadores3']//td[@class='linhas2']").each do |element|
+			donation = Donation.new(:candidacy_id => candidacy.owner_id, 
+									:owner_id => owner_grantor.id) if donation.nil?				
 
-						if (element.attr('align') == 'left')
-							url_grantor = element.children().attr('href').value
-							name_grantor = element.content
-							left = true
-						end
+			if !vl_donated.nil? 
+				if !vl_donated.split("R$")[1].nil?
+					vl_donated = vl_donated.split("R$")[1]
+					vl_donated = vl_donated.gsub(".","").gsub(",",".")
+		
+					pp name_grantor + ' ' + vl_donated
+					#pp donation
+					#donation.save!()
 
-						if (element.attr('align') == 'center')
-							cgc_grantor = element.content
-							center = true
-						end
+					#TODO: add try catch to log in case vl_donated couldn't be performed and why
+					#use vl_donated_aux to future verification
+				end 						
+			end							
 
-						if (element.attr('align') == 'right')
-							vl_donated = element.content
-							right = true
-						end
-
-						if (left && center && right)
-
-							f2.puts url_grantor.to_s.strip+
-								';'+name_grantor.to_s.strip+
-								';'+cgc_grantor.to_s.strip+
-								';'+vl_donated.to_s.strip+";"
-							#repalce file 'f2' for database persistence
-
-							#restart controller variables
-							left, center, right = false
-							url_grantor, name_grantor, cgc_grantor, vl_donated = ""
-						end
-					end
-				end
-			end
+			#restart controller variables
+			left, center, right = false
+			url_grantor, name_grantor, cgc_grantor, vl_donated = ""
 		end
 	end
   end
-
 end
