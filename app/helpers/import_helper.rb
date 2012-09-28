@@ -357,16 +357,11 @@ module ImportHelper
 
 		#TODO:add check how to get next page with others 20 candidacie and iterate each page
 		page2 = m.get(url_candidacy + i.to_s)
-
-		#TODO:remove candidate_id = "221720"
-		candidate_id = "221720"
 		
 		#Get all link on a page as a Mechanize.Page.Link object
 		page2.links().each do |link|		
 			#Data used to manage a candidate at asclaras.org	
-			if candidate_id.nil?
-				candidate_id = link.href[-7..-3]				
-			end			
+			candidate_id = link.href[-7..-3]				
 			candidate_name = link.text()
 			import_asclaras_donation(m,year,url_donation,candidate_id,candidate_name)
 		end	
@@ -377,7 +372,8 @@ module ImportHelper
 	page3 = m.get(url_donation + candidate_id.to_s)
 
 	#In case there is owner referenced by owner_name get it's object, case not create a new one
-	owner = Owner.find_or_create(nil, candidate_name.strip, nil)
+	owner = Owner.find_or_create(nil, candidate_name.strip, nil)		
+	owner.save!()
 
 	#In case there is candidacy referenced by owner get it's object
 	candidacy = Candidacy.first(:year => year, :owner_id => owner.id)
@@ -406,6 +402,7 @@ module ImportHelper
 		elsif "Suplente" == candidate_data[5].text().strip
 			candidacy.status = "substitute"
 		end				
+		candidacy.save!()
 	end
 							
 	left, center, right = false
@@ -432,26 +429,19 @@ module ImportHelper
 		if (left && center && right)
 			#In case there is owner referenced by owner_name get it's object, case not create a new one
 			owner_grantor = Owner.find_or_create(cgc_grantor.gsub(/[,.\-\/]/, ''), name_grantor, nil)						
+			#TODO:validate - check if owner_grantor was saved at MongoDB
 			owner_grantor.save!()									
 
 			#In case there is candidacy referenced by owner get it's object, case not create a new one
-			donation = Donation.first(:candidacy_id => candidacy.owner_id, 
-									  :owner_id => owner_grantor.id)
-
-			donation = Donation.new(:candidacy_id => candidacy.owner_id, 
-									:owner_id => owner_grantor.id) if donation.nil?				
+			donation = Donation.first_or_new(:candidacy_id => candidacy.id, 
+									  		  :owner_id => owner_grantor.id)
 
 			if !vl_donated.nil? 
-				if !vl_donated.split("R$")[1].nil?
-					vl_donated = vl_donated.split("R$")[1]
-					vl_donated = vl_donated.gsub(".","").gsub(",",".")
-		
-					pp name_grantor + ' ' + vl_donated
-					#pp donation
-					#donation.save!()
-
-					#TODO: add try catch to log in case vl_donated couldn't be performed and why
-					#use vl_donated_aux to future verification
+				if vl_donated =~ /R\$.(.+)/
+					vl_donated = $1
+					vl_donated = vl_donated.gsub(".","").gsub(",",".")		
+					donation.value = vl_donated.to_f
+					donation.save!()
 				end 						
 			end							
 

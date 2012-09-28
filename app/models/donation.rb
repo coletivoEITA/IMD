@@ -9,7 +9,7 @@ class Donation
   key :owner_id, ObjectId, :required => :true
   belongs_to :owner
 
-  key :value, BigDecimal
+  key :value, Float
   key :type, String
 
   validates_presence_of :value
