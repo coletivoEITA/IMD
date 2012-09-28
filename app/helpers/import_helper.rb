@@ -194,6 +194,7 @@ module ImportHelper
         'Qualificação:' => :qualification,
         'Part. Capital Social:' => :participation,
       }
+
       page.parser.css('table[bordercolor=LightGrey]').each do |table|
         attributes = {}
 
@@ -203,23 +204,51 @@ module ImportHelper
           attributes[mapping[field]] = content
         end
 
-        cgc = attributes[:cgc].gsub(/[,.\-\/]/, '')
+        cgc = attributes[:cgc]
+        if cgc == 'sócio estrangeiro'
+          cgc = 'foreign'
+        else
+          cgc = cgc.gsub(/[,.\-\/]/, '')
+        end
         formal_name = attributes[:formal_name]
-        member = CompanyMember.new
-        member.member = Owner.find_or_create cgc, nil, formal_name
+
+        owner_member = Owner.find_or_create cgc, nil, formal_name
+        member = CompanyMember.first_or_new(:company_id => company.id, :member_id => owner_member.id)
+        member.company = company
+        member.member = owner_member
         member.entrance_date = attributes[:entrance_date]
         member.qualification = attributes[:qualification]
         member.participation = attributes[:participation]
 
         company.members << member
+        member.save!
+        member.member.save!
+
+        pp member
+        pp member.member
       end
+
+      # some companies has 0 members, so nil means not iterated
+      company.members_count = company.members.count
+      company.save!
     end
 
-    Owner.all.collect{ |o| o.cgc.first }.compact.each do |cnpj|
+    Owner.each do |owner|
+      next if owner.cgc.first.nil?
+      next if !owner.cnpj?
+      next if owner.members_count
+
+      cnpj = owner.cgc.first
       page = nil
+
+      # HTTP 500 error
+      next if ['97837181000147', '08467115000100'].include?(cnpj)
+
+      puts '==============================='
+      pp owner
+
       loop do
-        page = get_page(cnpj)
-        break if page
+        break if page = get_page(cnpj)
         puts 'Error while getting page, try again'
       end
       parse_page(cnpj, page)

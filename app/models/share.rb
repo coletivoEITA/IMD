@@ -1,6 +1,7 @@
 class Share
 
   include MongoMapper::Document
+  timestamps!
 
   key :type, String
   key :reference_date, String

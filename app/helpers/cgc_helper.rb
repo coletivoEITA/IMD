@@ -14,4 +14,8 @@ module CgcHelper
     cgc.size == 11
   end
 
+  def self.valid?(cgc)
+    cgc.blank? || cgc == 'foreign' || self.cnpj?(cgc) || self.cpf?(cgc)
+  end
+
 end

@@ -1,6 +1,7 @@
 class Donation
 
   include MongoMapper::Document
+  timestamps!
 
   key :candidacy_id, ObjectId, :required => :true
   belongs_to :candidancy

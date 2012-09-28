@@ -1,6 +1,7 @@
 class Balance
 
   include MongoMapper::Document
+  timestamps!
 
   key :source, String, :required => :true
   key :reference_date, String

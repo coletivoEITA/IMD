@@ -1,6 +1,7 @@
 class CompanyMember
 
   include MongoMapper::Document
+  timestamps!
 
   key :company_id, ObjectId, :required => :true
   belongs_to :company, :class_name => 'Owner'

@@ -1,6 +1,7 @@
 class Owner
 
   include MongoMapper::Document
+  timestamps!
 
   key :name, String, :unique => true, :required => true
   key :country, String
@@ -17,6 +18,7 @@ class Owner
   key :sector, String
   key :stock_market, String
   key :stock_code, String
+  key :members_count, Integer # nil means members not loaded
 
   key :own_revenue, Float, :default => 0
   key :indirect_revenue, Float, :default => 0
@@ -51,8 +53,8 @@ class Owner
 
     owner_by_cgc = owner_by_name = owner_by_formal_name = nil
     owner_by_cgc = self.find_by_cgc(cgc) if cgc
-    owner_by_name = self.find_by_name_d(name_d) || self.find_by_name_d(formal_name_d) if name
-    owner_by_formal_name = self.find_by_formal_name_d(formal_name_d) || self.find_by_formal_name_d(name_d) if formal_name
+    owner_by_name = self.find_by_name_d(name_d) if name
+    owner_by_formal_name = self.find_by_formal_name_d(formal_name_d) if formal_name
     owner = owner_by_cgc || owner_by_name || owner_by_formal_name || self.new
 
     owner.add_cgc(cgc)
@@ -178,8 +180,7 @@ class Owner
   end
 
   def validate_cgc
-    return if cgc.blank?
-    self.errors[:cgc] << 'Not a CPF or a CNPJ' if !self.cnpj? and !self.cpf?
+    self.errors[:cgc] << 'Not a CPF or a CNPJ' unless CgcHelper.valid?(self.cgc.first)
   end
 
 end
