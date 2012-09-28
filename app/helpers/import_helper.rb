@@ -208,7 +208,7 @@ module ImportHelper
         if cgc == 'sócio estrangeiro'
           cgc = 'foreign'
         else
-          cgc = cgc.gsub(/[,.\-\/]/, '')
+          cgc = cgc
         end
         formal_name = attributes[:formal_name]
 
@@ -428,7 +428,7 @@ module ImportHelper
 						
 		if (left && center && right)
 			#In case there is owner referenced by owner_name get it's object, case not create a new one
-			owner_grantor = Owner.find_or_create(cgc_grantor.gsub(/[,.\-\/]/, ''), name_grantor, nil)						
+			owner_grantor = Owner.find_or_create(cgc_grantor, name_grantor, nil)
 			#TODO:validate - check if owner_grantor was saved at MongoDB
 			owner_grantor.save!()									
 
