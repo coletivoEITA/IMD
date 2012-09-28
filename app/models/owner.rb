@@ -1,6 +1,7 @@
 class Owner
 
   include MongoMapper::Document
+  timestamps!
 
   key :name, String, :unique => true, :required => true
   key :country, String
@@ -11,10 +12,13 @@ class Owner
   key :cnpj_root, String
   key :traded, Boolean
   key :classes, Array
+  key :capital_type, String
   key :shares_quantity, Integer
   key :naics, Array
+  key :sector, String
   key :stock_market, String
   key :stock_code, String
+  key :members_count, Integer # nil means members not loaded
 
   key :own_revenue, Float, :default => 0
   key :indirect_revenue, Float, :default => 0
@@ -28,6 +32,9 @@ class Owner
   many :owners_shares, :class_name => 'Share', :foreign_key => :company_id, :dependent => :destroy_all
   many :owned_shares, :class_name => 'Share', :foreign_key => :owner_id, :dependent => :destroy_all
 
+  many :members, :class_name => 'CompanyMember', :foreign_key => :company_id, :dependent => :destroy_all
+  many :members_of, :class_name => 'CompanyMember', :foreign_key => :member_id, :dependent => :destroy_all
+
   # downcase versions
   key :name_d, String
   key :formal_name_d, String
@@ -35,6 +42,7 @@ class Owner
   validates_uniqueness_of :formal_name, :allow_nil => true
   validates_uniqueness_of :cgc, :allow_nil => true
   validates_uniqueness_of :cnpj_root, :allow_nil => true
+  validates_inclusion_of :capital_type, :in => %w(private state), :allow_nil => true
   before_validation :assign_defaults
   before_save :assign_downcases
   validate :validate_cgc
@@ -45,8 +53,8 @@ class Owner
 
     owner_by_cgc = owner_by_name = owner_by_formal_name = nil
     owner_by_cgc = self.find_by_cgc(cgc) if cgc
-    owner_by_name = self.find_by_name_d(name_d) || self.find_by_name_d(formal_name_d) if name
-    owner_by_formal_name = self.find_by_formal_name_d(formal_name_d) || self.find_by_formal_name_d(name_d) if formal_name
+    owner_by_name = self.find_by_name_d(name_d) if name
+    owner_by_formal_name = self.find_by_formal_name_d(formal_name_d) if formal_name
     owner = owner_by_cgc || owner_by_name || owner_by_formal_name || self.new
 
     owner.add_cgc(cgc)
@@ -172,8 +180,7 @@ class Owner
   end
 
   def validate_cgc
-    return if cgc.nil? or cgc.empty?
-    #self.errors[:cgc] << 'Not a CPF or a CNPJ' if !self.cnpj? and !self.cpf?
+    self.errors[:cgc] << 'Not a CPF or a CNPJ' unless CgcHelper.valid?(self.cgc.first)
   end
 
 end

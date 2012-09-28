@@ -6,12 +6,16 @@ module CgcHelper
 
   def self.cnpj?(cgc)
     return false if cgc.nil?
-    cgc == '191' || (cgc.size >= 12 && cgc.size <= 14)
+    cgc.size == 14
   end
 
   def self.cpf?(cgc)
     return false if cgc.nil?
     cgc.size == 11
+  end
+
+  def self.valid?(cgc)
+    cgc.blank? || cgc == 'foreign' || self.cnpj?(cgc) || self.cpf?(cgc)
   end
 
 end

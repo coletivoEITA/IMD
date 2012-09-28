@@ -1,11 +1,11 @@
 module ImportHelper
-	
-  require 'mechanize'  
 
   def self.clear_db
     Owner.destroy_all
     Share.destroy_all
     Balance.destroy_all
+    Candidacy.destroy_all
+    Donation.destroy_all
   end
 
   EconomaticaCSVColumns = ActiveSupport::OrderedHash[
@@ -21,67 +21,76 @@ module ImportHelper
     'Bolsa', :stock_market,
     'Código', :stock_code,
     'ISIN', nil,
-    'Meses|Dez 2011|no exercício|consolid:sim*', :balance_months,
-    'Ativo Tot|Dez 2011|em moeda orig|em milhares|consolid:sim*', :balance_total_active,
-    'Patrim Liq|Dez 2011|em moeda orig|em milhares|consolid:sim*', :balance_patrimony,
-    'Receita|Dez 2011|em moeda orig|em milhares|no exercício|consolid:sim*', :balance_revenue,
-    'Lucro Bruto|Dez 2011|em moeda orig|em milhares|no exercício|consolid:sim*', :balance_gross_profit,
-    'Lucro Liq|Dez 2011|em moeda orig|em milhares|no exercício|consolid:sim*', :balance_net_profit,
-    'Moeda dos|Balanços', :balance_currency,
-    'Qtd Ações|Outstanding|da empresa|em milhares|31Dez11', :shares_quantity,
-    'LPA|Dez 2011|em moeda orig|de 12 meses|consolid:sim*|ajust p/ prov', nil,
-    'VPA|Dez 2011|em moeda orig|consolid:sim*|ajust p/ prov', nil,
-    'Vendas/Acao|Dez 2011|em moeda orig|de 12 meses|consolid:sim*|ajust p/ prov', nil,
-    'Divid por Ação|31Dez11|1 anos|em moeda orig', nil,
-    'Div Yld (fim)|31Dez11|no Ano|em moeda orig', nil,
-    'Div Yld (inic)|31Dez11|1 anos|em moeda orig',nil,
-    'PrinAcion|31/12/2011|1.Maior|Sem Voto', :shareholder_PN_01_name,
-    '%AcPoss|31/12/2011|1.Maior|Sem Voto', :shareholder_PN_01_percentage,
-    'PrinAcion|31/12/2011|2.Maior|Sem Voto', :shareholder_PN_02_name,
-    '%AcPoss|31/12/2011|2.Maior|Sem Voto', :shareholder_PN_02_percentage,
-    'PrinAcion|31/12/2011|3.Maior|Sem Voto', :shareholder_PN_03_name,
-    '%AcPoss|31/12/2011|3.Maior|Sem Voto', :shareholder_PN_03_percentage,
-    'PrinAcion|31/12/2011|4.Maior|Sem Voto', :shareholder_PN_04_name,
-    '%AcPoss|31/12/2011|4.Maior|Sem Voto', :shareholder_PN_04_percentage,
-    'PrinAcion|31/12/2011|5.Maior|Sem Voto', :shareholder_PN_05_name,
-    '%AcPoss|31/12/2011|5.Maior|Sem Voto', :shareholder_PN_05_percentage,
-    'PrinAcion|31/12/2011|6.Maior|Sem Voto', :shareholder_PN_06_name,
-    '%AcPoss|31/12/2011|6.Maior|Sem Voto', :shareholder_PN_06_percentage,
-    'PrinAcion|31/12/2011|7.Maior|Sem Voto', :shareholder_PN_07_name,
-    '%AcPoss|31/12/2011|7.Maior|Sem Voto', :shareholder_PN_07_percentage,
-    'PrinAcion|31/12/2011|8.Maior|Sem Voto', :shareholder_PN_08_name,
-    '%AcPoss|31/12/2011|8.Maior|Sem Voto', :shareholder_PN_08_percentage,
-    'PrinAcion|31/12/2011|9.Maior|Sem Voto', :shareholder_PN_09_name,
-    '%AcPoss|31/12/2011|9.Maior|Sem Voto', :shareholder_PN_09_percentage,
-    'PrinAcion|31/12/2011|10.Maior|Sem Voto', :shareholder_PN_10_name,
-    '%AcPoss|31/12/2011|10.Maior|Sem Voto', :shareholder_PN_10_percentage,
-    'PrinAcion|31/12/2011|1.Maior|Com Voto', :shareholder_ON_01_name,
-    '%AcPoss|31/12/2011|1.Maior|Com Voto', :shareholder_ON_01_percentage,
-    'PrinAcion|31/12/2011|2.Maior|Com Voto', :shareholder_ON_02_name,
-    '%AcPoss|31/12/2011|2.Maior|Com Voto', :shareholder_ON_02_percentage,
-    'PrinAcion|31/12/2011|3.Maior|Com Voto', :shareholder_ON_03_name,
-    '%AcPoss|31/12/2011|3.Maior|Com Voto', :shareholder_ON_03_percentage,
-    'PrinAcion|31/12/2011|4.Maior|Com Voto', :shareholder_ON_04_name,
-    '%AcPoss|31/12/2011|4.Maior|Com Voto', :shareholder_ON_04_percentage,
-    'PrinAcion|31/12/2011|5.Maior|Com Voto', :shareholder_ON_05_name,
-    '%AcPoss|31/12/2011|5.Maior|Com Voto', :shareholder_ON_05_percentage,
-    'PrinAcion|31/12/2011|6.Maior|Com Voto', :shareholder_ON_06_name,
-    '%AcPoss|31/12/2011|6.Maior|Com Voto', :shareholder_ON_06_percentage,
-    'PrinAcion|31/12/2011|7.Maior|Com Voto', :shareholder_ON_07_name,
-    '%AcPoss|31/12/2011|7.Maior|Com Voto', :shareholder_ON_07_percentage,
-    'PrinAcion|31/12/2011|8.Maior|Com Voto', :shareholder_ON_08_name,
-    '%AcPoss|31/12/2011|8.Maior|Com Voto', :shareholder_ON_08_percentage,
-    'PrinAcion|31/12/2011|9.Maior|Com Voto', :shareholder_ON_09_name,
-    '%AcPoss|31/12/2011|9.Maior|Com Voto', :shareholder_ON_09_percentage,
-    'PrinAcion|31/12/2011|10.Maior|Com Voto', :shareholder_ON_10_name,
-    '%AcPoss|31/12/2011|10.Maior|Com Voto', :shareholder_ON_10_percentage,
+    /Meses|.+|no exercício|consolid:sim*/, :balance_months,
+    /Ativo Tot|.+|em moeda orig|em milhares|consolid:sim*/, :balance_total_active,
+    /Patrim Liq|.+|em moeda orig|em milhares|consolid:sim*/, :balance_patrimony,
+    /Receita|.+|em moeda orig|em milhares|no exercício|consolid:sim*/, :balance_revenue,
+    /Lucro Bruto|.+|em moeda orig|em milhares|no exercício|consolid:sim*/, :balance_gross_profit,
+    /Lucro Liq|.+|em moeda orig|em milhares|no exercício|consolid:sim*/, :balance_net_profit,
+    /Moeda dos|Balanços/, :balance_currency,
+    /Qtd Ações|Outstanding|da empresa|em milhares|.+/, :shares_quantity,
+    /LPA|.+|em moeda orig|de 12 meses|consolid:sim*|ajust p\/ prov/, nil,
+    /VPA|.+|em moeda orig|consolid:sim*|ajust p\/ prov/, nil,
+    /Vendas\/Acao|.+|em moeda orig|de 12 meses|consolid:sim*|ajust p\/ prov/, nil,
+    /Divid por Ação|.+|1 anos|em moeda orig/, nil,
+    /Div Yld (fim)|.+|no Ano|em moeda orig/, nil,
+    /Div Yld (inic)|.+|1 anos|em moeda orig/,nil,
+    /PrinAcion|.+|1.Maior|Sem Voto/, :shareholder_PN_01_name,
+    /%AcPoss|.+|1.Maior|Sem Voto/, :shareholder_PN_01_percentage,
+    /PrinAcion|.+|2.Maior|Sem Voto/, :shareholder_PN_02_name,
+    /%AcPoss|.+|2.Maior|Sem Voto/, :shareholder_PN_02_percentage,
+    /PrinAcion|.+|3.Maior|Sem Voto/, :shareholder_PN_03_name,
+    /%AcPoss|.+|3.Maior|Sem Voto/, :shareholder_PN_03_percentage,
+    /PrinAcion|.+|4.Maior|Sem Voto/, :shareholder_PN_04_name,
+    /%AcPoss|.+|4.Maior|Sem Voto/, :shareholder_PN_04_percentage,
+    /PrinAcion|.+|5.Maior|Sem Voto/, :shareholder_PN_05_name,
+    /%AcPoss|.+|5.Maior|Sem Voto/, :shareholder_PN_05_percentage,
+    /PrinAcion|.+|6.Maior|Sem Voto/, :shareholder_PN_06_name,
+    /%AcPoss|.+|6.Maior|Sem Voto/, :shareholder_PN_06_percentage,
+    /PrinAcion|.+|7.Maior|Sem Voto/, :shareholder_PN_07_name,
+    /%AcPoss|.+|7.Maior|Sem Voto/, :shareholder_PN_07_percentage,
+    /PrinAcion|.+|8.Maior|Sem Voto/, :shareholder_PN_08_name,
+    /%AcPoss|.+|8.Maior|Sem Voto/, :shareholder_PN_08_percentage,
+    /PrinAcion|.+|9.Maior|Sem Voto/, :shareholder_PN_09_name,
+    /%AcPoss|.+|9.Maior|Sem Voto/, :shareholder_PN_09_percentage,
+    /PrinAcion|.+|10.Maior|Sem Voto/, :shareholder_PN_10_name,
+    /%AcPoss|.+|10.Maior|Sem Voto/, :shareholder_PN_10_percentage,
+    /PrinAcion|.+|1.Maior|Com Voto/, :shareholder_ON_01_name,
+    /%AcPoss|.+|1.Maior|Com Voto/, :shareholder_ON_01_percentage,
+    /PrinAcion|.+|2.Maior|Com Voto/, :shareholder_ON_02_name,
+    /%AcPoss|.+|2.Maior|Com Voto/, :shareholder_ON_02_percentage,
+    /PrinAcion|.+|3.Maior|Com Voto/, :shareholder_ON_03_name,
+    /%AcPoss|.+|3.Maior|Com Voto/, :shareholder_ON_03_percentage,
+    /PrinAcion|.+|4.Maior|Com Voto/, :shareholder_ON_04_name,
+    /%AcPoss|.+|4.Maior|Com Voto/, :shareholder_ON_04_percentage,
+    /PrinAcion|.+|5.Maior|Com Voto/, :shareholder_ON_05_name,
+    /%AcPoss|.+|5.Maior|Com Voto/, :shareholder_ON_05_percentage,
+    /PrinAcion|.+|6.Maior|Com Voto/, :shareholder_ON_06_name,
+    /%AcPoss|.+|6.Maior|Com Voto/, :shareholder_ON_06_percentage,
+    /PrinAcion|.+|7.Maior|Com Voto/, :shareholder_ON_07_name,
+    /%AcPoss|.+|7.Maior|Com Voto/, :shareholder_ON_07_percentage,
+    /PrinAcion|.+|8.Maior|Com Voto/, :shareholder_ON_08_name,
+    /%AcPoss|.+|8.Maior|Com Voto/, :shareholder_ON_08_percentage,
+    /PrinAcion|.+|9.Maior|Com Voto/, :shareholder_ON_09_name,
+    /%AcPoss|.+|9.Maior|Com Voto/, :shareholder_ON_09_percentage,
+    /PrinAcion|.+|10.Maior|Com Voto/, :shareholder_ON_10_name,
+    /%AcPoss|.+|10.Maior|Com Voto/, :shareholder_ON_10_percentage,
   ]
   def self.header_to_field(header)
-    EconomaticaCSVColumns[header]
+    field = EconomaticaCSVColumns[header]
+    if field.nil?
+      EconomaticaCSVColumns.each do |regexp, f|
+        next unless regexp.is_a(Regexp)
+        if header =~ regexp
+          field = f
+          break
+        end
+      end
+    end
+    field
   end
-  def self.column_to_field(csv, column_index)
-    header = csv.headers[column_index]
-    header_to_field(header)
+  def self.column_index_to_field(column_index)
+    EconomaticaCSVColumns.values[column_index]
   end
 
   def self.import_economatica_csv(file, reference_date)
@@ -89,19 +98,30 @@ module ImportHelper
     csv.each_with_index do |row, i|
       name = row.values_at(0).first
       cnpj = row.values_at(2).first
+      country = row.values_at(3).first
+
+      next if country != 'BR' # only brazilian companies
       next if cnpj == '-'
+
+      cnpj = cnpj.to_i
+      cnpj = cnpj.zero? ? nil : ('%014d' % cnpj) # fix CNPJ format
 
       company = Owner.find_or_create cnpj, name
       balance = nil
       shareholder = nil
 
+      column_index = 0
       row.each do |header, value|
-        field = header_to_field(header).to_s
+        field = column_index_to_field(column_index).to_s
+        column_index += 1
         next if field.blank?
+
+        # jump preprocessed
+        next if ['cgc', 'name'].include?(field)
 
         if field == 'balance_months'
           balance.save if balance
-          balance = company.balances.build(:reference_date => reference_date)
+          balance = company.balances.build(:source => 'Economatica', :reference_date => reference_date)
         end
         if field =~ /shareholder_(.+)_(.+)_name/
           shareholder.save if shareholder
@@ -130,6 +150,112 @@ module ImportHelper
       company.save!
     end
   end
+
+  def self.import_receita_companies_members
+    def self.get_page(cnpj)
+      m = Mechanize.new
+      referer = "http://www.receita.fazenda.gov.br/pessoajuridica/cnpj/fcpj/link097.asp"
+      url = "http://www.receita.fazenda.gov.br/pessoajuridica/cnpj/CNPJConsul/consulta.asp"
+      frame = "http://www.receita.fazenda.gov.br/pessoajuridica/cnpj/CNPJConsul/consulta_socios.asp"
+      captcha = 'http://www.receita.fazenda.gov.br/Scripts/srf/img/srfimg.dll'
+
+      page = m.post url, {'cnpj' => cnpj}, {'Referer' => referer}
+      page = page.frames[1].click
+
+      captcha_img = m.get(captcha).content.read
+      captcha_path = '/tmp/captch_path.jpg'
+      File.open(captcha_path, 'w'){ |f| f.write captcha_img }
+      pid = -Process.fork do
+        Process.setpgrp
+        system "qiv #{captcha_path}"
+        #system "jp2a #{captcha_path}"
+      end
+
+      print "Type captcha: "
+      captcha_code = gets.split("\n").first
+      Process.kill 9, pid
+
+      form = page.forms.first
+      captcha_input = form.fields.last
+      captcha_input.value = captcha_code
+      page = form.submit
+
+      return nil if page.content.index('Acesso negado')
+      page
+    end
+
+    def self.parse_page(cnpj, page)
+      formal_name = page.parser.css("td[valign=center] font[size='3']")[1].text.strip
+      company = Owner.find_or_create cnpj, nil, formal_name
+      mapping = {
+        'CPF/CNPJ:' => :cgc,
+        'Nome/Nome Empresarial:' => :formal_name,
+        'Entrada na Sociedade:' => :entrance_date,
+        'Qualificação:' => :qualification,
+        'Part. Capital Social:' => :participation,
+      }
+
+      page.parser.css('table[bordercolor=LightGrey]').each do |table|
+        attributes = {}
+
+        table.css('table td font').each do |font|
+          field = font.children[0].text.strip
+          content = font.children[1].text.strip
+          attributes[mapping[field]] = content
+        end
+
+        cgc = attributes[:cgc]
+        if cgc == 'sócio estrangeiro'
+          cgc = 'foreign'
+        else
+          cgc = cgc.gsub(/[,.\-\/]/, '')
+        end
+        formal_name = attributes[:formal_name]
+
+        owner_member = Owner.find_or_create cgc, nil, formal_name
+        member = CompanyMember.first_or_new(:company_id => company.id, :member_id => owner_member.id)
+        member.company = company
+        member.member = owner_member
+        member.entrance_date = attributes[:entrance_date]
+        member.qualification = attributes[:qualification]
+        member.participation = attributes[:participation]
+
+        company.members << member
+        member.save!
+        member.member.save!
+
+        pp member
+        pp member.member
+      end
+
+      # some companies has 0 members, so nil means not iterated
+      company.members_count = company.members.count
+      company.save!
+    end
+
+    Owner.each do |owner|
+      next if owner.cgc.first.nil?
+      next if !owner.cnpj?
+      next if owner.members_count
+
+      cnpj = owner.cgc.first
+      page = nil
+
+      # HTTP 500 error
+      next if ['97837181000147', '08467115000100'].include?(cnpj)
+
+      puts '==============================='
+      pp owner
+
+      loop do
+        break if page = get_page(cnpj)
+        puts 'Error while getting page, try again'
+      end
+      parse_page(cnpj, page)
+    end
+
+  end
+
 
   def self.import_companies(*files)
     csvs = *files.map do |file|
@@ -169,6 +295,47 @@ module ImportHelper
     end
   end
 
+  def self.import_exame_maiores
+    url = "http://exame.abril.com.br/negocios/melhores-e-maiores/empresas/maiores/%{page}/%{year}/%{attr}"
+    pages = 125
+    years = [2011]
+    attributes = {
+      'vendas' => :revenue,
+      'total-do-ativo' => :total_active,
+    }
+
+    m = Mechanize.new
+
+    years.each do |year|
+      reference_date = Time.mktime(2011).end_of_year.to_date.strftime('%Y-%m-%d')
+
+      attributes.each do |attr, key|
+        (1..pages).each do |page|
+          page = m.get(url % {:year => year, :attr => attr, :page => page})
+
+          trs = page.parser.css 'table.table_mm_g tr[class*=row]'
+          trs.each do |tr|
+            tds = tr.children.select{ |td| td.element? }
+            name = tds[3].text
+            formal_name = tds[2].text
+
+            owner = Owner.find_or_create nil, name, formal_name
+            owner.sector = tds[4].text
+            owner.capital_type = tds[5].text == 'Privada' ? 'private' : 'state'
+            owner.save!
+            pp owner
+
+            balance = Balance.first_or_new(:company_id => owner.id, :source => 'Exame', :reference_date => reference_date)
+            value = tds[7].text.gsub('.', '').gsub(',', '.').to_f * 1000
+            balance.send "#{key}=", value
+            balance.save!
+            pp balance
+          end
+        end
+      end
+    end
+  end
+
   def self.import_asclaras()
 	url_home = 'http://www.asclaras.org.br/'
 	url_update_session = url_home + 'atualiza_sessao.php?ano='
@@ -179,13 +346,13 @@ module ImportHelper
 	#array of years to import data
     years = [2008,2010]
 	#cont to manage candidates pages
-	i = 0 
+	i = 0
 
 	years.each do |year|
-		#Output current year of data import 
+		#Output current year of data import
 		pp year
 
-		#set session attributte 'year' 
+		#set session attributte 'year'
 		page = m.get(url_update_session + year.to_s)
 
 		#TODO:add check how to get next page with others 20 candidacie and iterate each page
@@ -206,8 +373,7 @@ module ImportHelper
 	end
   end
 	
-  def self.import_asclaras_donation(m,year,url_donation,candidate_id,candidate_name)
-
+  def self.import_asclaras_donation(m,year,url_donation,candidate_id,candidate_name)	
 	page3 = m.get(url_donation + candidate_id.to_s)
 
 	#In case there is owner referenced by owner_name get it's object, case not create a new one

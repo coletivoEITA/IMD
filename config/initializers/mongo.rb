@@ -19,6 +19,14 @@ Share.ensure_index :reference_date
 Balance.ensure_index :reference_date
 Balance.ensure_index :owner_id
 
+CompanyMember.ensure_index :member_id
+CompanyMember.ensure_index :company_id
+
+Donation.ensure_index :candidacy_id
+Donation.ensure_index :owner_id
+
+Candidacy.ensure_index :owner_id
+
 # for sorting
 Owner.ensure_index :own_revenue
 Owner.ensure_index :indirect_revenue

@@ -1,6 +1,7 @@
 class Candidacy
 
   include MongoMapper::Document
+  timestamps!
 
   key :owner_id, ObjectId, :required => :true
   belongs_to :owner
