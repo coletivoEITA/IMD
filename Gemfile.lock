@@ -140,6 +140,7 @@ GEM
     unf (0.0.5)
       unf_ext
     unf_ext (0.0.5)
+    unicode (0.4.3)
     webrobots (0.0.13)
 
 PLATFORMS
@@ -161,3 +162,4 @@ DEPENDENCIES
   sqlite3
   therubyracer
   uglifier (>= 1.0.3)
+  unicode
