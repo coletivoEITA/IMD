@@ -12,6 +12,10 @@ class Donation
   key :value, Float, :required => :true
   key :type, String
 
+  extend MongoCaching::ClassMethods
+  cache_associated :state, :from => :candidacy
+  cache_associated :city, :from => :candidacy
+
   validates_presence_of :value
   validates_presence_of :candidacy
   validates_presence_of :grantor
