@@ -428,25 +428,26 @@ module ImportHelper
       data = tr.css('td.linhas') + tr.css('td.linhas2')
       next if data.count != 3
 
-      url_grantor = data[0].children[0].attr('href')
-      name_grantor = data[0].content.strip
-      cgc_grantor = data[1].content.strip
-      vl_donated = data[2].content.strip
+      name = data[0].content.strip
+      cgc = data[1].content.strip
+      value = data[2].content.strip
 
-      cgc_grantor = nil if cgc_grantor == 'CGC Inválido'
+      name = '<not specified>' if name.blank?
+
+      cgc = nil if cgc == 'CGC Inválido'
       # fix invalid CGC
-      cgc_grantor = '223.241.190-72' if cgc_grantor == '223.241.19 -72'
+      cgc = '223.241.190-72' if cgc == '223.241.19 -72'
 
-      if vl_donated =~ /R\$.(.+)/
-        vl_donated = $1.gsub(".","").gsub(",",".").to_f
+      if value =~ /R\$.(.+)/
+        value = $1.gsub(".","").gsub(",",".").to_f
       else
         next
       end
 
-      grantor = Owner.find_or_create(cgc_grantor, name_grantor, nil)
+      grantor = Owner.find_or_create(cgc, name, nil)
       grantor.save!
 
-      donation = Donation.first_or_new(:candidacy_id => candidacy.id, :grantor_id => grantor.id, :value => vl_donated)
+      donation = Donation.first_or_new(:candidacy_id => candidacy.id, :grantor_id => grantor.id, :value => value)
       donation.save!
     end
   end
