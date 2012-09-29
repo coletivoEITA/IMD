@@ -337,7 +337,7 @@ module ImportHelper
   end
 
   def self.import_asclaras
-    url_home = 'http://www.asclaras.org.br'
+    url_home = 'http://asclaras.org.br'
     url_update_session = "#{url_home}/atualiza_sessao.php?ano=%{year}"
     url_candidacy = "#{url_home}/partes/index/candidatos_frame.php?CAoffset=%{offset}"
     url_donation = "#{url_home}/candidato.php?CACodigo=%{candidate_id}"
@@ -348,13 +348,13 @@ module ImportHelper
     #cont to manage candidates pages
 
     # uncomment to simple test
-    #=begin
-    year = 2010
+=begin
+    year = 2008
     page = m.get(url_update_session % {:year => year})
-    page = m.get(url_donation % {:candidate_id => 73411})
+    page = m.get(url_donation % {:candidate_id => 385484})
     import_asclaras_donation(page, year)
     return
-    #=end
+=end
 
     years.each do |year|
       #set session attributte 'year'
@@ -367,13 +367,21 @@ module ImportHelper
 
         #Get all link on a page as a Mechanize.Page.Link object
         links.each do |link|
-          #Data used to manage a candidate at asclaras.org
-          candidate_id = link.href[-7..-3]
-          page3 = m.get(url_donation % {:candidate_id => candidate_id})
-          import_asclaras_donation(page3, year)
+          next unless link.href =~ /CACodigo=(.+)'/
+          candidate_id = $1
+          pp '============================'
+          pp candidate_id
+
+          page = m.get(url_donation % {:candidate_id => candidate_id})
+          Process.fork do
+            import_asclaras_donation(page, year)
+          end
         end
 
         offset += links.count
+
+        pp '----------------------------'
+        pp "offset: #{offset}"
       end while links.count > 0
     end
   end
@@ -387,11 +395,9 @@ module ImportHelper
     candidate.save!
 
     #In case there is candidacy referenced by candidate get it's object
-    candidacy = Candidacy.first(:year => year, :candidate_id => candidate.id)
-
+    candidacy = Candidacy.first_or_new(:year => year, :candidate_id => candidate.id)
     #In case not create a new one based on candidate_Data parsed  by Mechanize
-    if candidacy.nil?
-      candidacy = Candidacy.new(:year => year, :candidate_id => candidate.id)
+    if candidacy.new_record?
       candidate_data = page.parser.css("table tr:nth-child(3) table th")
       candidacy.role = candidate_data[0].text.strip
       candidacy.party = candidate_data[1].text.strip
@@ -416,12 +422,11 @@ module ImportHelper
         candidacy.status = "substitute"
       end
     end
-    pp candidacy
     candidacy.save!
 
     #return a nodeset from Nokogiri
-    page.parser.css("table #doadores3 td.conteudo table tr").each do |element|
-      data = element.css('td.linhas') + element.css('td.linhas2')
+    page.parser.css("table #doadores3 td.conteudo table tr").each do |tr|
+      data = tr.css('td.linhas') + tr.css('td.linhas2')
       next if data.count != 3
 
       url_grantor = data[0].children[0].attr('href')
@@ -431,7 +436,6 @@ module ImportHelper
 
       #In case there is candidate referenced by owner_name get it's object, case not create a new one
       grantor = Owner.find_or_create(cgc_grantor, name_grantor, nil)
-      pp grantor
       grantor.save!
 
       #In case there is candidacy referenced by owner get it's object, case not create a new one
@@ -439,7 +443,6 @@ module ImportHelper
       if vl_donated =~ /R\$.(.+)/
         donation.value = $1.gsub(".","").gsub(",",".").to_f
       end
-      pp donation
       donation.save!
     end
   end

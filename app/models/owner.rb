@@ -69,9 +69,9 @@ class Owner
     return nil if cgc.blank?
     cgc = CgcHelper.remove_non_numbers cgc
     if CgcHelper.cnpj?(cgc)
-      self.find_by_cnpj_root CgcHelper.extract_cnpj_root(cgc)
+      self.find_by_cnpj_root(CgcHelper.extract_cnpj_root(cgc)) || super(cgc)
     else
-      super cgc
+      super(cgc)
     end
   end
 
