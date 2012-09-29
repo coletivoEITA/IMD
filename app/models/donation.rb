@@ -15,6 +15,7 @@ class Donation
   validates_presence_of :value
   validates_presence_of :candidacy
   validates_presence_of :grantor
+  validates_uniqueness_of :grantor_id, :scope => [:candidacy_id, :value]
   validates_numericality_of :value
   validates_inclusion_of :type, :in => %w(direct committee), :allow_nil => true
 
