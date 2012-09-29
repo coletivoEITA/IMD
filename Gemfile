@@ -49,3 +49,5 @@ gem 'execjs'
 gem 'therubyracer'
 
 gem 'mechanize'
+
+gem 'unicode'

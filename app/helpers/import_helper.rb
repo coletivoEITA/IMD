@@ -208,7 +208,7 @@ module ImportHelper
         if cgc == 'sócio estrangeiro'
           cgc = 'foreign'
         else
-          cgc = cgc.gsub(/[,.\-\/]/, '')
+          cgc = cgc
         end
         formal_name = attributes[:formal_name]
 
@@ -340,129 +340,114 @@ module ImportHelper
     end
   end
 
-  def self.import_asclaras()
-	url_home = 'http://www.asclaras.org.br/'
-	url_update_session = url_home + 'atualiza_sessao.php?ano='
-	url_candidacy = url_home + 'partes/index/candidatos_frame.php?CAoffset='
-	url_donation = url_home + 'candidato.php?CACodigo='
+  def self.import_asclaras
+    url_home = 'http://asclaras.org.br'
+    url_update_session = "#{url_home}/atualiza_sessao.php?ano=%{year}"
+    url_candidacy = "#{url_home}/partes/index/candidatos_frame.php?CAoffset=%{offset}"
+    url_donation = "#{url_home}/candidato.php?CACodigo=%{candidate_id}"
 
-	m = Mechanize.new
-	#array of years to import data
-    years = [2008,2010]
-	#cont to manage candidates pages
-	i = 0
+    m = Mechanize.new
+    #array of years to import data
+    years = [2008, 2010]
+    #cont to manage candidates pages
 
-	years.each do |year|
-		#Output current year of data import
-		pp year
+    # uncomment to simple test
+=begin
+    year = 2008
+    page = m.get(url_update_session % {:year => year})
+    page = m.get(url_donation % {:candidate_id => 385484})
+    import_asclaras_donation(page, year)
+    return
+=end
 
-		#set session attributte 'year'
-		page = m.get(url_update_session + year.to_s)
+    years.each do |year|
+      #set session attributte 'year'
+      m.get(url_update_session % {:year => year})
 
-		#TODO:add check how to get next page with others 20 candidacie and iterate each page
-		page2 = m.get(url_candidacy + i.to_s)
+      offset = 0
+      begin
+        page = m.get(url_candidacy % {:offset => offset})
+        links = page.links
 
-		#TODO:remove candidate_id = "221720"
-		candidate_id = "221720"
-		
-		#Get all link on a page as a Mechanize.Page.Link object
-		page2.links().each do |link|		
-			#Data used to manage a candidate at asclaras.org	
-			if candidate_id.nil?
-				candidate_id = link.href[-7..-3]				
-			end			
-			candidate_name = link.text()
-			import_asclaras_donation(m,year,url_donation,candidate_id,candidate_name)
-		end	
-	end
+        #Get all link on a page as a Mechanize.Page.Link object
+        links.each do |link|
+          next unless link.href =~ /CACodigo=(.+)'/
+          candidate_id = $1
+          pp '============================'
+          pp candidate_id
+
+          page = m.get(url_donation % {:candidate_id => candidate_id})
+          Process.fork do
+            import_asclaras_donation(page, year)
+          end
+        end
+
+        offset += links.count
+
+        pp '----------------------------'
+        pp "offset: #{offset}"
+      end while links.count > 0
+    end
   end
-	
-  def self.import_asclaras_donation(m,year,url_donation,candidate_id,candidate_name)	
-	page3 = m.get(url_donation + candidate_id.to_s)
 
-	#In case there is owner referenced by owner_name get it's object, case not create a new one
-	owner = Owner.find_or_create(nil, candidate_name.strip, nil)
+  def self.import_asclaras_donation(page, year)
+    candidate_name = page.parser.css('td.tituloI')[0].text
 
-	#In case there is candidacy referenced by owner get it's object
-	candidacy = Candidacy.first(:year => year, :owner_id => owner.id)
+    #In case there is owner referenced by owner_name get it's object, case not create a new one
+    candidate = Owner.find_or_create(nil, candidate_name, nil)
+    pp candidate
+    candidate.save!
 
-	#In case not create a new one based on candidate_Data parsed  by Mechanize
-	if candidacy.nil?
-		candidacy = Candidacy.new(:year => year, :owner_id => owner.id) 
-		candidate_data = page3.parser.css("table tr:nth-child(3) table th")
-		candidacy.role = candidate_data[0].text().strip
-		candidacy.party = candidate_data[1].text().strip	
-		#index to control data index to import
-		data_index = 0
-		if "Vereador" == candidate_data[0].text().strip
-			uf = candidate_data[2].text().strip
-			candidacy.city = uf.split("-")[0].strip
-			candidacy.state = uf.split("-")[1].strip
-			data_index = 6
-		else "Presidente" == candidate_data[0].text().strip
-			candidacy.state = "BR"
-			data_index = 5
-		end
-		if "Eleito" == candidate_data[data_index].text().strip
-			candidacy.status = "elected"
-		elsif "Não Eleito" == candidate_data[5].text().strip
-			candidacy.status = "not elected"
-		elsif "Suplente" == candidate_data[5].text().strip
-			candidacy.status = "substitute"
-		end				
-	end
-							
-	left, center, right = false
-	url_grantor, name_grantor, cgc_grantor, vl_donated = ""
-	#return a nodeset from Nokogiri
-	page3.parser.xpath("//table//tr[@id='doadores3']//td[@class='conteudo']//table//tr//td[@class='linhas']").each do |element|
+    #In case there is candidacy referenced by candidate get it's object
+    candidacy = Candidacy.first_or_new(:year => year, :candidate_id => candidate.id)
+    #In case not create a new one based on candidate_Data parsed  by Mechanize
+    if candidacy.new_record?
+      candidate_data = page.parser.css("table tr:nth-child(3) table th")
+      candidacy.role = candidate_data[0].text.strip
+      candidacy.party = candidate_data[1].text.strip
 
-		if (element.attr('align') == 'left')
-			url_grantor = element.children().attr('href').value
-			name_grantor = element.content.strip
-			left = true
-		end
+      #index to control data index to import
+      data_index = 0
+      if "Vereador" == candidate_data[0].text.strip
+        uf = candidate_data[2].text().strip
+        candidacy.city = uf.split("-")[0].strip
+        candidacy.state = uf.split("-")[1].strip
+        data_index = 6
+      else "Presidente" == candidate_data[0].text.strip
+        candidacy.state = "BR"
+        data_index = 5
+      end
 
-		if (element.attr('align') == 'center')
-			cgc_grantor = element.content.strip
-			center = true
-		end
+      if "Eleito" == candidate_data[data_index].text.strip
+        candidacy.status = "elected"
+      elsif "Não Eleito" == candidate_data[5].text.strip
+        candidacy.status = "not_elected"
+      elsif "Suplente" == candidate_data[5].text.strip
+        candidacy.status = "substitute"
+      end
+    end
+    candidacy.save!
 
-		if (element.attr('align') == 'right')
-			vl_donated = element.content.strip
-			right = true
-		end
-						
-		if (left && center && right)
-			#In case there is owner referenced by owner_name get it's object, case not create a new one
-			owner_grantor = Owner.find_or_create(cgc_grantor.gsub(/[,.\-\/]/, ''), name_grantor, nil)						
-			owner_grantor.save!()									
+    #return a nodeset from Nokogiri
+    page.parser.css("table #doadores3 td.conteudo table tr").each do |tr|
+      data = tr.css('td.linhas') + tr.css('td.linhas2')
+      next if data.count != 3
 
-			#In case there is candidacy referenced by owner get it's object, case not create a new one
-			donation = Donation.first(:candidacy_id => candidacy.owner_id, 
-									  :owner_id => owner_grantor.id)
+      url_grantor = data[0].children[0].attr('href')
+      name_grantor = data[0].content.strip
+      cgc_grantor = data[1].content.strip
+      vl_donated = data[2].content.strip
 
-			donation = Donation.new(:candidacy_id => candidacy.owner_id, 
-									:owner_id => owner_grantor.id) if donation.nil?				
+      #In case there is candidate referenced by owner_name get it's object, case not create a new one
+      grantor = Owner.find_or_create(cgc_grantor, name_grantor, nil)
+      grantor.save!
 
-			if !vl_donated.nil? 
-				if !vl_donated.split("R$")[1].nil?
-					vl_donated = vl_donated.split("R$")[1]
-					vl_donated = vl_donated.gsub(".","").gsub(",",".")
-		
-					pp name_grantor + ' ' + vl_donated
-					#pp donation
-					#donation.save!()
-
-					#TODO: add try catch to log in case vl_donated couldn't be performed and why
-					#use vl_donated_aux to future verification
-				end 						
-			end							
-
-			#restart controller variables
-			left, center, right = false
-			url_grantor, name_grantor, cgc_grantor, vl_donated = ""
-		end
-	end
+      #In case there is candidacy referenced by owner get it's object, case not create a new one
+      donation = Donation.first_or_new(:candidacy_id => candidacy.id, :grantor_id => grantor.id)
+      if vl_donated =~ /R\$.(.+)/
+        donation.value = $1.gsub(".","").gsub(",",".").to_f
+      end
+      donation.save!
+    end
   end
 end

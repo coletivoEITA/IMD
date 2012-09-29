@@ -28,6 +28,10 @@ class Owner
   key :indirect_patrimony, Float, :default => 0
   key :total_patrimony, Float, :default => 0
 
+  # downcase versions
+  key :name_d, String
+  key :formal_name_d, String
+
   many :balances, :foreign_key => :company_id, :dependent => :destroy_all
   many :owners_shares, :class_name => 'Share', :foreign_key => :company_id, :dependent => :destroy_all
   many :owned_shares, :class_name => 'Share', :foreign_key => :owner_id, :dependent => :destroy_all
@@ -35,9 +39,7 @@ class Owner
   many :members, :class_name => 'CompanyMember', :foreign_key => :company_id, :dependent => :destroy_all
   many :members_of, :class_name => 'CompanyMember', :foreign_key => :member_id, :dependent => :destroy_all
 
-  # downcase versions
-  key :name_d, String
-  key :formal_name_d, String
+  many :donations, :foreign_key => :grantor_id
 
   validates_uniqueness_of :formal_name, :allow_nil => true
   validates_uniqueness_of :cgc, :allow_nil => true
@@ -64,11 +66,12 @@ class Owner
   end
 
   def self.find_by_cgc(cgc)
-    return nil if cgc.nil?
+    return nil if cgc.blank?
+    cgc = CgcHelper.remove_non_numbers cgc
     if CgcHelper.cnpj?(cgc)
-      self.find_by_cnpj_root CgcHelper.extract_cnpj_root(cgc)
+      self.find_by_cnpj_root(CgcHelper.extract_cnpj_root(cgc)) || super(cgc)
     else
-      super cgc
+      super(cgc)
     end
   end
 
@@ -162,8 +165,12 @@ class Owner
     self.save
   end
 
+  def cgc=(value)
+    self['cgc'] = CgcHelper.remove_non_numbers value
+  end
   def add_cgc(cgc)
-    return if cgc.nil?
+    return if cgc.blank?
+    cgc = CgcHelper.remove_non_numbers cgc
     self.cgc << cgc unless self.cgc.include?(cgc)
   end
 
