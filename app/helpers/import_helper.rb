@@ -6,6 +6,7 @@ module ImportHelper
     Balance.destroy_all
     Candidacy.destroy_all
     Donation.destroy_all
+    CompanyMember.destroy_all
   end
 
   EconomaticaCSVColumns = ActiveSupport::OrderedHash[
@@ -347,7 +348,7 @@ module ImportHelper
     url_donation = "#{url_home}/candidato.php?CACodigo=%{candidate_id}"
 
     m = Mechanize.new
-    years = options[:year] ? [options[:year]] : [2008, 2010]
+    years = options[:year] ? [options[:year]] : [2002, 2004, 2006, 2008, 2010]
 
     if candidate_id = options[:candidate_id]
       year = years.first
@@ -366,6 +367,9 @@ module ImportHelper
         page = m.get(url_candidacy % {:offset => offset})
         links = page.links
 
+        pp '----------------------------'
+        pp "offset: #{offset}"
+
         #Get all link on a page as a Mechanize.Page.Link object
         links.each do |link|
           next unless link.href =~ /CACodigo=(.+)'/
@@ -378,9 +382,6 @@ module ImportHelper
         end
 
         offset += links.count
-
-        pp '----------------------------'
-        pp "offset: #{offset}"
       end while links.count > 0
     end
   end
@@ -432,6 +433,10 @@ module ImportHelper
       name_grantor = data[0].content.strip
       cgc_grantor = data[1].content.strip
       vl_donated = data[2].content.strip
+
+      cgc_grantor = nil if cgc_grantor == 'CGC Inválido'
+      # fix invalid CGC
+      cgc_grantor = '223.241.190-72' if cgc_grantor == '223.241.19 -72'
 
       #In case there is candidate referenced by owner_name get it's object, case not create a new one
       grantor = Owner.find_or_create(cgc_grantor, name_grantor, nil)
