@@ -424,7 +424,6 @@ module ImportHelper
     end
     candidacy.save!
 
-    #return a nodeset from Nokogiri
     page.parser.css("table #doadores3 td.conteudo table tr").each do |tr|
       data = tr.css('td.linhas') + tr.css('td.linhas2')
       next if data.count != 3
@@ -438,15 +437,16 @@ module ImportHelper
       # fix invalid CGC
       cgc_grantor = '223.241.190-72' if cgc_grantor == '223.241.19 -72'
 
-      #In case there is candidate referenced by owner_name get it's object, case not create a new one
+      if vl_donated =~ /R\$.(.+)/
+        vl_donated = $1.gsub(".","").gsub(",",".").to_f
+      else
+        next
+      end
+
       grantor = Owner.find_or_create(cgc_grantor, name_grantor, nil)
       grantor.save!
 
-      #In case there is candidacy referenced by owner get it's object, case not create a new one
-      donation = Donation.first_or_new(:candidacy_id => candidacy.id, :grantor_id => grantor.id)
-      if vl_donated =~ /R\$.(.+)/
-        donation.value = $1.gsub(".","").gsub(",",".").to_f
-      end
+      donation = Donation.first_or_new(:candidacy_id => candidacy.id, :grantor_id => grantor.id, :value => vl_donated)
       donation.save!
     end
   end
