@@ -340,31 +340,28 @@ module ImportHelper
     end
   end
 
-  def self.import_asclaras
+  def self.import_asclaras(options = {})
     url_home = 'http://asclaras.org.br'
     url_update_session = "#{url_home}/atualiza_sessao.php?ano=%{year}"
     url_candidacy = "#{url_home}/partes/index/candidatos_frame.php?CAoffset=%{offset}"
     url_donation = "#{url_home}/candidato.php?CACodigo=%{candidate_id}"
 
     m = Mechanize.new
-    #array of years to import data
-    years = [2008, 2010]
-    #cont to manage candidates pages
+    years = options[:year] ? [options[:year]] : [2008, 2010]
 
-    # uncomment to simple test
-=begin
-    year = 2008
-    page = m.get(url_update_session % {:year => year})
-    page = m.get(url_donation % {:candidate_id => 385484})
-    import_asclaras_donation(page, year)
-    return
-=end
+    if candidate_id = options[:candidate_id]
+      year = years.first
+      m.get(url_update_session % {:year => year})
+      page = m.get(url_donation % {:candidate_id => candidate_id})
+      import_asclaras_donation(page, year)
+      return
+    end
 
     years.each do |year|
       #set session attributte 'year'
       m.get(url_update_session % {:year => year})
 
-      offset = 0
+      offset = options[:offset] || 0
       begin
         page = m.get(url_candidacy % {:offset => offset})
         links = page.links
@@ -377,9 +374,7 @@ module ImportHelper
           pp candidate_id
 
           page = m.get(url_donation % {:candidate_id => candidate_id})
-          Process.fork do
-            import_asclaras_donation(page, year)
-          end
+          import_asclaras_donation(page, year)
         end
 
         offset += links.count
