@@ -67,7 +67,7 @@ class Owner
 
   def self.find_by_cgc(cgc)
     return nil if cgc.blank?
-    cgc = CgcHelper.remove_non_numbers cgc
+    cgc = CgcHelper.format cgc
     if CgcHelper.cnpj?(cgc)
       self.find_by_cnpj_root(CgcHelper.extract_cnpj_root(cgc)) || super(cgc)
     else
@@ -166,11 +166,11 @@ class Owner
   end
 
   def cgc=(value)
-    self['cgc'] = CgcHelper.remove_non_numbers value
+    self['cgc'] = CgcHelper.format value
   end
   def add_cgc(cgc)
     return if cgc.blank?
-    cgc = CgcHelper.remove_non_numbers cgc
+    cgc = CgcHelper.format cgc
     self.cgc << cgc unless self.cgc.include?(cgc)
   end
 
