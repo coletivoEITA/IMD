@@ -32,6 +32,9 @@ class Owner
   key :name_d, String
   key :formal_name_d, String
 
+  #in case there is any data to access from www.asclaras.org later
+  key :asclaras_id, Integer	
+
   many :balances, :foreign_key => :company_id, :dependent => :destroy_all
   many :owners_shares, :class_name => 'Share', :foreign_key => :company_id, :dependent => :destroy_all
   many :owned_shares, :class_name => 'Share', :foreign_key => :owner_id, :dependent => :destroy_all
@@ -48,6 +51,11 @@ class Owner
   before_validation :assign_defaults
   before_save :assign_downcases
   validate :validate_cgc
+
+  #TODO:implement
+  def donations_by_party_candidate(party=nil,candidate_name=nil,candidate_id_asclaras=nil)
+     
+  end
 
   def self.find_or_create(cgc = nil, name = nil, formal_name = nil)
     name_d = name.downcase if name

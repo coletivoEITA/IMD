@@ -352,24 +352,29 @@ module ImportHelper
 
   def self.import_asclaras(options = {})
     url_home = 'http://asclaras.org.br'
-    url_update_session = "#{url_home}/atualiza_sessao.php?ano=%{year}"
+    url_update_session = "#{url_home}/atualiza_sessao.php?municpio=%{city}&estado=%{state}&ano=%{year}"
     url_candidacy = "#{url_home}/partes/index/candidatos_frame.php?CAoffset=%{offset}"
     url_donation = "#{url_home}/candidato.php?CACodigo=%{candidate_id}"
 
     m = Mechanize.new
     years = options[:year] ? [options[:year]] : [2002, 2004, 2006, 2008, 2010]
+	#State = RJ = 1	... Todos -1
+	state = options[:state] || -1
+  	#City = Rio de Janeiro = 3657 ... Todos -1
+	city = options[:city] || -1
 
     if candidate_id = options[:candidate_id]
       year = years.first
-      m.get(url_update_session % {:year => year})
+      #set session attributtes 'year' 'state' 'city' 
+	  m.get(url_update_session % {:year => year, :state => state, :city => city})	
       page = m.get(url_donation % {:candidate_id => candidate_id})
       import_asclaras_donation(page, year)
       return
     end
 
     years.each do |year|
-      #set session attributte 'year'
-      m.get(url_update_session % {:year => year})
+      #set session attributtes 'year' 'state' 'city' 
+	  m.get(url_update_session % {:year => year, :state => state, :city => city})	
 
       offset = options[:offset] || 0
       begin
@@ -430,13 +435,20 @@ module ImportHelper
       elsif "Suplente" == candidate_data[5].text.strip
         candidacy.status = "substitute"
       end
+      #TODO:refactore - set candidadte_id as parameter of find_or_create
+	  candidacy.asclaras_id = candidate_id_asclaras
     end
     candidacy.save!
 
     page.parser.css("table #doadores3 td.conteudo table tr").each do |tr|
       data = tr.css('td.linhas') + tr.css('td.linhas2')
       next if data.count != 3
-
+      url_grantor = data[0].children[0].attr('href')
+	  if url_grantor =~ /doador=(.+)/
+		grantor_id_asclaras = $1
+      else
+		grantor_id_asclaras = 0
+	  end
       name = data[0].content.strip
       cgc = data[1].content.strip
       value = data[2].content.strip
@@ -454,6 +466,8 @@ module ImportHelper
       end
 
       grantor = Owner.find_or_create(cgc, name, nil)
+	  #TODO:refactore - set id_asclaras on find_or_create method
+	  grantor.asclaras_id = grantor_id_asclaras
       grantor.save!
 
       donation = Donation.first_or_new(:candidacy_id => candidacy.id, :grantor_id => grantor.id, :value => value)
