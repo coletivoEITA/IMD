@@ -152,7 +152,7 @@ module ImportHelper
     end
   end
 
-  def self.import_receita_companies_members
+  def self.import_receita_companies_members(options = {})
     def self.get_page(cnpj)
       m = Mechanize.new
       referer = "http://www.receita.fazenda.gov.br/pessoajuridica/cnpj/fcpj/link097.asp"
@@ -234,6 +234,20 @@ module ImportHelper
       company.save!
     end
 
+    def self.process_cnpj(cnpj)
+      page = nil
+      loop do
+        break if page = get_page(cnpj)
+        puts 'Error while getting page, try again'
+      end
+      parse_page(cnpj, page)
+    end
+
+    if cnpj = options[:cnpj]
+      process_cnpj(cnpj)
+      return
+    end
+
     # mark as cheched to FII companies which
     # tipycally has no members
     #Owner.each{ |o| next unless o.name_d.starts_with?('fii '); o.members_count = 0; o .save }
@@ -244,7 +258,6 @@ module ImportHelper
       next if owner.members_count
 
       cnpj = owner.cgc.first
-      page = nil
 
       # HTTP 500 error
       next if ['97837181000147', '08467115000100'].include?(cnpj)
@@ -252,11 +265,7 @@ module ImportHelper
       puts '==============================='
       pp owner
 
-      loop do
-        break if page = get_page(cnpj)
-        puts 'Error while getting page, try again'
-      end
-      parse_page(cnpj, page)
+      process_cnpj(cnpj)
     end
 
   end
