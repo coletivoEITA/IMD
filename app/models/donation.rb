@@ -16,6 +16,9 @@ class Donation
   cache_associated :state, :from => :candidacy
   cache_associated :city, :from => :candidacy
 
+  cache_associated :candidate_id, :from => :candidacy
+  belongs_to :candidate, :class_name => 'Owner'
+
   validates_presence_of :value
   validates_presence_of :candidacy
   validates_presence_of :grantor
