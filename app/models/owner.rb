@@ -42,6 +42,8 @@ class Owner
   many :members, :class_name => 'CompanyMember', :foreign_key => :company_id, :dependent => :destroy_all
   many :members_of, :class_name => 'CompanyMember', :foreign_key => :member_id, :dependent => :destroy_all
 
+  many :candidacies, :class_name => 'Candidacy', :foreign_key => :candidate_id
+
   many :donations_made, :class_name => 'Donation', :foreign_key => :grantor_id
   many :donations_received, :class_name => 'Donation', :foreign_key => :candidate_id
 
