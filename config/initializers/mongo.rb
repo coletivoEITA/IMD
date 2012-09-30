@@ -1,4 +1,4 @@
-MongoMapper.connection = Mongo::Connection.new("localhost", 27017, :pool_size => 100, :pool_timeout => 500)
+#MongoMapper.connection = Mongo::Connection.new("localhost", 27017, :pool_size => 100, :pool_timeout => 500)
 MongoMapper.database = "imd-#{Rails.env}"
 
 Owner.ensure_index :cgc

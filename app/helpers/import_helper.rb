@@ -314,6 +314,28 @@ module ImportHelper
   end
 
   def self.import_exame_maiores
+    def self.process_company(reference_date, key, tds, spans)
+      name = tds[3].text
+      formal_name = tds[2].text
+
+      owner = Owner.find_or_create spans[6].text, name, formal_name
+      owner.sector = tds[4].text
+      owner.capital_type = tds[5].text == 'Privada' ? 'private' : 'state'
+      owner.address = spans[2].text
+      owner.city = spans[3].text
+      owner.phone = spans[4].text
+      owner.website = spans[5].text
+      owner.group = spans[8].text
+      owner.save!
+      pp owner
+
+      balance = Balance.first_or_new(:company_id => owner.id, :source => 'Exame', :reference_date => reference_date)
+      value = tds[7].text.gsub('.', '').gsub(',', '.').to_f * 1000
+      balance.send "#{key}=", value
+      balance.save!
+      pp balance
+    end
+
     url = "http://exame.abril.com.br/negocios/melhores-e-maiores/empresas/maiores/%{page}/%{year}/%{attr}"
     pages = 125
     years = [2011]
@@ -323,6 +345,8 @@ module ImportHelper
     }
 
     m = Mechanize.new
+    threads = []
+    queue = Queue.new
 
     years.each do |year|
       reference_date = Time.mktime(2011).end_of_year.to_date.strftime('%Y-%m-%d')
@@ -333,35 +357,28 @@ module ImportHelper
 
           trs = page.parser.css 'table.table_mm_g tr[class*=row]'
           trs.each do |tr|
-            threads = Thread.list.reject{ |t| Thread.current }
-            threads.last.join if threads.size > 20
-
-            Thread.new do
+            threads << Thread.new do
               tds = tr.children.select{ |td| td.element? }
-              name = tds[3].text
-              formal_name = tds[2].text
-
               page = m.get tr.css('a')[0].attr('href')
               spans = page.parser.css('.box_empresa span.value')
 
-              owner = Owner.find_or_create spans[6].text, name, formal_name
-              owner.sector = tds[4].text
-              owner.capital_type = tds[5].text == 'Privada' ? 'private' : 'state'
-              owner.address = spans[2].text
-              owner.city = spans[3].text
-              owner.phone = spans[4].text
-              owner.website = spans[5].text
-              owner.group = spans[8].text
-              owner.save!
-              pp owner
+              queue << [tds, spans]
+            end
 
-              balance = Balance.first_or_new(:company_id => owner.id, :source => 'Exame', :reference_date => reference_date)
-              value = tds[7].text.gsub('.', '').gsub(',', '.').to_f * 1000
-              balance.send "#{key}=", value
-              balance.save!
-              pp balance
+            if threads.size > 40
+              while queue.size > 0
+                item = queue.pop
+                process_company reference_date, key, item[0], item[1]
+
+                threads.pop.join
+              end
             end
           end
+        end
+
+        while queue.size > 0
+          item = queue.pop
+          process_company reference_date, key, item[0], item[1]
         end
       end
     end
