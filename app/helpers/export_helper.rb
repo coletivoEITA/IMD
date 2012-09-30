@@ -15,7 +15,7 @@ module ExportHelper
             "#{s.company.name} (#{s.percentage}%)"
           end.join(' ')
 
-          controller = owner.controlled_owner
+          controller = owner.controller_share
           controller = "#{controller.name} (#{controller.percentage}%)" if controller
 
           csv << [owner.name, owner.formal_name, owner.cgc.first,
