@@ -10,6 +10,7 @@ class Owner
   key :formal_name, String
   key :cgc, Array
   key :cnpj_root, String
+  key :group, String
   key :traded, Boolean
   key :classes, Array
   key :capital_type, String
@@ -19,6 +20,11 @@ class Owner
   key :stock_market, String
   key :stock_code, String
   key :members_count, Integer # nil means members not loaded
+
+  key :address, String
+  key :city, String
+  key :phone, String
+  key :website, String
 
   key :own_revenue, Float, :default => 0
   key :indirect_revenue, Float, :default => 0

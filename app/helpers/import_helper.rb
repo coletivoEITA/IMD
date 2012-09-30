@@ -186,8 +186,6 @@ module ImportHelper
     end
 
     def self.parse_page(cnpj, page)
-      formal_name = page.parser.css("td[valign=center] font[size='3']")[1].text.strip
-      company = Owner.find_or_create cnpj, nil, formal_name
       mapping = {
         'CPF/CNPJ:' => :cgc,
         'Nome/Nome Empresarial:' => :formal_name,
@@ -195,6 +193,11 @@ module ImportHelper
         'Qualificação:' => :qualification,
         'Part. Capital Social:' => :participation,
       }
+      formal_name = page.parser.css("td[valign=center] font[size='3']")[1].text.strip
+
+      company = Owner.find_or_create cnpj, nil, formal_name
+      pp company
+      company.save!
 
       page.parser.css('table[bordercolor=LightGrey]').each do |table|
         attributes = {}
@@ -235,6 +238,7 @@ module ImportHelper
     end
 
     def self.process_cnpj(cnpj)
+      cnpj = CgcHelper.format cnpj
       page = nil
       loop do
         break if page = get_page(cnpj)
@@ -329,21 +333,34 @@ module ImportHelper
 
           trs = page.parser.css 'table.table_mm_g tr[class*=row]'
           trs.each do |tr|
-            tds = tr.children.select{ |td| td.element? }
-            name = tds[3].text
-            formal_name = tds[2].text
+            threads = Thread.list.reject{ |t| Thread.current }
+            threads.last.join if threads.size > 20
 
-            owner = Owner.find_or_create nil, name, formal_name
-            owner.sector = tds[4].text
-            owner.capital_type = tds[5].text == 'Privada' ? 'private' : 'state'
-            owner.save!
-            pp owner
+            Thread.new do
+              tds = tr.children.select{ |td| td.element? }
+              name = tds[3].text
+              formal_name = tds[2].text
 
-            balance = Balance.first_or_new(:company_id => owner.id, :source => 'Exame', :reference_date => reference_date)
-            value = tds[7].text.gsub('.', '').gsub(',', '.').to_f * 1000
-            balance.send "#{key}=", value
-            balance.save!
-            pp balance
+              page = m.get tr.css('a')[0].attr('href')
+              spans = page.parser.css('.box_empresa span.value')
+
+              owner = Owner.find_or_create spans[6].text, name, formal_name
+              owner.sector = tds[4].text
+              owner.capital_type = tds[5].text == 'Privada' ? 'private' : 'state'
+              owner.address = spans[2].text
+              owner.city = spans[3].text
+              owner.phone = spans[4].text
+              owner.website = spans[5].text
+              owner.group = spans[8].text
+              owner.save!
+              pp owner
+
+              balance = Balance.first_or_new(:company_id => owner.id, :source => 'Exame', :reference_date => reference_date)
+              value = tds[7].text.gsub('.', '').gsub(',', '.').to_f * 1000
+              balance.send "#{key}=", value
+              balance.save!
+              pp balance
+            end
           end
         end
       end
