@@ -23,4 +23,15 @@ class Donation
   validates_numericality_of :value
   validates_inclusion_of :type, :in => %w(direct committee), :allow_nil => true
 
+  def self.grouped_by(column, options = {})
+   map_function = "function() { emit( this.#{column}, 1); }"
+   
+   # put your logic here (not needed in my case)
+   reduce_function = %Q( function(key, values) {
+     return true;
+   })
+   
+   collection.map_reduce(map_function, reduce_function, options)
+ end
+
 end

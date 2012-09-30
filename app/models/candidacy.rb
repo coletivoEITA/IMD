@@ -31,4 +31,8 @@ class Candidacy
     end
     donation_list
   end
+
+  def donations_by_party_candidate(party=nil,candidate_name=nil,candidate_id_asclaras=nil)
+     
+  end
 end

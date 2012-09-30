@@ -52,9 +52,12 @@ class Owner
   before_save :assign_downcases
   validate :validate_cgc
 
-  #TODO:implement
-  def donations_by_party_candidate(party=nil,candidate_name=nil,candidate_id_asclaras=nil)
-     
+  #TODO:implement - export metod to cvs file for furthr analisys
+  def export_donations
+    donations.each do |d|
+		pp d.candidacy.candidate.name +';'+ d.candidacy.year.to_s +';'+ d.candidacy.role +';'+
+		d.candidacy.party +';'+ d.candidacy.state +';'+ d.candidacy.city +';'+ d.value.to_s +';'
+    end
   end
 
   def self.find_or_create(cgc = nil, name = nil, formal_name = nil)
