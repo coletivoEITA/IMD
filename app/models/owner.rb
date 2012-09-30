@@ -10,6 +10,7 @@ class Owner
   key :formal_name, String
   key :cgc, Array
   key :cnpj_root, String
+  key :group, String
   key :traded, Boolean
   key :classes, Array
   key :capital_type, String
@@ -19,6 +20,11 @@ class Owner
   key :stock_market, String
   key :stock_code, String
   key :members_count, Integer # nil means members not loaded
+
+  key :address, String
+  key :city, String
+  key :phone, String
+  key :website, String
 
   key :own_revenue, Float, :default => 0
   key :indirect_revenue, Float, :default => 0
@@ -42,10 +48,10 @@ class Owner
   many :members, :class_name => 'CompanyMember', :foreign_key => :company_id, :dependent => :destroy_all
   many :members_of, :class_name => 'CompanyMember', :foreign_key => :member_id, :dependent => :destroy_all
 
-  many :candidacies, :class_name => 'Candidacy', :foreign_key => :candidate_id
+  many :candidacies, :class_name => 'Candidacy', :foreign_key => :candidate_id, :dependent => :destroy_all
 
-  many :donations_made, :class_name => 'Donation', :foreign_key => :grantor_id
-  many :donations_received, :class_name => 'Donation', :foreign_key => :candidate_id
+  many :donations_made, :class_name => 'Donation', :foreign_key => :grantor_id, :dependent => :destroy_all
+  many :donations_received, :class_name => 'Donation', :foreign_key => :candidate_id, :dependent => :destroy_all
 
   validates_uniqueness_of :formal_name, :allow_nil => true
   validates_uniqueness_of :cgc, :allow_nil => true

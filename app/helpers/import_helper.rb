@@ -186,8 +186,6 @@ module ImportHelper
     end
 
     def self.parse_page(cnpj, page)
-      formal_name = page.parser.css("td[valign=center] font[size='3']")[1].text.strip
-      company = Owner.find_or_create cnpj, nil, formal_name
       mapping = {
         'CPF/CNPJ:' => :cgc,
         'Nome/Nome Empresarial:' => :formal_name,
@@ -195,6 +193,11 @@ module ImportHelper
         'Qualificação:' => :qualification,
         'Part. Capital Social:' => :participation,
       }
+      formal_name = page.parser.css("td[valign=center] font[size='3']")[1].text.strip
+
+      company = Owner.find_or_create cnpj, nil, formal_name
+      pp company
+      company.save!
 
       page.parser.css('table[bordercolor=LightGrey]').each do |table|
         attributes = {}
@@ -235,6 +238,7 @@ module ImportHelper
     end
 
     def self.process_cnpj(cnpj)
+      cnpj = CgcHelper.format cnpj
       page = nil
       loop do
         break if page = get_page(cnpj)
@@ -310,6 +314,28 @@ module ImportHelper
   end
 
   def self.import_exame_maiores
+    def self.process_company(reference_date, key, tds, spans)
+      name = tds[3].text
+      formal_name = tds[2].text
+
+      owner = Owner.find_or_create spans[6].text, name, formal_name
+      owner.sector = tds[4].text
+      owner.capital_type = tds[5].text == 'Privada' ? 'private' : 'state'
+      owner.address = spans[2].text
+      owner.city = spans[3].text
+      owner.phone = spans[4].text
+      owner.website = spans[5].text
+      owner.group = spans[8].text
+      owner.save!
+      pp owner
+
+      balance = Balance.first_or_new(:company_id => owner.id, :source => 'Exame', :reference_date => reference_date)
+      value = tds[7].text.gsub('.', '').gsub(',', '.').to_f * 1000
+      balance.send "#{key}=", value
+      balance.save!
+      pp balance
+    end
+
     url = "http://exame.abril.com.br/negocios/melhores-e-maiores/empresas/maiores/%{page}/%{year}/%{attr}"
     pages = 125
     years = [2011]
@@ -319,6 +345,8 @@ module ImportHelper
     }
 
     m = Mechanize.new
+    threads = []
+    queue = Queue.new
 
     years.each do |year|
       reference_date = Time.mktime(2011).end_of_year.to_date.strftime('%Y-%m-%d')
@@ -329,22 +357,28 @@ module ImportHelper
 
           trs = page.parser.css 'table.table_mm_g tr[class*=row]'
           trs.each do |tr|
-            tds = tr.children.select{ |td| td.element? }
-            name = tds[3].text
-            formal_name = tds[2].text
+            threads << Thread.new do
+              tds = tr.children.select{ |td| td.element? }
+              page = m.get tr.css('a')[0].attr('href')
+              spans = page.parser.css('.box_empresa span.value')
 
-            owner = Owner.find_or_create nil, name, formal_name
-            owner.sector = tds[4].text
-            owner.capital_type = tds[5].text == 'Privada' ? 'private' : 'state'
-            owner.save!
-            pp owner
+              queue << [tds, spans]
+            end
 
-            balance = Balance.first_or_new(:company_id => owner.id, :source => 'Exame', :reference_date => reference_date)
-            value = tds[7].text.gsub('.', '').gsub(',', '.').to_f * 1000
-            balance.send "#{key}=", value
-            balance.save!
-            pp balance
+            if threads.size > 40
+              while queue.size > 0
+                item = queue.pop
+                process_company reference_date, key, item[0], item[1]
+
+                threads.pop.join
+              end
+            end
           end
+        end
+
+        while queue.size > 0
+          item = queue.pop
+          process_company reference_date, key, item[0], item[1]
         end
       end
     end
@@ -358,23 +392,23 @@ module ImportHelper
 
     m = Mechanize.new
     years = options[:year] ? [options[:year]] : [2002, 2004, 2006, 2008, 2010]
-	#State = RJ = 1	... Todos -1
-	state = options[:state] || -1
-  	#City = Rio de Janeiro = 3657 ... Todos -1
-	city = options[:city] || -1
+    #State = RJ = 1	... Todos -1
+    state = options[:state] || -1
+    #City = Rio de Janeiro = 3657 ... Todos -1
+    city = options[:city] || -1
 
     if candidate_id = options[:candidate_id]
       year = years.first
-      #set session attributtes 'year' 'state' 'city' 
-	  m.get(url_update_session % {:year => year, :state => state, :city => city})	
+      #set session attributtes 'year' 'state' 'city'
+      m.get(url_update_session % {:year => year, :state => state, :city => city})
       page = m.get(url_donation % {:candidate_id => candidate_id})
-      import_asclaras_donation(page, year)
+      import_asclaras_donation(page, year, candidate_id)
       return
     end
 
     years.each do |year|
-      #set session attributtes 'year' 'state' 'city' 
-	  m.get(url_update_session % {:year => year, :state => state, :city => city})	
+      #set session attributtes 'year' 'state' 'city'
+      m.get(url_update_session % {:year => year, :state => state, :city => city})
 
       offset = options[:offset] || 0
       begin
@@ -392,7 +426,7 @@ module ImportHelper
           pp candidate_id
 
           page = m.get(url_donation % {:candidate_id => candidate_id})
-          import_asclaras_donation(page, year)
+          import_asclaras_donation(page, year, candidate_id)
         end
 
         offset += links.count
@@ -400,7 +434,7 @@ module ImportHelper
     end
   end
 
-  def self.import_asclaras_donation(page, year)
+  def self.import_asclaras_donation(page, year, candidate_asclaras_id)
     candidate_name = page.parser.css('td.tituloI')[0].text
 
     #In case there is owner referenced by owner_name get it's object, case not create a new one
@@ -435,20 +469,18 @@ module ImportHelper
       elsif "Suplente" == candidate_data[5].text.strip
         candidacy.status = "substitute"
       end
+
       #TODO:refactore - set candidadte_id as parameter of find_or_create
-	  candidacy.asclaras_id = candidate_id_asclaras
+      candidacy.asclaras_id = candidate_asclaras_id
     end
     candidacy.save!
 
     page.parser.css("table #doadores3 td.conteudo table tr").each do |tr|
       data = tr.css('td.linhas') + tr.css('td.linhas2')
       next if data.count != 3
+
       url_grantor = data[0].children[0].attr('href')
-	  if url_grantor =~ /doador=(.+)/
-		grantor_id_asclaras = $1
-      else
-		grantor_id_asclaras = 0
-	  end
+      grantor_id_asclaras = url_grantor =~ /doador=(.+)/ ? $1 : nil
       name = data[0].content.strip
       cgc = data[1].content.strip
       value = data[2].content.strip
@@ -466,8 +498,8 @@ module ImportHelper
       end
 
       grantor = Owner.find_or_create(cgc, name, nil)
-	  #TODO:refactore - set id_asclaras on find_or_create method
-	  grantor.asclaras_id = grantor_id_asclaras
+      #TODO:refactore - set id_asclaras on find_or_create method
+      grantor.asclaras_id = grantor_id_asclaras
       grantor.save!
 
       donation = Donation.first_or_new(:candidacy_id => candidacy.id, :grantor_id => grantor.id, :value => value)
