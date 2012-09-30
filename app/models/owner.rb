@@ -109,9 +109,12 @@ class Owner
     end
   end
 
-  # return de the owner that controls this company
-  def controlled_owner
-    share = self.owners_shares.on.order(:percentage.desc).first
+  # return the share/owner that controls this company
+  def controller_share
+    self.owners_shares.on.order(:percentage.desc).first
+  end
+  def controller_owner
+    share = controller_share
     share.owner if share
   end
 
