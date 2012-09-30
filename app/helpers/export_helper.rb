@@ -15,8 +15,8 @@ module ExportHelper
             "#{s.company.name} (#{s.percentage}%)"
           end.join(' ')
 
-          controller_share = owner.owners_shares.on.order(:percentage.desc).first
-          controller = controller_share.nil? ? '' : "#{controller_share.company.name} (#{controller_share.percentage}%)"
+          controller = owner.controlled_owner
+          controller = "#{controller.name} (#{controller.percentage}%)" if controller
 
           csv << [owner.name, owner.formal_name, owner.cgc.first,
                   owner.send("own_#{attr}"), owner.send("indirect_#{attr}"), owner.send("total_#{attr}"),

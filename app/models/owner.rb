@@ -98,6 +98,12 @@ class Owner
     end
   end
 
+  # return de the owner that controls this company
+  def controlled_owner
+    share = self.owners_shares.on.order(:percentage.desc).first
+    share.owner if share
+  end
+
   def controlled_companies(share_type = :on)
     def __recursion(company, share_type = :on, visited = [])
       company.owned_shares_by_type(share_type).each do |owned_share|
