@@ -358,23 +358,23 @@ module ImportHelper
 
     m = Mechanize.new
     years = options[:year] ? [options[:year]] : [2002, 2004, 2006, 2008, 2010]
-	#State = RJ = 1	... Todos -1
-	state = options[:state] || -1
-  	#City = Rio de Janeiro = 3657 ... Todos -1
-	city = options[:city] || -1
+    #State = RJ = 1	... Todos -1
+    state = options[:state] || -1
+    #City = Rio de Janeiro = 3657 ... Todos -1
+    city = options[:city] || -1
 
     if candidate_id = options[:candidate_id]
       year = years.first
-      #set session attributtes 'year' 'state' 'city' 
-	  m.get(url_update_session % {:year => year, :state => state, :city => city})	
+      #set session attributtes 'year' 'state' 'city'
+      m.get(url_update_session % {:year => year, :state => state, :city => city})
       page = m.get(url_donation % {:candidate_id => candidate_id})
-      import_asclaras_donation(page, year)
+      import_asclaras_donation(page, year, candidate_id)
       return
     end
 
     years.each do |year|
-      #set session attributtes 'year' 'state' 'city' 
-	  m.get(url_update_session % {:year => year, :state => state, :city => city})	
+      #set session attributtes 'year' 'state' 'city'
+      m.get(url_update_session % {:year => year, :state => state, :city => city})
 
       offset = options[:offset] || 0
       begin
@@ -392,7 +392,7 @@ module ImportHelper
           pp candidate_id
 
           page = m.get(url_donation % {:candidate_id => candidate_id})
-          import_asclaras_donation(page, year)
+          import_asclaras_donation(page, year, candidate_id)
         end
 
         offset += links.count
@@ -400,7 +400,7 @@ module ImportHelper
     end
   end
 
-  def self.import_asclaras_donation(page, year)
+  def self.import_asclaras_donation(page, year, candidate_asclaras_id)
     candidate_name = page.parser.css('td.tituloI')[0].text
 
     #In case there is owner referenced by owner_name get it's object, case not create a new one
@@ -435,20 +435,18 @@ module ImportHelper
       elsif "Suplente" == candidate_data[5].text.strip
         candidacy.status = "substitute"
       end
+
       #TODO:refactore - set candidadte_id as parameter of find_or_create
-	  candidacy.asclaras_id = candidate_id_asclaras
+      candidacy.asclaras_id = candidate_asclaras_id
     end
     candidacy.save!
 
     page.parser.css("table #doadores3 td.conteudo table tr").each do |tr|
       data = tr.css('td.linhas') + tr.css('td.linhas2')
       next if data.count != 3
+
       url_grantor = data[0].children[0].attr('href')
-	  if url_grantor =~ /doador=(.+)/
-		grantor_id_asclaras = $1
-      else
-		grantor_id_asclaras = 0
-	  end
+      grantor_id_asclaras = url_grantor =~ /doador=(.+)/ ? $1 : nil
       name = data[0].content.strip
       cgc = data[1].content.strip
       value = data[2].content.strip
@@ -466,8 +464,8 @@ module ImportHelper
       end
 
       grantor = Owner.find_or_create(cgc, name, nil)
-	  #TODO:refactore - set id_asclaras on find_or_create method
-	  grantor.asclaras_id = grantor_id_asclaras
+      #TODO:refactore - set id_asclaras on find_or_create method
+      grantor.asclaras_id = grantor_id_asclaras
       grantor.save!
 
       donation = Donation.first_or_new(:candidacy_id => candidacy.id, :grantor_id => grantor.id, :value => value)
