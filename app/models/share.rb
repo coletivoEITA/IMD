@@ -24,16 +24,20 @@ class Share
   scope :on, :type => 'ON'
   scope :pn, :type => 'PN'
 
-  def value(attr)
-    (self.percentage/100) * self.company.value(attr)
+  def self.create_owners
+    Share.each{ |s| s.create_owner }
   end
-
-  protected
 
   def create_owner
     self.owner ||= Owner.find_or_create nil, self.name, self.name
     self.owner.save!
   end
+
+  def value(attr)
+    (self.percentage/100) * self.company.value(attr)
+  end
+
+  protected
 
 end
 
