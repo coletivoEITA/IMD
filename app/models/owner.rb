@@ -173,7 +173,9 @@ class Owner
             company.save
           end
 
-          sum + (owned_share.percentage/100) * total_value
+          w = owned_share.percentage >= 50 ? 1 : owned_share.percentage/100
+
+          sum + w * total_value
         end
       end
     end
