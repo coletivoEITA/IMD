@@ -17,19 +17,19 @@ module ImportHelper
     'Ativo /|Cancelado', :traded,
     'ID da|empresa', nil,
     'Setor NAICS|ult disponiv', :naics,
-    'Setor|Economática', nil,
+    'Setor|Economática', :economatica_sector,
     'Tipo de Ativo', nil,
     'Bolsa', :stock_market,
     'Código', :stock_code,
     'ISIN', nil,
     /Meses|.+|no exercício|consolid:sim*/, :balance_months,
-    /Ativo Tot|.+|em moeda orig|em milhares|consolid:sim*/, :balance_total_active,
-    /Patrim Liq|.+|em moeda orig|em milhares|consolid:sim*/, :balance_patrimony,
-    /Receita|.+|em moeda orig|em milhares|no exercício|consolid:sim*/, :balance_revenue,
-    /Lucro Bruto|.+|em moeda orig|em milhares|no exercício|consolid:sim*/, :balance_gross_profit,
-    /Lucro Liq|.+|em moeda orig|em milhares|no exercício|consolid:sim*/, :balance_net_profit,
+    /Ativo Tot|.+|em moeda orig|consolid:sim*/, :balance_total_active,
+    /Patrim Liq|.+|em moeda orig|consolid:sim*/, :balance_patrimony,
+    /Receita|.+|em moeda orig|no exercício|consolid:sim*/, :balance_revenue,
+    /Lucro Bruto|.+|em moeda orig|no exercício|consolid:sim*/, :balance_gross_profit,
+    /Lucro Liq|.+|em moeda orig|no exercício|consolid:sim*/, :balance_net_profit,
     /Moeda dos|Balanços/, :balance_currency,
-    /Qtd Ações|Outstanding|da empresa|em milhares|.+/, :shares_quantity,
+    /Qtd Ações|Outstanding|da empresa|.+/, :shares_quantity,
     /LPA|.+|em moeda orig|de 12 meses|consolid:sim*|ajust p\/ prov/, nil,
     /VPA|.+|em moeda orig|consolid:sim*|ajust p\/ prov/, nil,
     /Vendas\/Acao|.+|em moeda orig|de 12 meses|consolid:sim*|ajust p\/ prov/, nil,
@@ -37,45 +37,45 @@ module ImportHelper
     /Div Yld (fim)|.+|no Ano|em moeda orig/, nil,
     /Div Yld (inic)|.+|1 anos|em moeda orig/,nil,
     /PrinAcion|.+|1.Maior|Sem Voto/, :shareholder_PN_01_name,
-    /%AcPoss|.+|1.Maior|Sem Voto/, :shareholder_PN_01_percentage,
+    /AcPossuid|.+|1.Maior|Sem Voto/, :shareholder_PN_01_quantity,
     /PrinAcion|.+|2.Maior|Sem Voto/, :shareholder_PN_02_name,
-    /%AcPoss|.+|2.Maior|Sem Voto/, :shareholder_PN_02_percentage,
+    /AcPossuid|.+|2.Maior|Sem Voto/, :shareholder_PN_02_quantity,
     /PrinAcion|.+|3.Maior|Sem Voto/, :shareholder_PN_03_name,
-    /%AcPoss|.+|3.Maior|Sem Voto/, :shareholder_PN_03_percentage,
+    /AcPossuid|.+|3.Maior|Sem Voto/, :shareholder_PN_03_quantity,
     /PrinAcion|.+|4.Maior|Sem Voto/, :shareholder_PN_04_name,
-    /%AcPoss|.+|4.Maior|Sem Voto/, :shareholder_PN_04_percentage,
+    /AcPossuid|.+|4.Maior|Sem Voto/, :shareholder_PN_04_quantity,
     /PrinAcion|.+|5.Maior|Sem Voto/, :shareholder_PN_05_name,
-    /%AcPoss|.+|5.Maior|Sem Voto/, :shareholder_PN_05_percentage,
+    /AcPossuid|.+|5.Maior|Sem Voto/, :shareholder_PN_05_quantity,
     /PrinAcion|.+|6.Maior|Sem Voto/, :shareholder_PN_06_name,
-    /%AcPoss|.+|6.Maior|Sem Voto/, :shareholder_PN_06_percentage,
+    /AcPossuid|.+|6.Maior|Sem Voto/, :shareholder_PN_06_quantity,
     /PrinAcion|.+|7.Maior|Sem Voto/, :shareholder_PN_07_name,
-    /%AcPoss|.+|7.Maior|Sem Voto/, :shareholder_PN_07_percentage,
+    /AcPossuid|.+|7.Maior|Sem Voto/, :shareholder_PN_07_quantity,
     /PrinAcion|.+|8.Maior|Sem Voto/, :shareholder_PN_08_name,
-    /%AcPoss|.+|8.Maior|Sem Voto/, :shareholder_PN_08_percentage,
+    /AcPossuid|.+|8.Maior|Sem Voto/, :shareholder_PN_08_quantity,
     /PrinAcion|.+|9.Maior|Sem Voto/, :shareholder_PN_09_name,
-    /%AcPoss|.+|9.Maior|Sem Voto/, :shareholder_PN_09_percentage,
+    /AcPossuid|.+|9.Maior|Sem Voto/, :shareholder_PN_09_quantity,
     /PrinAcion|.+|10.Maior|Sem Voto/, :shareholder_PN_10_name,
-    /%AcPoss|.+|10.Maior|Sem Voto/, :shareholder_PN_10_percentage,
+    /AcPossuid|.+|10.Maior|Sem Voto/, :shareholder_PN_10_quantity,
     /PrinAcion|.+|1.Maior|Com Voto/, :shareholder_ON_01_name,
-    /%AcPoss|.+|1.Maior|Com Voto/, :shareholder_ON_01_percentage,
+    /AcPossuid|.+|1.Maior|Com Voto/, :shareholder_ON_01_quantity,
     /PrinAcion|.+|2.Maior|Com Voto/, :shareholder_ON_02_name,
-    /%AcPoss|.+|2.Maior|Com Voto/, :shareholder_ON_02_percentage,
+    /AcPossuid|.+|2.Maior|Com Voto/, :shareholder_ON_02_quantity,
     /PrinAcion|.+|3.Maior|Com Voto/, :shareholder_ON_03_name,
-    /%AcPoss|.+|3.Maior|Com Voto/, :shareholder_ON_03_percentage,
+    /AcPossuid|.+|3.Maior|Com Voto/, :shareholder_ON_03_quantity,
     /PrinAcion|.+|4.Maior|Com Voto/, :shareholder_ON_04_name,
-    /%AcPoss|.+|4.Maior|Com Voto/, :shareholder_ON_04_percentage,
+    /AcPossuid|.+|4.Maior|Com Voto/, :shareholder_ON_04_quantity,
     /PrinAcion|.+|5.Maior|Com Voto/, :shareholder_ON_05_name,
-    /%AcPoss|.+|5.Maior|Com Voto/, :shareholder_ON_05_percentage,
+    /AcPossuid|.+|5.Maior|Com Voto/, :shareholder_ON_05_quantity,
     /PrinAcion|.+|6.Maior|Com Voto/, :shareholder_ON_06_name,
-    /%AcPoss|.+|6.Maior|Com Voto/, :shareholder_ON_06_percentage,
+    /AcPossuid|.+|6.Maior|Com Voto/, :shareholder_ON_06_quantity,
     /PrinAcion|.+|7.Maior|Com Voto/, :shareholder_ON_07_name,
-    /%AcPoss|.+|7.Maior|Com Voto/, :shareholder_ON_07_percentage,
+    /AcPossuid|.+|7.Maior|Com Voto/, :shareholder_ON_07_quantity,
     /PrinAcion|.+|8.Maior|Com Voto/, :shareholder_ON_08_name,
-    /%AcPoss|.+|8.Maior|Com Voto/, :shareholder_ON_08_percentage,
+    /AcPossuid|.+|8.Maior|Com Voto/, :shareholder_ON_08_quantity,
     /PrinAcion|.+|9.Maior|Com Voto/, :shareholder_ON_09_name,
-    /%AcPoss|.+|9.Maior|Com Voto/, :shareholder_ON_09_percentage,
+    /AcPossuid|.+|9.Maior|Com Voto/, :shareholder_ON_09_quantity,
     /PrinAcion|.+|10.Maior|Com Voto/, :shareholder_ON_10_name,
-    /%AcPoss|.+|10.Maior|Com Voto/, :shareholder_ON_10_percentage,
+    /AcPossuid|.+|10.Maior|Com Voto/, :shareholder_ON_10_quantity,
   ]
   def self.header_to_field(header)
     field = EconomaticaCSVColumns[header]
@@ -98,6 +98,7 @@ module ImportHelper
     csv = FasterCSV.table file, :headers => true, :header_converters => nil, :converters => nil
     csv.each_with_index do |row, i|
       name = row.values_at(0).first
+      share_class = row.values_at(1).first
       cnpj = row.values_at(2).first
       country = row.values_at(3).first
 
@@ -107,7 +108,8 @@ module ImportHelper
       cnpj = cnpj.to_i
       cnpj = cnpj.zero? ? nil : ('%014d' % cnpj) # fix CNPJ format
 
-      company = Owner.find_or_create cnpj, name
+      company = Owner.first_or_new 'Economatica', :cgc => cnpj, :name => name
+      company.source = 'Economatica' # preferencial
       balance = nil
       shareholder = nil
 
@@ -120,13 +122,14 @@ module ImportHelper
         # jump preprocessed
         next if ['cgc', 'name'].include?(field)
 
+        # create balance and shareholder if this is their first field
         if field == 'balance_months'
           balance.save if balance
-          balance = company.balances.build(:source => 'Economatica', :reference_date => reference_date)
+          balance = company.balances.build(:source => "Economatica #{reference_date}", :reference_date => reference_date)
         end
         if field =~ /shareholder_(.+)_(.+)_name/
           shareholder.save if shareholder
-          shareholder = company.owners_shares.build(:reference_date => reference_date, :type => $1)
+          shareholder = company.owners_shares.build(:reference_date => reference_date, :sclass => $1)
         end
 
         next if value.blank? or value == '-' or value == '0.0'
@@ -135,6 +138,8 @@ module ImportHelper
           balance.send "#{$1}=", value if field =~ /balance_(.+)/
         elsif field.starts_with?('shareholder')
           shareholder.send "#{$3}=", value if field =~ /shareholder_(.+)_(.+)_(.+)/
+        elsif field == 'shares_quantity'
+          company.shares_quantity[share_class] = value
         else
           old_value = company.send(field)
           if Owner.keys[field].type != Array
@@ -195,7 +200,7 @@ module ImportHelper
       }
       formal_name = page.parser.css("td[valign=center] font[size='3']")[1].text.strip
 
-      company = Owner.find_or_create cnpj, nil, formal_name
+      company = Owner.first_or_new 'Receita', :cgc => cnpj, :formal_name => formal_name
       pp company
       company.save!
 
@@ -216,7 +221,7 @@ module ImportHelper
         end
         formal_name = attributes[:formal_name]
 
-        owner_member = Owner.find_or_create cgc, nil, formal_name
+        owner_member = Owner.first_or_new 'Receita', :cgc => cgc, :formal_name => formal_name
         member = CompanyMember.first_or_new(:company_id => company.id, :member_id => owner_member.id)
         member.company = company
         member.member = owner_member
@@ -254,7 +259,7 @@ module ImportHelper
 
     # mark as cheched to FII companies which
     # tipycally has no members
-    #Owner.each{ |o| next unless o.name_d.starts_with?('fii '); o.members_count = 0; o .save }
+    #Owner.each{ |o| next unless o.name_n.starts_with?('fii '); o.members_count = 0; o .save }
 
     Owner.each do |owner|
       next if owner.cgc.first.nil?
@@ -292,45 +297,44 @@ module ImportHelper
     hash.each do |formal_name, cgc_list|
       next if formal_name.blank?
 
-      company = nil
-      formal_name_d = formal_name.downcase
-
+      owner = nil
       cgc_list.each do |cgc|
-        company = Owner.find_by_cgc(cgc)
-        break if company
-      end
-      company ||= Owner.find_by_formal_name_d formal_name_d
-      company ||= Owner.find_by_name_d formal_name_d
-      company ||= Owner.new :formal_name => formal_name
-
-      company.formal_name = formal_name
-      cgc_list.each do |cgc|
-        company.add_cgc cgc
+        owner = Owner.first_or_new 'MDIC', :cgc => cgc, :formal_name => formal_name
+        break if owner
       end
 
-      pp company
-      company.save!
+      cgc_list.each{ |cgc| owner.add_cgc cgc }
+
+      pp owner
+      owner.save!
     end
   end
 
-  def self.import_exame_maiores
-    def self.process_company(reference_date, key, tds, spans)
+  def self.import_exame_maiores(dolar_value)
+
+    def self.process_company(year, reference_date, key, dolar_value, tds, spans = nil)
       name = tds[3].text
       formal_name = tds[2].text
+      cnpj = spans ? spans[6].text : nil
 
-      owner = Owner.find_or_create spans[6].text, name, formal_name
+      owner = Owner.first_or_new 'Exame', :cgc => cnpj, :name => name, :formal_name => formal_name
       owner.sector = tds[4].text
       owner.capital_type = tds[5].text == 'Privada' ? 'private' : 'state'
-      owner.address = spans[2].text
-      owner.city = spans[3].text
-      owner.phone = spans[4].text
-      owner.website = spans[5].text
-      owner.group = spans[8].text
+      if spans
+        owner.address = spans[2].text
+        owner.city = spans[3].text
+        owner.phone = spans[4].text
+        owner.website = spans[5].text
+        # FIXME: check if present
+        #owner.group = OwnerGroup.first_or_create(:name => spans[8].text)
+      end
       owner.save!
       pp owner
 
-      balance = Balance.first_or_new(:company_id => owner.id, :source => 'Exame', :reference_date => reference_date)
-      value = tds[7].text.gsub('.', '').gsub(',', '.').to_f * 1000
+      balance = Balance.first_or_new(:company_id => owner.id, :source => "Exame #{year}",
+                                     :currency => 'Real', :reference_date => reference_date)
+      value = tds[7].text.gsub('.', '').gsub(',', '.').to_f * 1000000
+      value *= dolar_value # convert from Dolar to Real
       balance.send "#{key}=", value
       balance.save!
       pp balance
@@ -349,9 +353,9 @@ module ImportHelper
     queue = Queue.new
 
     years.each do |year|
-      reference_date = Time.mktime(2011).end_of_year.to_date.strftime('%Y-%m-%d')
+      reference_date = Time.mktime(year).end_of_year.to_date.strftime('%Y-%m-%d')
 
-      attributes.each do |attr, key|
+      attributes.each_with_index do |(attr, key), i|
         (1..pages).each do |page|
           page = m.get(url % {:year => year, :attr => attr, :page => page})
 
@@ -359,18 +363,22 @@ module ImportHelper
           trs.each do |tr|
             threads << Thread.new do
               tds = tr.children.select{ |td| td.element? }
-              page = m.get tr.css('a')[0].attr('href')
-              spans = page.parser.css('.box_empresa span.value')
 
-              queue << [tds, spans]
+              if i == 0 # avoid fetching same data
+                page = m.get tr.css('a')[0].attr('href')
+                spans = page.parser.css('.box_empresa span.value')
+              else
+                spans = nil
+              end
+
+              queue << [Thread.current, tds, spans]
             end
 
             if threads.size > 40
               while queue.size > 0
                 item = queue.pop
-                process_company reference_date, key, item[0], item[1]
-
-                threads.pop.join
+                threads.delete item[0].join
+                process_company year, reference_date, key, dolar_value, item[1], item[2]
               end
             end
           end
@@ -378,7 +386,7 @@ module ImportHelper
 
         while queue.size > 0
           item = queue.pop
-          process_company reference_date, key, item[0], item[1]
+          process_company year, reference_date, key, dolar_value, item[1], item[2]
         end
       end
     end
@@ -438,7 +446,7 @@ module ImportHelper
     candidate_name = page.parser.css('td.tituloI')[0].text
 
     #In case there is owner referenced by owner_name get it's object, case not create a new one
-    candidate = Owner.find_or_create(nil, candidate_name, nil)
+    candidate = Owner.first_or_new 'àsclaras', :name => candidate_name
     pp candidate
     candidate.save!
 
@@ -470,7 +478,7 @@ module ImportHelper
         candidacy.status = "substitute"
       end
 
-      #TODO:refactore - set candidadte_id as parameter of find_or_create
+      #TODO:refactore - set candidadte_id as parameter of first_or_new
       candidacy.asclaras_id = candidate_asclaras_id
     end
     candidacy.save!
@@ -497,7 +505,7 @@ module ImportHelper
         next
       end
 
-      grantor = Owner.find_or_create(cgc, name, nil)
+      grantor = Owner.first_or_new 'àsclaras', :cgc => cgc, :name => name
       #TODO:refactore - set id_asclaras on find_or_create method
       grantor.asclaras_id = grantor_id_asclaras
       grantor.save!

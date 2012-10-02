@@ -1,46 +1,67 @@
 module ExportHelper
 
-  def self.export_owners_rankings
-    def self.export_raking(attr = :revenue, share_type = :on)
-      CalculationHelper.calculate_owners_value attr, share_type
-      owners = Owner.all(:order => "total_#{attr}".to_sym.desc)
+  def self.export_owners_rankings(share_reference_date = '2012-09-05', balance_reference_date = '2011-12-31')
+
+    def self.export_raking(share_reference_date = '2012-09-05', balance_reference_date = '2011-12-31', attr = :revenue, share_type = :on)
+
+      CalculationHelper.calculate_owners_value balance_reference_date, attr, share_type
+      owners = Owner.order("total_#{attr}".to_sym.desc).all
 
       FasterCSV.open("db/#{attr}-ranking-#{share_type.to_s.upcase}-shares.csv", "w") do |csv|
-        csv << ['nome', 'razão social', 'cnpj',
-                'valor próprio', 'valor indireto', 'valor total', 'índice', 'fonte',
-                'controlador majoritário', 'empresas controladas']
+        csv << ['i', 'controlada?', 'nome', 'razão social', 'cnpj',
+                'valor da empresa i pela Exame (vendas)', 'valor da empresa i pela Economatica (vendas)',
+                'valor indireto (das empresas em que i tem participação)', 'valor total (valor da empresa i + valor indireto)',
+                'indicador de poder da empresa i', 'fonte dos dados da empresa i',
+                'poder direto - controle', 'poder direto - parcial',
+                'poder indireto - controle', 'poder indireto - parcial',
+                'composição acionária direta', 'Estatal ou Privada?']
 
         total = owners.sum(&"total_#{attr}".to_sym)
 
-        owners.each do |owner|
-          balance = owner.balances.first
-          source = balance ? balance.source : '-'
+        owners.each_with_index do |owner, i|
+          owners_shares = owner.owners_shares.send(share_type).with_reference_date(share_reference_date).all
+          owned_shares = owner.owned_shares.send(share_type).with_reference_date(share_reference_date).all
 
-          own_value = owner.send("own_#{attr}")
-          indirect_value = owner.send("indirect_#{attr}")
-          total_value = owner.send("total_#{attr}")
-          own_value = '-' if own_value.zero?
+          controlled = owners_shares.first
+          controlled = (controlled and controlled.percentage > 50) ? 'sim' : ''
+
+          exame_value = owner.balances.exame.first.value(attr).c
+          exame_value = '-' if exame_value.zero?
+          economatica_value = owner.balances.economatica.first.value(attr).c
+          economatica_value = '-' if economatica_value.zero?
+
+          indirect_value = owner.send("indirect_#{attr}").c
+          total_value = owner.send("total_#{attr}").c
           indirect_value = '-' if indirect_value.zero?
           total_value = '-' if total_value.zero?
+          index_value = total_value == '-' ? '-' : ((total_value / total)*1000).c
 
-          controlled_companies = owner.owned_shares_by_type(share_type).map do |s|
+          power_direct_control = owned_shares.select{ |s| s.percentage > 50 }.map do |s|
+            "#{s.company.name} (#{s.percentage}%)"
+          end.join(' ')
+          power_direct_parcial = owned_shares.select{ |s| s.percentage < 50 }.map do |s|
             "#{s.company.name} (#{s.percentage}%)"
           end.join(' ')
 
-          controller = owner.owners_shares.on.order(:percentage.desc).first
-          controller = "#{controller.name} (#{controller.percentage}%)" if controller
+          power_indirect_control = ''
+          power_indirect_parcial = ''
 
-          index_value = total_value == '-' ? '-' : (total_value / total)*1000
+          shareholders = owners_shares.map do |s|
+            "#{s.owner.name} (#{s.percentage}%)"
+          end.join(' ')
 
-          csv << [owner.name, owner.formal_name, owner.cgc.first,
-                  own_value, indirect_value, total_value, index_value, source,
-                  controller, controlled_companies]
+          csv << [(i+1).to_s, controlled, owner.name, owner.formal_name, owner.cgc.first,
+                  exame_value, economatica_value,
+                  indirect_value, total_value,
+                  index_value, owner.source,
+                  power_direct_control, power_direct_parcial,
+                  power_indirect_control, power_indirect_parcial,
+                  shareholders, owner.capital_type]
         end
       end
     end
 
-    export_raking :total_active, :on
-    export_raking :revenue, :on
+    export_raking '2012-09-05', '2011-12-31', :revenue, :on
   end
 
   def self.export_owners

@@ -7,8 +7,8 @@ Owner.ensure_index :classes
 Owner.ensure_index :naics
 Owner.ensure_index :name
 Owner.ensure_index :formal_name
-Owner.ensure_index :name_d
-Owner.ensure_index :formal_name_d
+Owner.ensure_index :name_n
+Owner.ensure_index :formal_name_n
 
 Share.ensure_index [[:company_id, 1], [:type, 1], [:reference_date, 1]]
 Share.ensure_index :owner_id

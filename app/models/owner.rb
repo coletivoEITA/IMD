@@ -3,26 +3,33 @@ class Owner
   include MongoMapper::Document
   timestamps!
 
-  key :name, String, :unique => true, :required => true
-  key :country, String
+  key :name, String, :unique => :true, :required => :true
+  key :source, String, :required => :true
 
-  # for companies
+  # companies
   key :formal_name, String
   key :cgc, Array
   key :cnpj_root, String
-  key :group, String
-  key :traded, Boolean
-  key :classes, Array
   key :capital_type, String
-  key :shares_quantity, Integer
+  # group
+  key :group_id, ObjectId
+  belongs_to :group, :class_name => 'OwnerGroup'
+  # company categorization
   key :naics, Array
   key :sector, String
+  key :economatica_sector, String
+  # company stock info
+  key :classes, Array
+  key :traded, Boolean
   key :stock_market, String
   key :stock_code, String
+  key :shares_quantity, Hash # {'class' => 'quantity'}
+
   key :members_count, Integer # nil means members not loaded
 
   key :address, String
   key :city, String
+  key :country, String
   key :phone, String
   key :website, String
 
@@ -34,9 +41,9 @@ class Owner
   key :indirect_patrimony, Float, :default => 0
   key :total_patrimony, Float, :default => 0
 
-  # downcase versions
-  key :name_d, String
-  key :formal_name_d, String
+  # normalized versions
+  key :name_n, String
+  key :formal_name_n, String
 
   #in case there is any data to access from www.asclaras.org later
   key :asclaras_id, Integer
@@ -57,28 +64,32 @@ class Owner
   validates_uniqueness_of :cgc, :allow_nil => true
   validates_uniqueness_of :cnpj_root, :allow_nil => true
   validates_inclusion_of :capital_type, :in => %w(private state), :allow_nil => true
-  before_validation :assign_defaults
-  before_save :assign_downcases
   validate :validate_cgc
 
-  #TODO:implement
-  def donations_by_party_candidate(party=nil,candidate_name=nil,candidate_id_asclaras=nil)
+  before_validation :assign_defaults
+  before_save :normalize_fields
 
-  end
+  def self.first_or_new(source, attributes = {})
+    cgc = attributes[:cgc]
+    name = attributes[:name]
+    formal_name = attributes[:formal_name]
 
-  def self.find_or_create(cgc = nil, name = nil, formal_name = nil)
-    name_d = name.downcase if name
-    formal_name_d = formal_name.downcase if formal_name
+    name_n = name.filter_normalization if name
+    formal_name_n = formal_name.filter_normalization if formal_name
 
+    exact_match = self.first(attributes)
     owner_by_cgc = owner_by_name = owner_by_formal_name = nil
     owner_by_cgc = self.find_by_cgc(cgc) if cgc
-    owner_by_name = self.find_by_name_d(name_d) if name
-    owner_by_formal_name = self.find_by_formal_name_d(formal_name_d) if formal_name
-    owner = owner_by_cgc || owner_by_name || owner_by_formal_name || self.new
+    owner_by_name = self.find_by_name_n(name_n) if name
+    owner_by_formal_name = self.find_by_formal_name_n(formal_name_n) if formal_name
+    owner = exact_match || owner_by_cgc || owner_by_name || owner_by_formal_name || self.new
 
+    owner.source ||= source
     owner.add_cgc(cgc)
-    owner.name ||= name
-    owner.formal_name ||= formal_name
+    attributes.each do |attr, value|
+      next if attr.to_s == 'cgc'
+      owner.send("#{attr}=", owner.send(attr) || value)
+    end
     owner
   end
 
@@ -99,34 +110,18 @@ class Owner
     CgcHelper.cpf?(self.cgc.first)
   end
 
-  def value(attr)
-    return 0 if self.balances.first.nil?
-    self.balances.first.value(attr)
-  end
-
-  def owned_shares_by_type(share_type = :on)
-    case share_type
-    when :on
-      self.owned_shares.on.all
-    when :pn
-      self.owned_shares.pn.all
-    else
-      self.owned_shares.all
-    end
-  end
-
-  # return the share/owner that controls this company
-  def controller_share
-    self.owners_shares.on.order(:percentage.desc).first
-  end
-  def controller_owner
-    share = controller_share
-    share.owner if share
+  def value(attr, reference_date)
+    balance = self.balances.economatica.first || self.balances.exame.first
+    return 0 if balance.nil?
+    balance.value(attr)
   end
 
   def controlled_companies(share_type = :on)
+    companies = []
+    company.owned_shares.send(share_type)
+
     def __recursion(company, share_type = :on, visited = [])
-      company.owned_shares_by_type(share_type).each do |owned_share|
+      company.owned_shares.send(share_type).each do |owned_share|
         company = owned_share.company
         next if visited.include? company
         visited << company
@@ -146,9 +141,14 @@ class Owner
     self.save
     v
   end
-  def calculate_indirect_value(attr, share_type = :on)
+  def calculate_indirect_value(balance_reference_date, attr, share_type = :on)
+
     def __recursion(company, attr = :revenue, share_type = :on, visited = [])
-      company.owned_shares_by_type(share_type).inject(0) do |sum, owned_share|
+
+      shares = company.owned_shares.send(share_type)
+      max = shares.max{ |a,b| a.percentage <=> b.percentage }
+
+      shares.inject(0) do |sum, owned_share|
         company = owned_share.company
         if visited.include? company
           0
@@ -209,9 +209,9 @@ class Owner
     self.cnpj_root ||= CgcHelper.extract_cnpj_root(self.cgc.first) if self.cnpj?
   end
 
-  def assign_downcases
-    self.name_d = self.name.downcase
-    self.formal_name_d = self.formal_name.downcase if self.formal_name
+  def normalize_fields
+    self.name_n = self.name.filter_normalization
+    self.formal_name_n = self.formal_name.filter_normalization if self.formal_name
   end
 
   def validate_cgc
