@@ -1,10 +1,14 @@
+# coding: UTF-8
+
 class Share
 
   include MongoMapper::Document
   timestamps!
 
-  key :sclass, String, :required => :true
+  key :source, String, :required => :true
   key :reference_date, String, :required => :true
+
+  key :sclass, String, :required => :true
 
   key :company_id, ObjectId, :required => :true
   belongs_to :company, :class_name => 'Owner'
@@ -17,12 +21,13 @@ class Share
 
   validates_presence_of :company
   validates_presence_of :name
-  validates_uniqueness_of :name, :scope => [:company_id, :sclass, :reference_date]
+  validates_presence_of :owner
+  validates_uniqueness_of :name, :scope => [:source, :company_id, :sclass, :reference_date]
   validates_numericality_of :quantity, :greater_than => 0.0, :allow_nil => true
   validates_numericality_of :percentage, :greater_than => 0.0, :allow_nil => true
   validate :quantity_xor_percentage
 
-  before_save :create_owner
+  before_validation :create_owner
   before_save :calculate_percentage
 
   scope :on, :sclass => 'ON'
@@ -43,7 +48,8 @@ class Share
   end
 
   def create_owner
-    self.owner ||= Owner.first_or_new "#{self.company.source} associado", :name => self.name, :formal_name => self.name
+    self.owner ||= Owner.first_or_new "#{self.source} associado", :name => self.name, :formal_name => self.name
+    self.owner_id = self.owner.id
     self.owner.save!
   end
 

@@ -1,3 +1,5 @@
+# coding: UTF-8
+
 class Owner
 
   include MongoMapper::Document
@@ -69,8 +71,6 @@ class Owner
   before_validation :assign_defaults
   before_save :normalize_fields
 
-  scope :traded, :traded => true, :source => 'Economatica'
-
   def self.first_or_new(source, attributes = {})
     cgc = attributes[:cgc]
     name = attributes[:name]
@@ -122,7 +122,7 @@ class Owner
   def indirect_parcial_controlled_companies(share_reference_date = nil)
 
     def __recursion(company, percentage, share_reference_date, visited = [])
-      shares = company.owned_shares.on.with_reference_date(share_reference_date)
+      shares = company.owned_shares.on.greatest.with_reference_date(share_reference_date)
       list = []
 
       if company != visited.first # only indirect
@@ -133,7 +133,7 @@ class Owner
 
           "#{owned_company.name} (#{owned_share.percentage.c}%, final=#{((owned_share.percentage*percentage)/100.0).c}%)"
         end.join(' ')
-        list << "#{company.name} (#{percentage.c}): (#{owned})\n"
+        list << "#{company.name} (#{percentage.c}): (#{owned})\n" if percentage <= 50
       end
 
       list += shares.map do |owned_share|
@@ -155,7 +155,7 @@ class Owner
   def indirect_total_controlled_companies(share_reference_date = nil)
 
     def __recursion(company, share_reference_date, visited = [])
-      company.owned_shares.on.with_reference_date(share_reference_date).map do |owned_share|
+      company.owned_shares.on.greatest.with_reference_date(share_reference_date).map do |owned_share|
         owned_company = owned_share.company
 
         next if visited.include? owned_company
@@ -179,7 +179,7 @@ class Owner
   def controlled_companies(share_reference_date = nil)
 
     def __recursion(company, share_reference_date, visited = [])
-      company.owned_shares.on.with_reference_date(share_reference_date).each do |owned_share|
+      company.owned_shares.on.greatest.with_reference_date(share_reference_date).each do |owned_share|
         owned_company = owned_share.company
 
         next if visited.include? owned_company
@@ -211,7 +211,7 @@ class Owner
         next 0 if owned_share.percentage.nil?
 
         is_controller = owned_share.control?
-        next 0 if not is_controller and controlled_companies.include?(owned_company)
+        #next 0 if not is_controller and controlled_companies.include?(owned_company)
 
         next 0 if visited.include? owned_company
         visited << owned_company

@@ -1,3 +1,5 @@
+# coding: UTF-8
+
 class CompanyMember
 
   include MongoMapper::Document

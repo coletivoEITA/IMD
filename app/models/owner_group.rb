@@ -1,3 +1,5 @@
+# coding: UTF-8
+
 class OwnerGroup
 
   include MongoMapper::Document

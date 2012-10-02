@@ -1,3 +1,5 @@
+# coding: UTF-8
+
 module ImportHelper
 
   def self.clear_db
@@ -36,46 +38,46 @@ module ImportHelper
     /Divid por Ação|.+|1 anos|em moeda orig/, nil,
     /Div Yld (fim)|.+|no Ano|em moeda orig/, nil,
     /Div Yld (inic)|.+|1 anos|em moeda orig/,nil,
-    /PrinAcion|.+|1.Maior|Sem Voto/, :shareholder_PN_01_name,
-    /AcPossuid|.+|1.Maior|Sem Voto/, :shareholder_PN_01_quantity,
-    /PrinAcion|.+|2.Maior|Sem Voto/, :shareholder_PN_02_name,
-    /AcPossuid|.+|2.Maior|Sem Voto/, :shareholder_PN_02_quantity,
-    /PrinAcion|.+|3.Maior|Sem Voto/, :shareholder_PN_03_name,
-    /AcPossuid|.+|3.Maior|Sem Voto/, :shareholder_PN_03_quantity,
-    /PrinAcion|.+|4.Maior|Sem Voto/, :shareholder_PN_04_name,
-    /AcPossuid|.+|4.Maior|Sem Voto/, :shareholder_PN_04_quantity,
-    /PrinAcion|.+|5.Maior|Sem Voto/, :shareholder_PN_05_name,
-    /AcPossuid|.+|5.Maior|Sem Voto/, :shareholder_PN_05_quantity,
-    /PrinAcion|.+|6.Maior|Sem Voto/, :shareholder_PN_06_name,
-    /AcPossuid|.+|6.Maior|Sem Voto/, :shareholder_PN_06_quantity,
-    /PrinAcion|.+|7.Maior|Sem Voto/, :shareholder_PN_07_name,
-    /AcPossuid|.+|7.Maior|Sem Voto/, :shareholder_PN_07_quantity,
-    /PrinAcion|.+|8.Maior|Sem Voto/, :shareholder_PN_08_name,
-    /AcPossuid|.+|8.Maior|Sem Voto/, :shareholder_PN_08_quantity,
-    /PrinAcion|.+|9.Maior|Sem Voto/, :shareholder_PN_09_name,
-    /AcPossuid|.+|9.Maior|Sem Voto/, :shareholder_PN_09_quantity,
-    /PrinAcion|.+|10.Maior|Sem Voto/, :shareholder_PN_10_name,
-    /AcPossuid|.+|10.Maior|Sem Voto/, :shareholder_PN_10_quantity,
-    /PrinAcion|.+|1.Maior|Com Voto/, :shareholder_ON_01_name,
-    /AcPossuid|.+|1.Maior|Com Voto/, :shareholder_ON_01_quantity,
-    /PrinAcion|.+|2.Maior|Com Voto/, :shareholder_ON_02_name,
-    /AcPossuid|.+|2.Maior|Com Voto/, :shareholder_ON_02_quantity,
-    /PrinAcion|.+|3.Maior|Com Voto/, :shareholder_ON_03_name,
-    /AcPossuid|.+|3.Maior|Com Voto/, :shareholder_ON_03_quantity,
-    /PrinAcion|.+|4.Maior|Com Voto/, :shareholder_ON_04_name,
-    /AcPossuid|.+|4.Maior|Com Voto/, :shareholder_ON_04_quantity,
-    /PrinAcion|.+|5.Maior|Com Voto/, :shareholder_ON_05_name,
-    /AcPossuid|.+|5.Maior|Com Voto/, :shareholder_ON_05_quantity,
-    /PrinAcion|.+|6.Maior|Com Voto/, :shareholder_ON_06_name,
-    /AcPossuid|.+|6.Maior|Com Voto/, :shareholder_ON_06_quantity,
-    /PrinAcion|.+|7.Maior|Com Voto/, :shareholder_ON_07_name,
-    /AcPossuid|.+|7.Maior|Com Voto/, :shareholder_ON_07_quantity,
-    /PrinAcion|.+|8.Maior|Com Voto/, :shareholder_ON_08_name,
-    /AcPossuid|.+|8.Maior|Com Voto/, :shareholder_ON_08_quantity,
-    /PrinAcion|.+|9.Maior|Com Voto/, :shareholder_ON_09_name,
-    /AcPossuid|.+|9.Maior|Com Voto/, :shareholder_ON_09_quantity,
-    /PrinAcion|.+|10.Maior|Com Voto/, :shareholder_ON_10_name,
-    /AcPossuid|.+|10.Maior|Com Voto/, :shareholder_ON_10_quantity,
+    /PrinAcion|.+|1.Maior|Sem Voto/, :share_PN_01_name,
+    /AcPossuid|.+|1.Maior|Sem Voto/, :share_PN_01_quantity,
+    /PrinAcion|.+|2.Maior|Sem Voto/, :share_PN_02_name,
+    /AcPossuid|.+|2.Maior|Sem Voto/, :share_PN_02_quantity,
+    /PrinAcion|.+|3.Maior|Sem Voto/, :share_PN_03_name,
+    /AcPossuid|.+|3.Maior|Sem Voto/, :share_PN_03_quantity,
+    /PrinAcion|.+|4.Maior|Sem Voto/, :share_PN_04_name,
+    /AcPossuid|.+|4.Maior|Sem Voto/, :share_PN_04_quantity,
+    /PrinAcion|.+|5.Maior|Sem Voto/, :share_PN_05_name,
+    /AcPossuid|.+|5.Maior|Sem Voto/, :share_PN_05_quantity,
+    /PrinAcion|.+|6.Maior|Sem Voto/, :share_PN_06_name,
+    /AcPossuid|.+|6.Maior|Sem Voto/, :share_PN_06_quantity,
+    /PrinAcion|.+|7.Maior|Sem Voto/, :share_PN_07_name,
+    /AcPossuid|.+|7.Maior|Sem Voto/, :share_PN_07_quantity,
+    /PrinAcion|.+|8.Maior|Sem Voto/, :share_PN_08_name,
+    /AcPossuid|.+|8.Maior|Sem Voto/, :share_PN_08_quantity,
+    /PrinAcion|.+|9.Maior|Sem Voto/, :share_PN_09_name,
+    /AcPossuid|.+|9.Maior|Sem Voto/, :share_PN_09_quantity,
+    /PrinAcion|.+|10.Maior|Sem Voto/, :share_PN_10_name,
+    /AcPossuid|.+|10.Maior|Sem Voto/, :share_PN_10_quantity,
+    /PrinAcion|.+|1.Maior|Com Voto/, :share_ON_01_name,
+    /AcPossuid|.+|1.Maior|Com Voto/, :share_ON_01_quantity,
+    /PrinAcion|.+|2.Maior|Com Voto/, :share_ON_02_name,
+    /AcPossuid|.+|2.Maior|Com Voto/, :share_ON_02_quantity,
+    /PrinAcion|.+|3.Maior|Com Voto/, :share_ON_03_name,
+    /AcPossuid|.+|3.Maior|Com Voto/, :share_ON_03_quantity,
+    /PrinAcion|.+|4.Maior|Com Voto/, :share_ON_04_name,
+    /AcPossuid|.+|4.Maior|Com Voto/, :share_ON_04_quantity,
+    /PrinAcion|.+|5.Maior|Com Voto/, :share_ON_05_name,
+    /AcPossuid|.+|5.Maior|Com Voto/, :share_ON_05_quantity,
+    /PrinAcion|.+|6.Maior|Com Voto/, :share_ON_06_name,
+    /AcPossuid|.+|6.Maior|Com Voto/, :share_ON_06_quantity,
+    /PrinAcion|.+|7.Maior|Com Voto/, :share_ON_07_name,
+    /AcPossuid|.+|7.Maior|Com Voto/, :share_ON_07_quantity,
+    /PrinAcion|.+|8.Maior|Com Voto/, :share_ON_08_name,
+    /AcPossuid|.+|8.Maior|Com Voto/, :share_ON_08_quantity,
+    /PrinAcion|.+|9.Maior|Com Voto/, :share_ON_09_name,
+    /AcPossuid|.+|9.Maior|Com Voto/, :share_ON_09_quantity,
+    /PrinAcion|.+|10.Maior|Com Voto/, :share_ON_10_name,
+    /AcPossuid|.+|10.Maior|Com Voto/, :share_ON_10_quantity,
   ]
   def self.header_to_field(header)
     field = EconomaticaCSVColumns[header]
@@ -95,7 +97,7 @@ module ImportHelper
   end
 
   def self.import_economatica_csv(file, reference_date)
-    csv = FasterCSV.table file, :headers => true, :header_converters => nil, :converters => nil
+    csv = CSV.table file, :headers => true, :header_converters => nil, :converters => nil
     csv.each_with_index do |row, i|
       name = row.values_at(0).first
       share_class = row.values_at(1).first
@@ -109,9 +111,9 @@ module ImportHelper
       cnpj = cnpj.zero? ? nil : ('%014d' % cnpj) # fix CNPJ format
 
       company = Owner.first_or_new 'Economatica', :cgc => cnpj, :name => name
-      company.source = 'Economatica' # preferencial
+      company.source = 'Economatica' # preferential
       balance = nil
-      shareholder = nil
+      share = nil
 
       column_index = 0
       row.each do |header, value|
@@ -122,22 +124,24 @@ module ImportHelper
         # jump preprocessed
         next if ['cgc', 'name'].include?(field)
 
-        # create balance and shareholder if this is their first field
+        # create balance and share if this is their first field
         if field == 'balance_months'
           balance.save if balance
-          balance = company.balances.build(:source => "Economatica #{reference_date}", :reference_date => reference_date)
+          balance = Balance.first_or_new(:company_id => company.id, :source => "Economatica",
+                                         :reference_date => reference_date)
         end
-        if field =~ /shareholder_(.+)_(.+)_name/
-          shareholder.save if shareholder
-          shareholder = company.owners_shares.build(:reference_date => reference_date, :sclass => $1)
+        if field =~ /share_(.+)_(.+)_name/
+          share.save if share
+          share = Share.first_or_new(:company_id => company.id, :source => "Economatica",
+                                     :name => value, :reference_date => reference_date, :sclass => $1)
         end
 
-        next if value.blank? or value == '-' or value == '0.0'
+        next if value.blank? or value == '-' or value == '0' or value == '0.0'
 
-        if field.starts_with?('balance')
+        if field.starts_with?('balance_')
           balance.send "#{$1}=", value if field =~ /balance_(.+)/
-        elsif field.starts_with?('shareholder')
-          shareholder.send "#{$3}=", value if field =~ /shareholder_(.+)_(.+)_(.+)/
+        elsif field.starts_with?('share_')
+          share.send "#{$3}=", value if field =~ /share_(.+)_(.+)_(.+)/
         elsif field == 'traded'
           company.traded = value == 'ativo'
         elsif field == 'shares_quantity'
@@ -150,12 +154,13 @@ module ImportHelper
             old_value << value unless old_value.include?(value)
           end
         end
+
       end
 
       pp company
-      balance.save if balance
-      shareholder.save if shareholder
       company.save!
+      balance.save! if balance
+      share.save! if share and !share.name.blank? and !share.quantity.nil?
     end
   end
 
@@ -284,7 +289,7 @@ module ImportHelper
 
   def self.import_companies(*files)
     csvs = *files.map do |file|
-      FasterCSV.table file, :converters => nil
+      CSV.table file, :converters => nil
     end
     hash = {}
     csvs.each do |csv|
@@ -333,7 +338,7 @@ module ImportHelper
       owner.save!
       pp owner
 
-      balance = Balance.first_or_new(:company_id => owner.id, :source => "Exame #{year}",
+      balance = Balance.first_or_new(:company_id => owner.id, :source => "Exame",
                                      :currency => 'Real', :reference_date => reference_date)
       value = tds[7].text.gsub('.', '').gsub(',', '.').to_f * 1000000
       value *= dolar_value # convert from Dolar to Real

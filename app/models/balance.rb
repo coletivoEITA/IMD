@@ -1,3 +1,5 @@
+# coding: UTF-8
+
 class Balance
 
   include MongoMapper::Document
@@ -21,12 +23,12 @@ class Balance
   key :net_profit, Float, :default => 0
 
   validates_presence_of :company
-  validates_uniqueness_of :reference_date, :scope => [:company_id, :source]
+  validates_uniqueness_of :reference_date, :scope => [:source, :company_id]
   validates_presence_of :months
   validates_presence_of :currency
 
-  scope :economatica, :source => /Economatica/
-  scope :exame, :source => /Exame/
+  scope :economatica, :source => 'Economatica'
+  scope :exame, :source => 'Exame'
 
   scope :with_reference_date, lambda{ |reference_date|
     reference_date.blank? ? {:reference_date.ne => nil} : {:reference_date => reference_date}

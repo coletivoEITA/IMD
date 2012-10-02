@@ -1,13 +1,19 @@
+# coding: UTF-8
+
 module ExportHelper
 
-  def self.export_owners_rankings(balance_reference_date = '2011-12-31', share_reference_date = '2012-09-05')
+  def self.export_owners_rankings(attr = :revenue, balance_reference_date = '2011-12-31', share_reference_date = '2012-09-05')
 
     def self.export_raking(attr = :revenue, balance_reference_date = '2011-12-31', share_reference_date = '2012-09-05')
 
+      pp 'calculating values'
       #CalculationHelper.calculate_owners_value attr, balance_reference_date, share_reference_date
+
+      pp 'loading data'
       owners = Owner.order("total_#{attr}".to_sym.desc).all
 
-      FasterCSV.open("db/#{attr}-ranking.csv", "w") do |csv|
+      pp 'exporting data'
+      CSV.open("db/#{attr}-ranking.csv", "w") do |csv|
         csv << ['i', 'controlada?', 'nome', 'razão social', 'cnpj',
                 'valor da empresa i pela Exame (vendas)', 'valor da empresa i pela Economatica (vendas)',
                 'valor indireto (das empresas em que i tem participação)', 'valor total (valor da empresa i + valor indireto)',
@@ -19,24 +25,26 @@ module ExportHelper
         total = owners.sum(&"total_#{attr}".to_sym)
 
         owners.each_with_index do |owner, i|
-          owners_shares = owner.owners_shares.on.with_reference_date(share_reference_date).all
-          owned_shares = owner.owned_shares.on.with_reference_date(share_reference_date).all
+          pp owner
+
+          owners_shares = owner.owners_shares.on.greatest.with_reference_date(share_reference_date).all
+          owned_shares = owner.owned_shares.on.greatest.with_reference_date(share_reference_date).all
 
           controlled = owners_shares.first
           controlled = (controlled and controlled.control?) ? 'sim' : ''
 
-          exame_value = owner.balances.exame.first
+          exame_value = owner.balances.exame.with_reference_date(balance_reference_date).first
           exame_value = exame_value.nil? ? '0.00' : (exame_value.value(attr)/1000000).c
-          exame_value = '-' if exame_value = '0.00'
-          economatica_value = owner.balances.economatica.first
+          exame_value = '-' if exame_value == '0.00'
+          economatica_value = owner.balances.economatica.with_reference_date(balance_reference_date).first
           economatica_value = economatica_value.nil? ? '0.00' : (economatica_value.value(attr)/1000000).c
           economatica_value = '-' if economatica_value == '0.00'
 
-          indirect_value = owner.send("indirect_#{attr}").c
+          indirect_value = (owner.send("indirect_#{attr}")/1000000).c
           indirect_value = '-' if indirect_value == '0.00'
-          total_value = owner.send("total_#{attr}").c
+          total_value = (owner.send("total_#{attr}")/1000000).c
           total_value = '-' if total_value == '0.00'
-          index_value = total_value == '-' ? '-' : ((total_value.to_f / total)*1000).c
+          index_value = total_value == '-' ? '-' : ((total_value.to_f / total)).c
 
           power_direct_control = owned_shares.select{ |s| s.control? }.map do |s|
             "#{s.company.name} (#{s.percentage.c}%)"
@@ -52,7 +60,7 @@ module ExportHelper
             "#{s.owner.name} (#{s.percentage.c}%)"
           end.join(' ')
 
-          csv << [(i+1).to_s, controlled, owner.name, owner.formal_name, owner.cgc.first,
+          csv << [(i+1).to_s, controlled, owner.name, owner.formal_name, "'#{owner.cgc.first}'",
                   exame_value, economatica_value,
                   indirect_value, total_value,
                   index_value, owner.source,
@@ -63,7 +71,7 @@ module ExportHelper
       end
     end
 
-    export_raking :revenue, '2011-12-31', '2012-09-05'
+    export_raking attr, '2011-12-31', '2012-09-05'
     true
   end
 

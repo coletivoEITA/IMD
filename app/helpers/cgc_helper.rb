@@ -1,3 +1,5 @@
+# coding: UTF-8
+
 module CgcHelper
 
   def self.format(cgc)
