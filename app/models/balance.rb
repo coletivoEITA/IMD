@@ -25,8 +25,13 @@ class Balance
   validates_presence_of :months
   validates_presence_of :currency
 
-  scope :economatica, :source => 'Economatica'
-  scope :exame, :source => 'Exame'
+  scope :economatica, :source => /Economatica/
+  scope :exame, :source => /Exame/
+
+  scope :with_reference_date, lambda{ |reference_date|
+    reference_date.blank? ? {:reference_date.ne => nil} : {:reference_date => reference_date}
+  }
+  scope :lastest, :order => :reference_date.desc
 
   def value(attr)
     (MonthsReference / self.months) * self.send(attr)

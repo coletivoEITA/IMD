@@ -110,85 +110,85 @@ class Owner
     CgcHelper.cpf?(self.cgc.first)
   end
 
-  def value(attr, reference_date)
-    balance = self.balances.economatica.first || self.balances.exame.first
+  def value(attr, reference_date = nil)
+    scoped = self.balances.with_reference_date(reference_date)
+    balance = scoped.economatica.first || scoped.exame.first
     return 0 if balance.nil?
     balance.value(attr)
   end
 
-  def controlled_companies(share_type = :on)
+  def controlled_companies(share_reference_date = nil)
     companies = []
-    company.owned_shares.send(share_type)
 
-    def __recursion(company, share_type = :on, visited = [])
-      company.owned_shares.send(share_type).each do |owned_share|
+    def __recursion(company, visited = [])
+      company.owned_shares.on.with_reference_date(share_reference_date).each do |owned_share|
         company = owned_share.company
         next if visited.include? company
         visited << company
-        __recursion(company, share_type = :on, visited)
+        __recursion(company, visited)
       end
       visited
     end
 
     visited = []
-    __recursion(self, share_type, visited)
+    __recursion(self, visited)
     visited
   end
 
-  def calculate_own_value(attr)
-    v = value(attr)
+  def calculate_own_value(attr = :revenue, balance_reference_date = nil)
+    v = value(attr, balance_reference_date)
     self.send "own_#{attr}=", v
     self.save
     v
   end
-  def calculate_indirect_value(balance_reference_date, attr, share_type = :on)
+  def calculate_indirect_value(attr = :revenue, balance_reference_date = nil, share_reference_date = nil)
 
-    def __recursion(company, attr = :revenue, share_type = :on, visited = [])
+    def __recursion(company, attr = :revenue, balance_reference_date = nil, share_reference_date = nil,
+                    visited = [], controlled_companies = [])
 
-      shares = company.owned_shares.send(share_type)
-      max = shares.max{ |a,b| a.percentage <=> b.percentage }
-
-      shares.inject(0) do |sum, owned_share|
+      company.owned_shares.on.with_reference_date(share_reference_date).inject(0) do |sum, owned_share|
         company = owned_share.company
-        if visited.include? company
-          0
-        else
-          visited << company
 
-          total_value = company.send("total_#{attr}")
-          if total_value.zero?
-            own_value = company.send("own_#{attr}")
-            own_value = company.calculate_own_value(attr)
+        next 0 if owned_share.percentage.nil?
 
-            indirect_value = company.send("indirect_#{attr}")
-            if indirect_value.zero?
-              indirect_value = __recursion(company, attr, share_type, visited)
-              # cache value
-              company.send("indirect_#{attr}=", indirect_value)
-            end
+        is_controller = owned_share.percentage > 50
+        next 0 if not is_controller and controlled_companies.include?(company)
 
-            total_value = own_value + indirect_value
+        next 0 if visited.include? company
+        visited << company
+
+        total_value = company.send("total_#{attr}")
+        if total_value.zero?
+          own_value = company.send("own_#{attr}")
+          own_value = company.calculate_own_value(attr, balance_reference_date)
+
+          indirect_value = company.send("indirect_#{attr}")
+          if indirect_value.zero?
+            indirect_value = __recursion company, attr, balance_reference_date, share_reference_date, visited
             # cache value
-            company.send("total_#{attr}=", total_value)
-            company.save
+            company.send("indirect_#{attr}=", indirect_value)
           end
 
-          w = owned_share.percentage >= 50 ? 1 : owned_share.percentage/100
-
-          sum + w * total_value
+          total_value = own_value + indirect_value
+          # cache value
+          company.send("total_#{attr}=", total_value)
+          company.save
         end
+
+        w = is_controller ? 1 : owned_share.percentage/100
+
+        sum + w * total_value
       end
     end
 
-    v = __recursion(self, attr, share_type, [self])
+    v = __recursion(self, attr, balance_reference_date, share_reference_date, [self], [])
     self.send "indirect_#{attr}=", v
     self.save
     v
   end
-
-  def calculate_value(attr = :revenue, share_type = :on)
-    self.calculate_own_value(attr)
-    self.calculate_indirect_value(attr, share_type)
+  def calculate_value(attr = :revenue, balance_reference_date = nil, share_reference_date = nil)
+    self.calculate_own_value attr, balance_reference_date
+    self.calculate_indirect_value attr, balance_reference_date, share_reference_date
     self.send "total_#{attr}=", self.send("own_#{attr}") + self.send("indirect_#{attr}")
     self.save
   end

@@ -28,12 +28,12 @@ class Share
   scope :on, :sclass => 'ON'
   scope :pn, :sclass => 'PN'
 
-  scope :with_reference_date, lambda{ |reference_date| {
-    :reference_date => reference_date
-  } }
+  scope :with_reference_date, lambda{ |reference_date|
+    reference_date.blank? ? {:reference_date.ne => nil} : {:reference_date => reference_date}
+  }
+  scope :lastest, :order => :reference_date.desc
 
   scope :greatest, :order => :percentage.desc
-  scope :lastest, :order => :reference_date.desc
 
   def self.create_owners
     Share.each{ |s| s.create_owner }

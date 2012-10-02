@@ -1,13 +1,13 @@
 module ExportHelper
 
-  def self.export_owners_rankings(share_reference_date = '2012-09-05', balance_reference_date = '2011-12-31')
+  def self.export_owners_rankings(balance_reference_date = '2011-12-31', share_reference_date = '2012-09-05')
 
-    def self.export_raking(share_reference_date = '2012-09-05', balance_reference_date = '2011-12-31', attr = :revenue, share_type = :on)
+    def self.export_raking(attr = :revenue, balance_reference_date = '2011-12-31', share_reference_date = '2012-09-05')
 
-      CalculationHelper.calculate_owners_value balance_reference_date, attr, share_type
+      #CalculationHelper.calculate_owners_value attr, balance_reference_date, share_reference_date
       owners = Owner.order("total_#{attr}".to_sym.desc).all
 
-      FasterCSV.open("db/#{attr}-ranking-#{share_type.to_s.upcase}-shares.csv", "w") do |csv|
+      FasterCSV.open("db/#{attr}-ranking.csv", "w") do |csv|
         csv << ['i', 'controlada?', 'nome', 'razão social', 'cnpj',
                 'valor da empresa i pela Exame (vendas)', 'valor da empresa i pela Economatica (vendas)',
                 'valor indireto (das empresas em que i tem participação)', 'valor total (valor da empresa i + valor indireto)',
@@ -19,34 +19,36 @@ module ExportHelper
         total = owners.sum(&"total_#{attr}".to_sym)
 
         owners.each_with_index do |owner, i|
-          owners_shares = owner.owners_shares.send(share_type).with_reference_date(share_reference_date).all
-          owned_shares = owner.owned_shares.send(share_type).with_reference_date(share_reference_date).all
+          owners_shares = owner.owners_shares.on.with_reference_date(share_reference_date).all
+          owned_shares = owner.owned_shares.on.with_reference_date(share_reference_date).all
 
           controlled = owners_shares.first
-          controlled = (controlled and controlled.percentage > 50) ? 'sim' : ''
+          controlled = (controlled and controlled.percentage and controlled.percentage > 50) ? 'sim' : ''
 
-          exame_value = owner.balances.exame.first.value(attr).c
-          exame_value = '-' if exame_value.zero?
-          economatica_value = owner.balances.economatica.first.value(attr).c
-          economatica_value = '-' if economatica_value.zero?
+          exame_value = owner.balances.exame.first
+          exame_value = exame_value.nil? ? 0 : exame_value.value(attr).c
+          exame_value = '-' if exame_value = '0.00'
+          economatica_value = owner.balances.economatica.first
+          economatica_value = economatica_value.nil? ? 0 : economatica_value.value(attr).c
+          economatica_value = '-' if economatica_value == '0.00'
 
           indirect_value = owner.send("indirect_#{attr}").c
+          indirect_value = '-' if indirect_value == '0.00'
           total_value = owner.send("total_#{attr}").c
-          indirect_value = '-' if indirect_value.zero?
-          total_value = '-' if total_value.zero?
-          index_value = total_value == '-' ? '-' : ((total_value / total)*1000).c
+          total_value = '-' if total_value == '0.00'
+          index_value = total_value == '-' ? '-' : ((total_value.to_f / total)*1000).c
 
-          power_direct_control = owned_shares.select{ |s| s.percentage > 50 }.map do |s|
+          power_direct_control = owned_shares.select{ |s| s.percentage and s.percentage > 50 }.map do |s|
             "#{s.company.name} (#{s.percentage}%)"
           end.join(' ')
-          power_direct_parcial = owned_shares.select{ |s| s.percentage < 50 }.map do |s|
+          power_direct_parcial = owned_shares.select{ |s| s.percentage and s.percentage < 50 }.map do |s|
             "#{s.company.name} (#{s.percentage}%)"
           end.join(' ')
 
           power_indirect_control = ''
           power_indirect_parcial = ''
 
-          shareholders = owners_shares.map do |s|
+          shareholders = owners_shares.select{ |s| s.percentage }.map do |s|
             "#{s.owner.name} (#{s.percentage}%)"
           end.join(' ')
 
@@ -61,7 +63,7 @@ module ExportHelper
       end
     end
 
-    export_raking '2012-09-05', '2011-12-31', :revenue, :on
+    export_raking :revenue, '2011-12-31', '2012-09-05'
   end
 
   def self.export_owners
