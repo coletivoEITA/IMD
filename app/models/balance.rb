@@ -29,6 +29,7 @@ class Balance
 
   scope :economatica, :source => 'Economatica'
   scope :exame, :source => 'Exame'
+  scope :valor, :source => 'Valor'
 
   scope :with_reference_date, lambda{ |reference_date|
     reference_date.blank? ? {:reference_date.ne => nil} : {:reference_date => reference_date}

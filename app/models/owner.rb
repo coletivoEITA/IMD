@@ -31,6 +31,7 @@ class Owner
 
   key :address, String
   key :city, String
+  key :state, String
   key :country, String
   key :phone, String
   key :website, String
@@ -114,7 +115,7 @@ class Owner
 
   def value(attr, reference_date = nil)
     scoped = self.balances.with_reference_date(reference_date)
-    balance = scoped.economatica.first || scoped.exame.first
+    balance = scoped.economatica.first || scoped.valor.first
     return 0 if balance.nil?
     balance.value(attr)
   end

@@ -6,16 +6,16 @@ module ExportHelper
 
     def self.export_raking(attr = :revenue, balance_reference_date = '2011-12-31', share_reference_date = '2012-09-05')
 
-      pp 'calculating values'
-      #CalculationHelper.calculate_owners_value attr, balance_reference_date, share_reference_date
+      puts 'calculating values'
+      CalculationHelper.calculate_owners_value attr, balance_reference_date, share_reference_date
 
-      pp 'loading data'
+      puts 'loading data'
       owners = Owner.order("total_#{attr}".to_sym.desc).all
 
-      pp 'exporting data'
+      puts 'exporting data'
       CSV.open("db/#{attr}-ranking.csv", "w") do |csv|
         csv << ['i', 'controlada?', 'nome', 'razão social', 'cnpj',
-                'valor da empresa i pela Exame (vendas)', 'valor da empresa i pela Economatica (vendas)',
+                'valor da empresa i pela Valor (vendas)', 'valor da empresa i pela Economatica (vendas)',
                 'valor indireto (das empresas em que i tem participação)', 'valor total (valor da empresa i + valor indireto)',
                 'indicador de poder da empresa i', 'fonte dos dados da empresa i',
                 'poder direto - controle', 'poder direto - parcial',
@@ -33,9 +33,9 @@ module ExportHelper
           controlled = owners_shares.first
           controlled = (controlled and controlled.control?) ? 'sim' : ''
 
-          exame_value = owner.balances.exame.with_reference_date(balance_reference_date).first
-          exame_value = exame_value.nil? ? '0.00' : (exame_value.value(attr)/1000000).c
-          exame_value = '-' if exame_value == '0.00'
+          valor_value = owner.balances.valor.with_reference_date(balance_reference_date).first
+          valor_value = valor_value.nil? ? '0.00' : (valor_value.value(attr)/1000000).c
+          valor_value = '-' if valor_value == '0.00'
           economatica_value = owner.balances.economatica.with_reference_date(balance_reference_date).first
           economatica_value = economatica_value.nil? ? '0.00' : (economatica_value.value(attr)/1000000).c
           economatica_value = '-' if economatica_value == '0.00'
@@ -61,7 +61,7 @@ module ExportHelper
           end.join(' ')
 
           csv << [(i+1).to_s, controlled, owner.name, owner.formal_name, "'#{owner.cgc.first}'",
-                  exame_value, economatica_value,
+                  valor_value, economatica_value,
                   indirect_value, total_value,
                   index_value, owner.source,
                   power_direct_control, power_direct_parcial,

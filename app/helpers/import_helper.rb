@@ -398,6 +398,26 @@ module ImportHelper
     end
   end
 
+  def self.import_valor(file, reference_date)
+    csv = CSV.table file, :headers => true, :header_converters => nil, :converters => nil
+    csv.each_with_index do |row, i|
+      name = row.values_at(2).first
+      state = row.values_at(3).first
+      sector = row.values_at(4).first
+      revenue = row.values_at(5).first
+
+      owner = Owner.first_or_new 'Valor', :name => name
+      owner.state = state
+      owner.sector = sector
+      owner.save!
+
+      balance = Balance.first_or_new(:company_id => owner.id, :source => "Valor",
+                                     :currency => 'Real', :reference_date => reference_date)
+      balance.revenue = revenue.to_f * 1000000
+      balance.save!
+    end
+  end
+
   def self.import_asclaras(options = {})
     url_home = 'http://asclaras.org.br'
     url_update_session = "#{url_home}/atualiza_sessao.php?municpio=%{city}&estado=%{state}&ano=%{year}"
