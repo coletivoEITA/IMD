@@ -69,6 +69,8 @@ class Owner
   before_validation :assign_defaults
   before_save :normalize_fields
 
+  scope :traded, :traded => true, :source => 'Economatica'
+
   def self.first_or_new(source, attributes = {})
     cgc = attributes[:cgc]
     name = attributes[:name]
@@ -117,21 +119,78 @@ class Owner
     balance.value(attr)
   end
 
-  def controlled_companies(share_reference_date = nil)
-    companies = []
+  def indirect_parcial_controlled_companies(share_reference_date = nil)
 
-    def __recursion(company, visited = [])
-      company.owned_shares.on.with_reference_date(share_reference_date).each do |owned_share|
-        company = owned_share.company
-        next if visited.include? company
-        visited << company
-        __recursion(company, visited)
+    def __recursion(company, percentage, share_reference_date, visited = [])
+      shares = company.owned_shares.on.with_reference_date(share_reference_date)
+      list = []
+
+      if company != visited.first # only indirect
+        owned = shares.map do |owned_share|
+          owned_company = owned_share.company
+          next if owned_share.percentage.nil?
+          next if owned_share.control?
+
+          "#{owned_company.name} (#{owned_share.percentage.c}%, final=#{((owned_share.percentage*percentage)/100.0).c}%)"
+        end.join(' ')
+        list << "#{company.name} (#{percentage.c}): (#{owned})\n"
       end
-      visited
+
+      list += shares.map do |owned_share|
+        owned_company = owned_share.company
+        next if owned_share.percentage.nil?
+
+        next if visited.include? owned_company
+        visited << owned_company
+
+        p = percentage ? owned_share.percentage*percentage : owned_share.percentage
+        __recursion(owned_company, p, share_reference_date, visited)
+      end
+
+      list
     end
 
-    visited = []
-    __recursion(self, visited)
+    __recursion(self, nil, share_reference_date, [self])
+  end
+  def indirect_total_controlled_companies(share_reference_date = nil)
+
+    def __recursion(company, share_reference_date, visited = [])
+      company.owned_shares.on.with_reference_date(share_reference_date).map do |owned_share|
+        owned_company = owned_share.company
+
+        next if visited.include? owned_company
+        visited << owned_company
+
+        next unless owned_share.control?
+
+        list = []
+        if company != visited.first # only indirect
+          list << "#{owned_company.name} (controlada por #{company.name})"
+        end
+
+        list << __recursion(owned_company, share_reference_date, visited)
+        list
+      end
+    end
+
+    __recursion(self, share_reference_date, [self]).flatten.compact
+  end
+
+  def controlled_companies(share_reference_date = nil)
+
+    def __recursion(company, share_reference_date, visited = [])
+      company.owned_shares.on.with_reference_date(share_reference_date).each do |owned_share|
+        owned_company = owned_share.company
+
+        next if visited.include? owned_company
+        visited << owned_company
+
+        __recursion(owned_company, share_reference_date, visited)
+      end
+    end
+
+    visited = [self]
+    __recursion(self, share_reference_date, visited)
     visited
   end
 
@@ -147,32 +206,32 @@ class Owner
                     visited = [], controlled_companies = [])
 
       company.owned_shares.on.with_reference_date(share_reference_date).inject(0) do |sum, owned_share|
-        company = owned_share.company
+        owned_company = owned_share.company
 
         next 0 if owned_share.percentage.nil?
 
-        is_controller = owned_share.percentage > 50
-        next 0 if not is_controller and controlled_companies.include?(company)
+        is_controller = owned_share.control?
+        next 0 if not is_controller and controlled_companies.include?(owned_company)
 
-        next 0 if visited.include? company
-        visited << company
+        next 0 if visited.include? owned_company
+        visited << owned_company
 
-        total_value = company.send("total_#{attr}")
+        total_value = owned_company.send("total_#{attr}")
         if total_value.zero?
-          own_value = company.send("own_#{attr}")
-          own_value = company.calculate_own_value(attr, balance_reference_date)
+          own_value = owned_company.send("own_#{attr}")
+          own_value = owned_company.calculate_own_value(attr, balance_reference_date)
 
-          indirect_value = company.send("indirect_#{attr}")
+          indirect_value = owned_company.send("indirect_#{attr}")
           if indirect_value.zero?
-            indirect_value = __recursion company, attr, balance_reference_date, share_reference_date, visited
+            indirect_value = __recursion owned_company, attr, balance_reference_date, share_reference_date, visited
             # cache value
-            company.send("indirect_#{attr}=", indirect_value)
+            owned_company.send("indirect_#{attr}=", indirect_value)
           end
 
           total_value = own_value + indirect_value
           # cache value
-          company.send("total_#{attr}=", total_value)
-          company.save
+          owned_company.send("total_#{attr}=", total_value)
+          owned_company.save
         end
 
         w = is_controller ? 1 : owned_share.percentage/100

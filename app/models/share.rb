@@ -27,6 +27,9 @@ class Share
 
   scope :on, :sclass => 'ON'
   scope :pn, :sclass => 'PN'
+  scope :with_sclass, lambda{ |sclass|
+    sclass.blank? ? {:sclass.ne => nil} : {:sclass => sclass}
+  }
 
   scope :with_reference_date, lambda{ |reference_date|
     reference_date.blank? ? {:reference_date.ne => nil} : {:reference_date => reference_date}
@@ -40,8 +43,15 @@ class Share
   end
 
   def create_owner
-    self.owner ||= Owner.first_or_new self.company.source, :name => self.name, :formal_name => self.name
+    self.owner ||= Owner.first_or_new "#{self.company.source} associado", :name => self.name, :formal_name => self.name
     self.owner.save!
+  end
+
+  def control?
+    self.percentage && self.percentage > 50
+  end
+  def parcial?
+    self.percentage && self.percentage <= 50
   end
 
   def calculate_percentage

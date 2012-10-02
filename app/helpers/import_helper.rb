@@ -138,6 +138,8 @@ module ImportHelper
           balance.send "#{$1}=", value if field =~ /balance_(.+)/
         elsif field.starts_with?('shareholder')
           shareholder.send "#{$3}=", value if field =~ /shareholder_(.+)_(.+)_(.+)/
+        elsif field == 'traded'
+          company.traded = value == 'ativo'
         elsif field == 'shares_quantity'
           company.shares_quantity[share_class] = value
         else
@@ -345,7 +347,6 @@ module ImportHelper
     years = [2011]
     attributes = {
       'vendas' => :revenue,
-      'total-do-ativo' => :total_active,
     }
 
     m = Mechanize.new
