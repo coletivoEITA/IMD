@@ -435,42 +435,42 @@ module ImportHelper
     url_donation = "#{url_home}/@candidato.php?CACodigo=%{candidate_id}&cargo=%{role_id}&ano=%{year}"
 
     m = Mechanize.new
+    queue = Queue.new
     years = options[:year] ? [options[:year]] : [2002, 2004, 2006, 2008, 2010]
 	#State = RJ = 18	... Todos -1
 	state = options[:state] || -1
   	#City = Rio de Janeiro = 3662 ... Todos -1
 	city = options[:city] || -1
 
-	cargos = {}
-	cargos[-1] = 'Todos'
-	cargos[1] = 'Presidente'
-	cargos[2] = ''
-	cargos[3] = 'Governador'
-	cargos[4] = ''
-	cargos[5] = 'Senador'
-	cargos[6] = 'Deputado Federal'
-	cargos[7] = 'Deputado Estadual'
-	cargos[8] = 'Deputado Distrital'
-	cargos[11] = 'Prefeito'
-	cargos[13] = 'Vereador'
-
     years.each do |year|
       offset = options[:offset] || 0
       begin
         page = m.get(url_candidacy % {:offset => offset, :year => year, :state => state, :city => city})
-        links = page.links			
+        links = page.links
         pp '----------------------------'
         pp "offset: #{offset}"
         #Get all link on a page as a Mechanize.Page.Link object
         links.each do |link|
           next unless link.href =~ /CACodigo=(.+)&cargo=(.+)/
-       	  candidate_id_asclaras = $1
-       	  role_id_asclaras = $2
+       	  candidate_id_asclaras = $1.to_i
+       	  role_id_asclaras = $2.to_i
+
+          Thread.new do # works with mechanize
+            page = m.get(url_donation % {:candidate_id => candidate_id_asclaras, :role_id => role_id_asclaras, :year => year})
+            queue << [Thread.current, page, year, candidate_id_asclaras, link.text]
+          end
+        end
+
+        Thread.join_all if links.count == 0
+        while queue.size > 0
+          item = queue.pop
+
 	   	  pp '============================'
-		  pp 'candidato ' + candidate_id_asclaras + ' ' + link.text
-		  page = m.get(url_donation % {:candidate_id => candidate_id_asclaras, :role_id => role_id_asclaras, :year => year})
-		  import_asclaras_donation(page, year, candidate_id_asclaras)
-        end		
+		  pp 'candidato ' + item[3].to_s + ' ' + item[4].to_s
+
+          import_asclaras_donation(item[1], item[2], item[3])
+        end
+
         offset += links.count
       end while links.count > 0
     end
@@ -478,12 +478,15 @@ module ImportHelper
   #end method import_asclaras
 
   def self.import_asclaras_donation(page, year, candidate_id_asclaras)
-    candidate_name = page.parser.css('td.tituloI')[0].text
+    title = page.parser.css('td.tituloI')[0]
+    return if title.nil?
+
+    candidate_name = title.text
     #In case there is owner referenced by owner_name get it's object, case not create a new one
-    candidate = Owner.first_or_new 'àsclaras', :name => candidate_name
+    candidate = Owner.first_or_new 'àsclaras', :name => candidate_name, :asclaras_id => candidate_id_asclaras
     candidate.save!
     #In case there is candidacy referenced by candidate get it's object
-    candidacy = Candidacy.first_or_new(:year => year, :candidate_id => candidate.id, :source_id => candidate_id_asclaras)
+    candidacy = Candidacy.first_or_new(:year => year, :candidate_id => candidate.id, :asclaras_id => candidate_id_asclaras)
     #In case not create a new one based on candidate_Data parsed  by Mechanize
     if candidacy.new_record?
       candidate_data = page.parser.css("table tr:nth-child(3) table th")
@@ -493,17 +496,17 @@ module ImportHelper
       index = 0
 	  if "Presidente" == candidacy.role
         candidacy.state = "BR"
-        index = 5      
+        index = 5
       elsif ("Vereador" == candidacy.role) || ("Prefeito" == candidacy.role)
         uf = candidate_data[2].text().strip
         candidacy.city = uf.split("-")[0].strip
         candidacy.state = uf.split("-")[1].strip
-        index = 6	   	
+        index = 6
       elsif ("Senador" == candidacy.role) || ("Governador" == candidacy.role) || ("Deputado Federal" == candidacy.role) || ("Deputado Estadual" == candidacy.role) || ("Deputado Distrital" == candidacy.role)
         candidacy.city = ''
         candidacy.state = candidate_data[2].text().strip
-        index = 6	 
-	  end  			  
+        index = 6
+	  end
       if "Eleito" == candidate_data[index].text.strip
         candidacy.status = "elected"
       elsif "Não Eleito" == candidate_data[index].text.strip
@@ -513,7 +516,7 @@ module ImportHelper
       end
       candidacy.save!
     end
-	
+
 	#loop to save all donation from this candidacy
 	page.parser.css('#aba13 script').each do |script|
 	  next unless script.text =~ /"(.+)".+"(.+)".+"(.+)".+"(.+)"/
@@ -521,11 +524,11 @@ module ImportHelper
 	  grantor_name = $2
 	  grantor_cgc = $3
 	  value = $4.gsub(".","").gsub(",",".").to_f
-	  grantor = Owner.first_or_new 'àsclaras', :cgc => grantor_cgc, :name => grantor_name, :source_id => grantor_id_asclaras
+	  grantor = Owner.first_or_new 'àsclaras', :cgc => grantor_cgc, :name => grantor_name, :asclaras_id => grantor_id_asclaras
       grantor.save!
       donation = Donation.first_or_new :candidacy_id => candidacy.id, :grantor_id => grantor.id, :value => value
       donation.save!
-	end	
+	end
   end
   #end method import_asclaras_donation
 end

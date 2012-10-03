@@ -5,7 +5,7 @@ class Owner
   include MongoMapper::Document
   timestamps!
 
-  key :name, String, :unique => :true, :required => :true
+  key :name, String, :required => :true
   key :source, String, :required => :true
 
   # companies
@@ -49,7 +49,7 @@ class Owner
   key :formal_name_n, String
 
   #in case there is any data to access from www.asclaras.org later
-  key :source_id, Integer
+  key :asclaras_id, Integer
 
   many :balances, :foreign_key => :company_id, :dependent => :destroy_all
   many :owners_shares, :class_name => 'Share', :foreign_key => :company_id, :dependent => :destroy_all
