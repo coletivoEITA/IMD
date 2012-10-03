@@ -36,7 +36,7 @@ gem 'jquery-rails'
 # gem 'capistrano'
 
 # To use debugger
-gem 'ruby-debug', :group => :development
+#gem 'ruby-debug', :group => :development
 
 gem "nifty-generators", :group => :development
 

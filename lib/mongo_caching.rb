@@ -27,7 +27,8 @@ module MongoCaching
 
       sync_from_proc = Proc.new do |record|
         value = record.send(from_field)
-        record.send(association).each{ |a| a.update_attribute(name, value) }
+        associated = record.send(association)
+        associated.each{ |i| i.update_attribute name, value }
       end
       cache_proc = Proc.new do
         value = self.send(from).send(from_field)

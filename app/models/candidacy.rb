@@ -1,3 +1,5 @@
+# coding: UTF-8
+
 class Candidacy
 
   include MongoMapper::Document
@@ -14,8 +16,7 @@ class Candidacy
   key :city, String
   key :status, String
 
-  #in case there is any data to access from www.asclaras.org later
-  key :asclaras_id, Integer
+  key :source_id, Integer
 
   many :donations
 
@@ -30,9 +31,5 @@ class Candidacy
       pp d.grantor.name + '-'+ d.value.to_s
     end
     donation_list
-  end
-
-  def donations_by_party_candidate(party=nil,candidate_name=nil,candidate_id_asclaras=nil)
-     
   end
 end
