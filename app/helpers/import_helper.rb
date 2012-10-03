@@ -355,7 +355,6 @@ module ImportHelper
     }
 
     m = Mechanize.new
-    threads = []
     queue = Queue.new
 
     years.each do |year|
@@ -367,7 +366,7 @@ module ImportHelper
 
           trs = page.parser.css 'table.table_mm_g tr[class*=row]'
           trs.each do |tr|
-            threads << Thread.new do
+            Thread.new do # works with mechanize
               tds = tr.children.select{ |td| td.element? }
 
               if i == 0 # avoid fetching same data
@@ -380,19 +379,15 @@ module ImportHelper
               queue << [Thread.current, tds, spans]
             end
 
-            if threads.size > 40
-              while queue.size > 0
-                item = queue.pop
-                threads.delete item[0].join
-                process_company year, reference_date, key, dolar_value, item[1], item[2]
-              end
+          end
+
+          Thread.list.each{ |t| t.join if t != Thread.current } if page == pages
+          while queue.size > 0
+            item = queue.pop
+            Process.fork do
+              process_company year, reference_date, key, dolar_value, item[1], item[2]
             end
           end
-        end
-
-        while queue.size > 0
-          item = queue.pop
-          process_company year, reference_date, key, dolar_value, item[1], item[2]
         end
       end
     end
@@ -425,6 +420,7 @@ module ImportHelper
     url_donation = "#{url_home}/candidato.php?CACodigo=%{candidate_id}"
 
     m = Mechanize.new
+    queue = Queue.new
     years = options[:year] ? [options[:year]] : [2002, 2004, 2006, 2008, 2010]
     #State = RJ = 1	... Todos -1
     state = options[:state] || -1
@@ -456,11 +452,20 @@ module ImportHelper
         links.each do |link|
           next unless link.href =~ /CACodigo=(.+)'/
           candidate_id = $1
+
+          Thread.new do # works with mechanize
+            page = m.get(url_donation % {:candidate_id => candidate_id})
+            queue << [Thread.current, page, year, candidate_id]
+          end
+        end
+
+        Thread.list.each{ |t| t.join if t != Thread.current } if links.count == 0
+        while queue.size > 0
+          item = queue.pop
+          item[0].join
           pp '============================'
           pp candidate_id
-
-          page = m.get(url_donation % {:candidate_id => candidate_id})
-          import_asclaras_donation(page, year, candidate_id)
+          import_asclaras_donation item[1], item[2], item[3]
         end
 
         offset += links.count

@@ -14,8 +14,8 @@ class Owner
   key :cnpj_root, String
   key :capital_type, String
   # group
-  key :group_id, ObjectId
-  belongs_to :group, :class_name => 'OwnerGroup'
+  #key :group_id, ObjectId
+  #belongs_to :group, :class_name => 'OwnerGroup'
   # company categorization
   key :naics, Array
   key :sector, String
