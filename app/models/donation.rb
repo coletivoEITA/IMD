@@ -16,22 +16,14 @@ class Donation
   cache_associated :state, :from => :candidacy
   cache_associated :city, :from => :candidacy
 
+  cache_associated :candidate_id, :from => :candidacy
+  belongs_to :candidate, :class_name => 'Owner'
+
   validates_presence_of :value
   validates_presence_of :candidacy
   validates_presence_of :grantor
   validates_uniqueness_of :grantor_id, :scope => [:candidacy_id, :value]
   validates_numericality_of :value
   validates_inclusion_of :type, :in => %w(direct committee), :allow_nil => true
-
-  def self.grouped_by(column, options = {})
-   map_function = "function() { emit( this.#{column}, 1); }"
-   
-   # put your logic here (not needed in my case)
-   reduce_function = %Q( function(key, values) {
-     return true;
-   })
-   
-   collection.map_reduce(map_function, reduce_function, options)
- end
 
 end

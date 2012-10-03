@@ -358,58 +358,58 @@ module ImportHelper
 
     m = Mechanize.new
     years = options[:year] ? [options[:year]] : [2002, 2004, 2006, 2008, 2010]
-	#State = RJ = 1	... Todos -1
+	#State = RJ = 18	... Todos -1
 	state = options[:state] || -1
   	#City = Rio de Janeiro = 3657 ... Todos -1
 	city = options[:city] || -1
 
-    if candidate_id = options[:candidate_id]
+    if candidate_id_asclaras = options[:candidate_id]
       year = years.first
       #set session attributtes 'year' 'state' 'city' 
 	  m.get(url_update_session % {:year => year, :state => state, :city => city})	
-      page = m.get(url_donation % {:candidate_id => candidate_id})
-      import_asclaras_donation(page, year)
+      page = m.get(url_donation % {:candidate_id => candidate_id_asclaras})
+      import_asclaras_donation(page, year, candidate_id_asclaras)
       return
     end
 
     years.each do |year|
-      #set session attributtes 'year' 'state' 'city' 
-	  m.get(url_update_session % {:year => year, :state => state, :city => city})	
-
       offset = options[:offset] || 0
       begin
+	    #set session attributtes 'year' 'state' 'city' 
+	    m.get(url_update_session % {:year => year, :state => state, :city => city})	
+
         page = m.get(url_candidacy % {:offset => offset})
         links = page.links
-
+			
         pp '----------------------------'
         pp "offset: #{offset}"
 
         #Get all link on a page as a Mechanize.Page.Link object
         links.each do |link|
           next unless link.href =~ /CACodigo=(.+)'/
-          candidate_id = $1
-          pp '============================'
-          pp candidate_id
+       	  candidate_id_asclaras = $1
+       	  pp '============================'
+          pp 'candidato ' + candidate_id_asclaras + ' ' + link.text
 
-          page = m.get(url_donation % {:candidate_id => candidate_id})
-          import_asclaras_donation(page, year)
-        end
+          page = m.get(url_donation % {:candidate_id => candidate_id_asclaras})
+          import_asclaras_donation(page, year, candidate_id_asclaras)
+        end		
 
         offset += links.count
       end while links.count > 0
     end
   end
 
-  def self.import_asclaras_donation(page, year)
+  def self.import_asclaras_donation(page, year, candidate_id_asclaras)
     candidate_name = page.parser.css('td.tituloI')[0].text
 
     #In case there is owner referenced by owner_name get it's object, case not create a new one
     candidate = Owner.find_or_create(nil, candidate_name, nil)
-    pp candidate
     candidate.save!
 
     #In case there is candidacy referenced by candidate get it's object
     candidacy = Candidacy.first_or_new(:year => year, :candidate_id => candidate.id)
+
     #In case not create a new one based on candidate_Data parsed  by Mechanize
     if candidacy.new_record?
       candidate_data = page.parser.css("table tr:nth-child(3) table th")
@@ -417,22 +417,26 @@ module ImportHelper
       candidacy.party = candidate_data[1].text.strip
 
       #index to control data index to import
-      data_index = 0
-      if "Vereador" == candidate_data[0].text.strip
+      index = 0
+	  if "Presidente" == candidacy.role
+        candidacy.state = "BR"
+        index = 5      
+      elsif ("Vereador" == candidacy.role) || ("Prefeito" == candidacy.role)
         uf = candidate_data[2].text().strip
         candidacy.city = uf.split("-")[0].strip
         candidacy.state = uf.split("-")[1].strip
-        data_index = 6
-      else "Presidente" == candidate_data[0].text.strip
-        candidacy.state = "BR"
-        data_index = 5
-      end
-
-      if "Eleito" == candidate_data[data_index].text.strip
+        index = 6	   	
+      elsif ("Senador" == candidacy.role) || ("Governador" == candidacy.role) || ("Deputado Federal" == candidacy.role) || ("Deputado Estadual" == candidacy.role) || ("Deputado Distrital" == candidacy.role)
+        candidacy.city = ''
+        candidacy.state = candidate_data[2].text().strip
+        index = 6	 
+	  end
+  			  
+      if "Eleito" == candidate_data[index].text.strip
         candidacy.status = "elected"
-      elsif "Não Eleito" == candidate_data[5].text.strip
+      elsif "Não Eleito" == candidate_data[index].text.strip
         candidacy.status = "not_elected"
-      elsif "Suplente" == candidate_data[5].text.strip
+      elsif "Suplente" == candidate_data[index].text.strip
         candidacy.status = "substitute"
       end
       #TODO:refactore - set candidadte_id as parameter of find_or_create
