@@ -164,6 +164,11 @@ module ImportHelper
     end
   end
 
+  def self.import_receita_company_info
+    m = Mechanize.new
+    url = "http://www.receita.fazenda.gov.br/PessoaJuridica/CNPJ/cnpjreva/Cnpjreva_Solicitacao2.asp?cnpj=%{cnpj}"
+  end
+
   def self.import_receita_companies_members(options = {})
     def self.get_page(cnpj)
       m = Mechanize.new
