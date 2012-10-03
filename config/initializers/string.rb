@@ -1,6 +1,6 @@
 # coding: UTF-8
 
-require 'iconv'
+require 'iconv' unless RUBY_VERSION >= "1.9"
 
 class String
 

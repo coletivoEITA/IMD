@@ -381,7 +381,7 @@ module ImportHelper
 
           end
 
-          Thread.list.each{ |t| t.join if t != Thread.current } if page == pages
+          Thread.join_all if page == pages
           while queue.size > 0
             item = queue.pop
             Process.fork do
@@ -459,10 +459,9 @@ module ImportHelper
           end
         end
 
-        Thread.list.each{ |t| t.join if t != Thread.current } if links.count == 0
+        Thread.join_all if links.count == 0
         while queue.size > 0
           item = queue.pop
-          item[0].join
           pp '============================'
           pp candidate_id
           import_asclaras_donation item[1], item[2], item[3]
