@@ -1,5 +1,7 @@
 # coding: UTF-8
 
+require 'iconv'
+
 class String
 
   def downcase
@@ -20,7 +22,7 @@ class String
       }
       self.encode Encoding.find('ASCII'), encoding_options
     else
-      #self.gsub(/[\x80-\xff]/,replacement)
+      Iconv.conv('ASCII//IGNORE', 'UTF8', self)
     end
   end
 
