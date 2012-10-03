@@ -49,7 +49,6 @@ class Share
 
   def create_owner
     self.owner ||= Owner.first_or_new "#{self.source} associado", :name => self.name, :formal_name => self.name
-    self.owner_id = self.owner.id
     self.owner.save!
   end
 

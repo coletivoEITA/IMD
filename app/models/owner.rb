@@ -78,6 +78,11 @@ class Owner
     formal_name = attributes[:formal_name]
 	source_id = attributes[:source_id]
 
+    ne = NameEquivalence.first :synonymous => name, :source => source
+    name = attributes[:name] = ne.name if ne
+    ne = NameEquivalence.first :synonymous => formal_name, :source => source
+    formal_name = attributes[:formal_name] = ne.name if ne
+
     name_n = name.filter_normalization if name
     formal_name_n = formal_name.filter_normalization if formal_name
 
@@ -125,34 +130,28 @@ class Owner
 
     def __recursion(company, percentage, share_reference_date, visited = [])
       shares = company.owned_shares.on.greatest.with_reference_date(share_reference_date)
-      list = []
-
-      if company != visited.first # only indirect
-        owned = shares.map do |owned_share|
-          owned_company = owned_share.company
-          next if owned_share.percentage.nil?
-          next if owned_share.control?
-
-          "#{owned_company.name} (#{owned_share.percentage.c}%, final=#{((owned_share.percentage*percentage)/100.0).c}%)"
-        end.join(' ')
-        list << "#{company.name} (#{percentage.c}): (#{owned})\n" if percentage <= 50
-      end
-
-      list += shares.map do |owned_share|
+      shares.map do |owned_share|
         owned_company = owned_share.company
         next if owned_share.percentage.nil?
+        next if company == visited.first and owned_share.control?
 
         next if visited.include? owned_company
         visited << owned_company
 
-        p = percentage ? owned_share.percentage*percentage : owned_share.percentage
-        __recursion(owned_company, p, share_reference_date, visited)
+        p = percentage ? (owned_share.percentage*percentage)/100 : owned_share.percentage
+        owned = __recursion(owned_company, p, share_reference_date, visited)
+        if owned.empty?
+          next if company == visited.first
+          "#{owned_company.name} (#{owned_share.percentage.c}%, final=#{p.c}%)"
+        else
+          owned = owned.join(', ')
+          next if owned.blank?
+          "#{owned_company.name} => {#{owned}}"
+        end
       end
-
-      list
     end
 
-    __recursion(self, nil, share_reference_date, [self])
+    __recursion(self, nil, share_reference_date, [self]).flatten.compact
   end
   def indirect_total_controlled_companies(share_reference_date = nil)
 

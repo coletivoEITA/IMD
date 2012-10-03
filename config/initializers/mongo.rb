@@ -13,6 +13,12 @@ Owner.ensure_index :formal_name
 Owner.ensure_index :name_n
 Owner.ensure_index :formal_name_n
 
+NameEquivalence.ensure_index :name
+NameEquivalence.ensure_index :synonymous
+NameEquivalence.ensure_index [[:name, 1], [:synonymous, 1]]
+NameEquivalence.ensure_index [[:name, 1], [:synonymous, 1], [:source, 1]]
+NameEquivalence.ensure_index [[:synonymous, 1], [:source, 1]]
+
 Share.ensure_index :source
 Share.ensure_index :owner_id
 Share.ensure_index :company_id

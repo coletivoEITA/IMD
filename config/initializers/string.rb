@@ -1,6 +1,6 @@
 # coding: UTF-8
 
-require 'iconv'
+require 'iconv' unless RUBY_VERSION >= "1.9"
 
 class String
 
@@ -27,7 +27,7 @@ class String
   end
 
   def filter_normalization
-    self.gsub('S/A', '').gsub('S.A.', '').downcase.remove_non_ascii
+    self.gsub(/(s.a|s\/a)\.?/i, '').downcase.remove_non_ascii.strip
   end
 
 end
