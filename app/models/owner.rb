@@ -77,6 +77,11 @@ class Owner
     name = attributes[:name]
     formal_name = attributes[:formal_name]
 
+    ne = NameEquivalence.first :synonymous => name, :source => source
+    name = attributes[:name] = ne.name if ne
+    ne = NameEquivalence.first :synonymous => formal_name, :source => source
+    formal_name = attributes[:formal_name] = ne.name if ne
+
     name_n = name.filter_normalization if name
     formal_name_n = formal_name.filter_normalization if formal_name
 

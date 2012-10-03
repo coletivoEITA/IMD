@@ -2,16 +2,10 @@
 require File.dirname(__FILE__) + '/../config/boot'
 
 ImportHelper.clear_db
+ImportHelper.import_name_equivalences
 ImportHelper.import_exame_maiores 1.868
 ImportHelper.import_valor 'db/ranking-valor-2011.csv', '2011-12-31'
 #ImportHelper.import_companies 'db/mdic-importers.csv', 'db/mdic-exporters.csv'
 ImportHelper.import_economatica_csv 'db/economatica-period-2011-12-31.csv', '2011-12-31'
 ImportHelper.import_economatica_csv 'db/economatica-period-2012-09-05.csv', '2012-09-05'
-
-def companies_and_members
-  ImportHelper.import_exame_maiores
-  ImportHelper.import_economatica_csv 'db/economatica-period-2012-09-05.csv', '2012-09-05'
-  ImportHelper.import_receita_companies_members
-end
-
 

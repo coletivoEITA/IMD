@@ -24,14 +24,19 @@ module ExportHelper
 
         total = owners.sum(&"total_#{attr}".to_sym)
 
-        owners.each_with_index do |owner, i|
+        i = 1
+        owners.each do |owner|
           pp owner
 
           owners_shares = owner.owners_shares.on.greatest.with_reference_date(share_reference_date).all
           owned_shares = owner.owned_shares.on.greatest.with_reference_date(share_reference_date).all
 
           controlled = owners_shares.first
-          controlled = (controlled and controlled.control?) ? 'sim' : ''
+          is_controlled = controlled && controlled.control?
+          controlled = is_controlled ? 'sim' : ''
+
+          # uncomment to skip controlled
+          next if is_controlled
 
           valor_value = owner.balances.valor.with_reference_date(balance_reference_date).first
           valor_value = valor_value.nil? ? '0.00' : (valor_value.value(attr)/1000000).c
@@ -60,13 +65,14 @@ module ExportHelper
             "#{s.owner.name} (#{s.percentage.c}%)"
           end.join(' ')
 
-          csv << [(i+1).to_s, controlled, owner.name, owner.formal_name, "'#{owner.cgc.first}'",
+          csv << [i.to_s, controlled, owner.name, owner.formal_name, "'#{owner.cgc.first}'",
                   valor_value, economatica_value,
                   indirect_value, total_value,
                   index_value, owner.source,
                   power_direct_control, power_direct_parcial,
                   power_indirect_control, power_indirect_parcial,
                   shareholders, owner.capital_type]
+          i += 1
         end
       end
     end

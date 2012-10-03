@@ -9,6 +9,18 @@ module ImportHelper
     Candidacy.destroy_all
     Donation.destroy_all
     CompanyMember.destroy_all
+    #NameEquivalence.destroy_all
+  end
+
+  def self.import_name_equivalences
+    csv = CSV.table 'db/name_equivalences.csv', :headers => true, :header_converters => nil, :converters => nil
+    csv.each_with_index do |row, i|
+      name = row.values_at(0).first
+      synonymous = row.values_at(1).first
+      source = row.values_at(2).first
+
+      ne = NameEquivalence.first_or_create :name => name, :synonymous => synonymous, :source => source
+    end
   end
 
   EconomaticaCSVColumns = ActiveSupport::OrderedHash[
@@ -389,9 +401,7 @@ module ImportHelper
           Thread.join_all if page == pages
           while queue.size > 0
             item = queue.pop
-            Process.fork do
-              process_company year, reference_date, key, dolar_value, item[1], item[2]
-            end
+            process_company year, reference_date, key, dolar_value, item[1], item[2]
           end
         end
       end
