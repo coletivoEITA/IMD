@@ -39,7 +39,7 @@ CompanyMember.ensure_index :company_id
 Donation.ensure_index :candidacy_id
 Donation.ensure_index :grantor_id
 Donation.ensure_index :value
-Donation.ensure_index [[:candidacy_id, 1], [:grantor_id, 1], [:value, 1]]
+Donation.ensure_index :type
 
 Candidacy.ensure_index :candidate_id
 Candidacy.ensure_index :year

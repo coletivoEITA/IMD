@@ -442,6 +442,13 @@ module ImportHelper
     #City = Rio de Janeiro = 3662 ... Todos -1
     city = options[:city] || -1
 
+    if candidate_id = options[:candidate_id] and role_id = options[:role_id]
+      year = years.first
+      page = m.get(url_donation % {:candidate_id => candidate_id, :role_id => role_id, :year => year})
+      import_asclaras_donation page, year, candidate_id
+      return
+    end
+
     years.each do |year|
       offset = options[:offset] || 0
       begin
@@ -519,17 +526,26 @@ module ImportHelper
       candidacy.save!
     end
 
+    # donations can be validated as unique,
+    # they may even repeat, so we need to clean before load
+    candidacy.donations.destroy_all
+
     #loop to save all donation from this candidacy
     page.parser.css('#aba13 script').each do |script|
-      next unless script.text =~ /"(.+)".+"(.+)".+"(.+)".+"(.+)"/
-      grantor_id_asclaras = $1
-      grantor_name = $2
-      grantor_cgc = $3
-      value = $4.gsub(".","").gsub(",",".").to_f
-      grantor = Owner.first_or_new 'àsclaras', :cgc => grantor_cgc, :name => grantor_name, :asclaras_id => grantor_id_asclaras
-      grantor.save!
-      donation = Donation.first_or_new :candidacy_id => candidacy.id, :grantor_id => grantor.id, :value => value
-      donation.save!
+      next unless script.text =~ /ids_(.+) .+Array\((.+)\).+Array\((.+)\).+Array\((.+)\).+Array\((.+)\)/
+      type = $1 == 'diretas' ? 'direct' : 'committee'
+      data = JSON.parse("[#{$2}]").zip JSON.parse("[#{$3}]"), JSON.parse("[#{$4}]"), JSON.parse("[#{$5}]")
+
+      data.each do |donation|
+        asclaras_id, name, cgc = donation[0], donation[1], donation[2]
+        value = donation[3].gsub(".","").gsub(",",".").to_f
+
+        grantor = Owner.first_or_new 'àsclaras', :cgc => cgc, :name => name, :asclaras_id => asclaras_id
+        grantor.save!
+
+        donation = Donation.create! :candidacy => candidacy, :grantor => grantor,
+          :value => value, :type => type
+      end
     end
   end
   #end method import_asclaras_donation
