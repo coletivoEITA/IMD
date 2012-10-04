@@ -430,17 +430,17 @@ module ImportHelper
 
   def self.import_asclaras(options = {})
     url_home = 'http://asclaras.org.br'
-	# asclaras.org live on 3 out 2012
+    # asclaras.org live on 3 out 2012
     url_candidacy = "#{url_home}/partes/index/@candidatos_frame.php?CAoffset=%{offset}&ano=%{year}&estado=%{state}&municipio=%{city}"
     url_donation = "#{url_home}/@candidato.php?CACodigo=%{candidate_id}&cargo=%{role_id}&ano=%{year}"
 
     m = Mechanize.new
     queue = Queue.new
     years = options[:year] ? [options[:year]] : [2002, 2004, 2006, 2008, 2010]
-	#State = RJ = 18	... Todos -1
-	state = options[:state] || -1
-  	#City = Rio de Janeiro = 3662 ... Todos -1
-	city = options[:city] || -1
+    #State = RJ = 18	... Todos -1
+    state = options[:state] || -1
+    #City = Rio de Janeiro = 3662 ... Todos -1
+    city = options[:city] || -1
 
     years.each do |year|
       offset = options[:offset] || 0
@@ -452,8 +452,8 @@ module ImportHelper
         #Get all link on a page as a Mechanize.Page.Link object
         links.each do |link|
           next unless link.href =~ /CACodigo=(.+)&cargo=(.+)/
-       	  candidate_id_asclaras = $1.to_i
-       	  role_id_asclaras = $2.to_i
+          candidate_id_asclaras = $1.to_i
+          role_id_asclaras = $2.to_i
 
           Thread.new do # works with mechanize
             page = m.get(url_donation % {:candidate_id => candidate_id_asclaras, :role_id => role_id_asclaras, :year => year})
@@ -465,10 +465,10 @@ module ImportHelper
         while queue.size > 0
           item = queue.pop
 
-	   	  pp '============================'
-		  pp 'candidato ' + item[3].to_s + ' ' + item[4].to_s
+          pp '============================'
+          pp 'candidato ' + item[3].to_s + ' ' + item[4].to_s
 
-          import_asclaras_donation(item[1], item[2], item[3])
+          import_asclaras_donation item[1], item[2], item[3], item[4]
         end
 
         offset += links.count
@@ -477,11 +477,13 @@ module ImportHelper
   end
   #end method import_asclaras
 
-  def self.import_asclaras_donation(page, year, candidate_id_asclaras)
-    title = page.parser.css('td.tituloI')[0]
-    return if title.nil?
+  def self.import_asclaras_donation(page, year, candidate_id_asclaras, candidate_name = nil)
+    if candidate_name.nil?
+      title = page.parser.css('td.tituloI')[0]
+      return if title.nil?
+      candidate_name = title.text
+    end
 
-    candidate_name = title.text
     #In case there is owner referenced by owner_name get it's object, case not create a new one
     candidate = Owner.first_or_new 'àsclaras', :name => candidate_name, :asclaras_id => candidate_id_asclaras
     candidate.save!
@@ -494,7 +496,7 @@ module ImportHelper
       candidacy.party = candidate_data[1].text.strip
       #index to control data index to import
       index = 0
-	  if "Presidente" == candidacy.role
+      if "Presidente" == candidacy.role
         candidacy.state = "BR"
         index = 5
       elsif ("Vereador" == candidacy.role) || ("Prefeito" == candidacy.role)
@@ -506,7 +508,7 @@ module ImportHelper
         candidacy.city = ''
         candidacy.state = candidate_data[2].text().strip
         index = 6
-	  end
+      end
       if "Eleito" == candidate_data[index].text.strip
         candidacy.status = "elected"
       elsif "Não Eleito" == candidate_data[index].text.strip
@@ -517,18 +519,18 @@ module ImportHelper
       candidacy.save!
     end
 
-	#loop to save all donation from this candidacy
-	page.parser.css('#aba13 script').each do |script|
-	  next unless script.text =~ /"(.+)".+"(.+)".+"(.+)".+"(.+)"/
-	  grantor_id_asclaras = $1
-	  grantor_name = $2
-	  grantor_cgc = $3
-	  value = $4.gsub(".","").gsub(",",".").to_f
-	  grantor = Owner.first_or_new 'àsclaras', :cgc => grantor_cgc, :name => grantor_name, :asclaras_id => grantor_id_asclaras
+    #loop to save all donation from this candidacy
+    page.parser.css('#aba13 script').each do |script|
+      next unless script.text =~ /"(.+)".+"(.+)".+"(.+)".+"(.+)"/
+      grantor_id_asclaras = $1
+      grantor_name = $2
+      grantor_cgc = $3
+      value = $4.gsub(".","").gsub(",",".").to_f
+      grantor = Owner.first_or_new 'àsclaras', :cgc => grantor_cgc, :name => grantor_name, :asclaras_id => grantor_id_asclaras
       grantor.save!
       donation = Donation.first_or_new :candidacy_id => candidacy.id, :grantor_id => grantor.id, :value => value
       donation.save!
-	end
+    end
   end
   #end method import_asclaras_donation
 end
