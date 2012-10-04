@@ -480,6 +480,7 @@ module ImportHelper
           data[:votes] = tds[4].text.strip.gsub('.', '').to_i
           data[:status] = tds[7].text.strip
 
+          Thread.join_to_limit(30)
           Thread.new do # works with mechanize
             page = m.get(url_donation % {:candidate_id => data[:asclaras_id], :role_id => data[:role_id], :year => year})
             queue << [Thread.current, page, year, data]
