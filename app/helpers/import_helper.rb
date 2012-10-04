@@ -411,6 +411,7 @@ module ImportHelper
   def self.import_valor(file, reference_date)
     csv = CSV.table file, :headers => true, :header_converters => nil, :converters => nil
     csv.each_with_index do |row, i|
+      ranking_position = row.values_at(0).first
       name = row.values_at(2).first
       state = row.values_at(3).first
       sector = row.values_at(4).first
@@ -419,6 +420,7 @@ module ImportHelper
       owner = Owner.first_or_new 'Valor', :name => name
       owner.state = state
       owner.sector = sector
+      owner.valor_ranking_position = ranking_position
       owner.save!
 
       balance = Balance.first_or_new(:company_id => owner.id, :source => "Valor",
