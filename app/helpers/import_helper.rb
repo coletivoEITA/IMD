@@ -529,8 +529,7 @@ module ImportHelper
     # they may even repeat, so we need to clean before load
     candidacy.donations.destroy_all
 
-    #loop to save all donation from this candidacy
-    page.parser.css('#aba13 script').each do |script|
+    page.parser.css('table script').each do |script|
       next unless script.text =~ /ids_(.+) .+Array\((.+)\).+Array\((.+)\).+Array\((.+)\).+Array\((.+)\)/
       type = $1 == 'diretas' ? 'direct' : 'committee'
       data = JSON.parse("[#{$2}]").zip JSON.parse("[#{$3}]"), JSON.parse("[#{$4}]"), JSON.parse("[#{$5}]")
