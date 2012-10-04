@@ -1,7 +1,8 @@
 # coding: UTF-8
 
 module ExportHelper
-  def self.export_companies_donations_by_party(options = {})   
+
+  def self.export_companies_donations_by_party(options = {})
     FasterCSV.open("db/companeis-donation-by-party.csv", "w") do |csv|
 	  #set header
       csv << ['nome', 'razão social', 'cnpj', 'total doado', '% por partido']
@@ -18,10 +19,10 @@ module ExportHelper
 
 		sum_donated = owner.donations_made.sum(&:value)
 		#concat a percentage by party
-		percentage_by_party = .group_by{ |d| d.candidacy.party }.map do |party, donations|			
-		  percentage = (donations.sum(&:value) / sum_donated) * 100			  
+		percentage_by_party = owner.donations_made.group_by{ |d| d.candidacy.party }.map do |party, donations|
+		  percentage = (donations.sum(&:value) / sum_donated) * 100
 		  #TODO:refactore - round percentage to 35.0 => 35... 34.90999 => 34.91
-		  "#{party} (#{percentage}%)"			   
+		  "#{party} (#{percentage}%)"
 		end.join(' ')
 		#create on line of grantor donations by party
 		csv << [owner.name, owner.formal_name, owner.cgc.first,
@@ -41,8 +42,8 @@ module ExportHelper
 	    sum_donated = owner.donations_made.sum(&:value)
 		#concat a percentage by candidacy
   	    percentage_by_candidacy = owner.donations_made.group_by{ |d| d.candidacy }.map do |candidacy, donations|
-	      percentage = (donations.sum(&:value) / sum_donated) * 100			  		
-	      "#{candidacy.year} - #{candidacy.candidate.name} - #{candidacy.role} (#{percentage})"			   		
+	      percentage = (donations.sum(&:value) / sum_donated) * 100
+	      "#{candidacy.year} - #{candidacy.candidate.name} - #{candidacy.role} (#{percentage})"
 		end.join(' ')
    		#create on line of grantor donations by party
         csv << [owner.name, owner.formal_name, owner.cgc.first,
