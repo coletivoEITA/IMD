@@ -445,7 +445,7 @@ module ImportHelper
     if candidate_id = options[:candidate_id] and role_id = options[:role_id]
       year = years.first
       page = m.get(url_donation % {:candidate_id => candidate_id, :role_id => role_id, :year => year})
-      import_asclaras_donation page, year, candidate_id
+      import_asclaras_candidate page, year, {:asclaras_id => options[:candidate_id]}
       return
     end
 
@@ -457,14 +457,32 @@ module ImportHelper
         pp '----------------------------'
         pp "offset: #{offset}"
         #Get all link on a page as a Mechanize.Page.Link object
-        links.each do |link|
-          next unless link.href =~ /CACodigo=(.+)&cargo=(.+)/
-          candidate_id_asclaras = $1.to_i
-          role_id_asclaras = $2.to_i
+        page.parser.css('tr').each do |tr|
+          tds = tr.css('td.linhas1') + tr.css('td.linhas2')
+          next if tds.size == 0
+
+          link = tds[0].css('a')[0]
+          next unless link.attr('href') =~ /CACodigo=(.+)&cargo=(.+)/
+
+          data = {}
+          data[:asclaras_id] = $1.to_i
+          data[:role_id] = $2.to_i
+          data[:name] = link.text.strip
+          data[:role] = tds[1].text.strip
+          city_state = tds[2].text.strip
+          if city_state.size == 2
+            data[:state] = city_state
+          else
+            data[:city] = city_state.split('/')[0]
+            data[:state] = city_state.split('/')[1]
+          end
+          data[:party] = tds[3].text.strip
+          data[:votes] = tds[4].text.strip.gsub('.', '').to_i
+          data[:status] = tds[7].text.strip
 
           Thread.new do # works with mechanize
-            page = m.get(url_donation % {:candidate_id => candidate_id_asclaras, :role_id => role_id_asclaras, :year => year})
-            queue << [Thread.current, page, year, candidate_id_asclaras, link.text]
+            page = m.get(url_donation % {:candidate_id => data[:asclaras_id], :role_id => data[:role_id], :year => year})
+            queue << [Thread.current, page, year, data]
           end
         end
 
@@ -473,58 +491,34 @@ module ImportHelper
           item = queue.pop
 
           pp '============================'
-          pp 'candidato ' + item[3].to_s + ' ' + item[4].to_s
+          pp "candidato #{item[3][:asclaras_id]} #{item[3][:name]}"
 
-          import_asclaras_donation item[1], item[2], item[3], item[4]
+          import_asclaras_candidate item[1], item[2], item[3]
         end
 
         offset += links.count
       end while links.count > 0
     end
   end
-  #end method import_asclaras
 
-  def self.import_asclaras_donation(page, year, candidate_id_asclaras, candidate_name = nil)
-    if candidate_name.nil?
+  def self.import_asclaras_candidate(page, year, data = {})
+    if data[:name].nil?
       title = page.parser.css('td.tituloI')[0]
       return if title.nil?
-      candidate_name = title.text
+      data[:name] = title.text
     end
 
     #In case there is owner referenced by owner_name get it's object, case not create a new one
-    candidate = Owner.first_or_new 'àsclaras', :asclaras_id => candidate_id_asclaras
-    candidate.name = candidate_name
+    candidate = Owner.first_or_new 'àsclaras', :name => data[:name]
     candidate.save!
 
     #In case there is candidacy referenced by candidate get it's object
-    candidacy = Candidacy.first_or_new(:year => year, :candidate_id => candidate.id, :asclaras_id => candidate_id_asclaras)
+    candidacy = Candidacy.first_or_new(:year => year, :candidate_id => candidate.id, :asclaras_id => data[:asclaras_id])
     #In case not create a new one based on candidate_Data parsed  by Mechanize
     if candidacy.new_record?
-      candidate_data = page.parser.css("table tr:nth-child(3) table th")
-      candidacy.role = candidate_data[0].text.strip
-      candidacy.party = candidate_data[1].text.strip
-      #index to control data index to import
-      index = 0
-      if "Presidente" == candidacy.role
-        candidacy.state = "BR"
-        index = 5
-      elsif ("Vereador" == candidacy.role) || ("Prefeito" == candidacy.role)
-        uf = candidate_data[2].text().strip
-        candidacy.city = uf.split("-")[0].strip
-        candidacy.state = uf.split("-")[1].strip
-        index = 6
-      elsif ("Senador" == candidacy.role) || ("Governador" == candidacy.role) || ("Deputado Federal" == candidacy.role) || ("Deputado Estadual" == candidacy.role) || ("Deputado Distrital" == candidacy.role)
-        candidacy.city = ''
-        candidacy.state = candidate_data[2].text().strip
-        index = 6
-      end
-      if "Eleito" == candidate_data[index].text.strip
-        candidacy.status = "elected"
-      elsif "Não Eleito" == candidate_data[index].text.strip
-        candidacy.status = "not_elected"
-      elsif "Suplente" == candidate_data[index].text.strip
-        candidacy.status = "substitute"
-      end
+      data.delete :role_id
+      data[:status] = Candidacy::Status[data[:status]]
+      candidacy.attributes = data
       candidacy.save!
     end
 
@@ -550,5 +544,5 @@ module ImportHelper
       end
     end
   end
-  #end method import_asclaras_donation
+
 end

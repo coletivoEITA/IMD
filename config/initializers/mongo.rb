@@ -45,6 +45,7 @@ Donation.ensure_index :type
 Candidacy.ensure_index :candidate_id
 Candidacy.ensure_index :year
 Candidacy.ensure_index :asclaras_id
+Candidacy.ensure_index [[:candidate_id, 1], [:year, 1]]
 Candidacy.ensure_index [[:candidate_id, 1], [:year, 1], [:asclaras_id, 1]]
 
 # for sorting

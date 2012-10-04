@@ -12,16 +12,22 @@ class Candidacy
 
   key :role, String
   key :party, String
+
   key :state, String
   key :city, String
+
+  key :votes, Integer
   key :status, String
 
   key :asclaras_id, Integer
 
+  key :revenue, Float
+  key :revenue_per_vote, Float
+
   many :donations
 
   validates_presence_of :candidate
-  validates_uniqueness_of :year, :scope => [:candidate_id, :asclaras_id]
+  validates_uniqueness_of :year, :scope => [:candidate_id]
   validates_inclusion_of :status, :in => %w(elected not_elected substitute), :allow_nil => true
 
   def top_donations(l = 10)
@@ -32,4 +38,25 @@ class Candidacy
     end
     donation_list
   end
+
+  Roles = {
+    'Presidente' => 1,
+    'Governador' => 3,
+    'Senador' => 5,
+    'Deputado Federal' => 6,
+    'Deputado Estadual' => 7,
+    'Deputado Distrital' => 8,
+    'Prefeito' => 11,
+    'Vereador' => 13,
+  }
+  Status = {
+    "Eleito" => "elected",
+    "Não Eleito" => "not_elected",
+    "Suplente" => "substitute",
+  }
+
+  def role_id
+    Roles[self.role]
+  end
+
 end
