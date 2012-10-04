@@ -133,7 +133,6 @@ class Owner
       shares.map do |owned_share|
         owned_company = owned_share.company
         next if owned_share.percentage.nil?
-        next if company == visited.first and owned_share.control?
 
         next if visited.include? owned_company
         visited << owned_company
@@ -144,7 +143,7 @@ class Owner
           next if company == visited.first
           "#{owned_company.name} (#{owned_share.percentage.c}%, final=#{p.c}%)"
         else
-          owned = owned.join(', ')
+          owned = owned.compact.join(', ')
           next if owned.blank?
           "#{owned_company.name} => {#{owned}}"
         end
@@ -204,7 +203,7 @@ class Owner
   def calculate_indirect_value(attr = :revenue, balance_reference_date = nil, share_reference_date = nil)
 
     def __recursion(company, attr = :revenue, balance_reference_date = nil, share_reference_date = nil,
-                    visited = [], controlled_companies = [])
+                    visited = [], fully_controlled = [])
 
       company.owned_shares.on.with_reference_date(share_reference_date).inject(0) do |sum, owned_share|
         owned_company = owned_share.company
@@ -212,7 +211,8 @@ class Owner
         next 0 if owned_share.percentage.nil?
 
         is_controller = owned_share.control?
-        #next 0 if not is_controller and controlled_companies.include?(owned_company)
+        fully_controlled << owned_company if is_controller
+        next 0 if not is_controller and fully_controlled.include?(owned_company)
 
         next 0 if visited.include? owned_company
         visited << owned_company

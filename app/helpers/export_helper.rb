@@ -76,8 +76,6 @@ module ExportHelper
 
         i = 1
         owners.each do |owner|
-          pp owner
-
           owners_shares = owner.owners_shares.on.greatest.with_reference_date(share_reference_date).all
           owned_shares = owner.owned_shares.on.greatest.with_reference_date(share_reference_date).all
 
