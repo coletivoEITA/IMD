@@ -12,6 +12,7 @@ Owner.ensure_index :name
 Owner.ensure_index :formal_name
 Owner.ensure_index :name_n
 Owner.ensure_index :formal_name_n
+Owner.ensure_index :asclaras_id
 Owner.ensure_index [[:name, 1], [:asclaras_id, 1]]
 
 NameEquivalence.ensure_index :name
@@ -43,6 +44,7 @@ Donation.ensure_index :type
 
 Candidacy.ensure_index :candidate_id
 Candidacy.ensure_index :year
+Candidacy.ensure_index :asclaras_id
 Candidacy.ensure_index [[:candidate_id, 1], [:year, 1], [:asclaras_id, 1]]
 
 # for sorting
