@@ -27,7 +27,7 @@ class Candidacy
   many :donations
 
   validates_presence_of :candidate
-  validates_uniqueness_of :year, :scope => [:candidate_id]
+  validates_uniqueness_of :year, :scope => [:candidate_id, :asclaras_id]
   validates_inclusion_of :status, :in => %w(elected not_elected substitute), :allow_nil => true
 
   def top_donations(l = 10)
