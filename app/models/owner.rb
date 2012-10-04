@@ -44,6 +44,8 @@ class Owner
   key :indirect_patrimony, Float, :default => 0
   key :total_patrimony, Float, :default => 0
 
+  key :valor_ranking_position, Integer
+
   # normalized versions
   key :name_n, String
   key :formal_name_n, String
