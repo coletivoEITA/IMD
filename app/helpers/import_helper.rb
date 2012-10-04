@@ -454,8 +454,10 @@ module ImportHelper
       begin
         page = m.get(url_candidacy % {:offset => offset, :year => year, :state => state, :city => city})
         links = page.links
+
         pp '----------------------------'
         pp "offset: #{offset}"
+
         #Get all link on a page as a Mechanize.Page.Link object
         page.parser.css('tr').each do |tr|
           tds = tr.css('td.linhas1') + tr.css('td.linhas2')
