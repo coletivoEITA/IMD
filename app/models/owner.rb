@@ -208,19 +208,26 @@ class Owner
       company.owned_shares.on.with_reference_date(share_reference_date).inject(0) do |sum, owned_share|
         owned_company = owned_share.company
 
-        next 0 if owned_share.percentage.nil?
+        next sum if owned_share.percentage.nil?
 
+        # company controls owned_company? (is percentage bigger than 50%?)
         is_controller = owned_share.control?
         fully_controlled << owned_company if is_controller
-        next 0 if not is_controller and fully_controlled.include?(owned_company)
 
-        next 0 if visited.include? owned_company
+        # company has parcial controll of owned_company,
+        # but owned_company is fully controlled by another company,
+        # so we set wij = 0
+        next sum if not is_controller and fully_controlled.include?(owned_company)
+
+        next sum if visited.include? owned_company
         visited << owned_company
 
         total_value = owned_company.send("total_#{attr}")
         if total_value.zero?
           own_value = owned_company.send("own_#{attr}")
-          own_value = owned_company.calculate_own_value(attr, balance_reference_date)
+          if own_value.zero?
+            own_value = owned_company.calculate_own_value(attr, balance_reference_date)
+          end
 
           indirect_value = owned_company.send("indirect_#{attr}")
           if indirect_value.zero?
@@ -236,8 +243,9 @@ class Owner
         end
 
         w = is_controller ? 1 : owned_share.percentage/100
+        x = w * total_value
 
-        sum + w * total_value
+        sum + x
       end
     end
 
@@ -249,8 +257,9 @@ class Owner
   def calculate_value(attr = :revenue, balance_reference_date = nil, share_reference_date = nil)
     self.calculate_own_value attr, balance_reference_date
     self.calculate_indirect_value attr, balance_reference_date, share_reference_date
-    self.send "total_#{attr}=", self.send("own_#{attr}") + self.send("indirect_#{attr}")
+    v = self.send "total_#{attr}=", self.send("own_#{attr}") + self.send("indirect_#{attr}")
     self.save
+    v
   end
 
   def cgc=(value)
