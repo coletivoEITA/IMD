@@ -492,8 +492,10 @@ module ImportHelper
     end
 
     #In case there is owner referenced by owner_name get it's object, case not create a new one
-    candidate = Owner.first_or_new 'àsclaras', :name => candidate_name, :asclaras_id => candidate_id_asclaras
+    candidate = Owner.first_or_new 'àsclaras', :asclaras_id => candidate_id_asclaras
+    candidate.name = candidate_name
     candidate.save!
+
     #In case there is candidacy referenced by candidate get it's object
     candidacy = Candidacy.first_or_new(:year => year, :candidate_id => candidate.id, :asclaras_id => candidate_id_asclaras)
     #In case not create a new one based on candidate_Data parsed  by Mechanize
