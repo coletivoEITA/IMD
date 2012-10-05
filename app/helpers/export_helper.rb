@@ -57,10 +57,13 @@ module ExportHelper
     def self.export_raking(attr = :revenue, balance_reference_date = '2011-12-31', share_reference_date = '2012-09-05')
 
       puts 'calculating values'
+      Share.each{ |s| s.calculate_percentage; s.save }
       CalculationHelper.calculate_owners_value attr, balance_reference_date, share_reference_date
 
       puts 'loading data'
-      owners = Owner.order("total_#{attr}".to_sym.desc).all
+      uniao = Owner.find_by_name 'Uniao Federal (Tesouro Nacional)'
+      value_field = "total_#{attr}".to_sym
+      owners = Owner.order(value_field.desc).where(:name.ne => 'Acoes em Tesouraria').all
 
       puts 'exporting data'
       CSV.open("db/#{attr}-ranking.csv", "w") do |csv|
@@ -74,13 +77,13 @@ module ExportHelper
 
         total = owners.sum(&"total_#{attr}".to_sym)
 
-        i = 1
+        i = 0
         owners.each do |owner|
           owners_shares = owner.owners_shares.on.greatest.with_reference_date(share_reference_date).all
           owned_shares = owner.owned_shares.on.greatest.with_reference_date(share_reference_date).all
 
           controlled = owners_shares.first
-          is_controlled = controlled && controlled.control?
+          is_controlled = controlled && controlled.owner != uniao && controlled.control?
           controlled = is_controlled ? 'sim' : ''
 
           # uncomment to skip controlled

@@ -13,6 +13,7 @@ module ImportHelper
   end
 
   def self.import_name_equivalences
+    NameEquivalence.destroy_all
     csv = CSV.table 'db/name_equivalences.csv', :headers => true, :header_converters => nil, :converters => nil
     csv.each_with_index do |row, i|
       name = row.values_at(0).first
@@ -135,6 +136,8 @@ module ImportHelper
       next if country != 'BR' # only brazilian companies
       next if cnpj == '-'
 
+      share_class = 'ON' if share_class == 'Ord'
+
       cnpj = cnpj.to_i
       cnpj = cnpj.zero? ? nil : ('%014d' % cnpj) # fix CNPJ format
 
@@ -149,11 +152,15 @@ module ImportHelper
         column_index += 1
         next if field.blank?
 
+        value = 'ON' if field == :classes and value == 'Ord'
+
         # jump preprocessed
         next if ['cgc', 'name'].include?(field)
 
         # create balance and share if this is their first field
         if field == 'balance_months'
+          # here we finished getting company data
+          company.save!
           balance.save if balance
           balance = Balance.first_or_new(:company_id => company.id, :source => "Economatica",
                                          :reference_date => reference_date)
