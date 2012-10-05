@@ -70,7 +70,7 @@ module ExportHelper
                 'Indicador', 'Fonte',
                 'Poder direto - controle', 'Poder direto - parcial',
                 'Poder indireto - controle', 'Poder indireto - parcial',
-                'Composição acionária direta', 'Estatal ou Privada?']
+                'Composição acionária direta', 'AUX somatoria composicao', 'Estatal ou Privada?']
 
         total = owners.sum(&"total_#{attr}".to_sym)
 
@@ -113,13 +113,15 @@ module ExportHelper
             "#{s.owner.name} (#{s.percentage.c}%)"
           end.join("\n")
 
+          sum = owners_shares.sum{ |s| s.percentage.nil? ? 0 : s.percentage }
+
           csv << [i.to_s, owner.valor_ranking_position, controlled, owner.name, owner.formal_name, "'#{owner.cgc.first}'",
                   valor_value, economatica_value,
                   indirect_value, total_value,
                   index_value, owner.source,
                   power_direct_control, power_direct_parcial,
                   power_indirect_control, power_indirect_parcial,
-                  shareholders, owner.capital_type]
+                  shareholders, sum, owner.capital_type]
           i += 1 unless is_controlled
         end
       end

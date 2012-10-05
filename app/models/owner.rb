@@ -123,9 +123,16 @@ class Owner
 
   def value(attr, reference_date = nil)
     scoped = self.balances.with_reference_date(reference_date)
-    balance = scoped.economatica.first || scoped.valor.first
-    return 0 if balance.nil?
-    balance.value(attr)
+    value = 0
+    # get balance value in the following preference order
+    ['Economatica', 'Valor'].each do |source|
+      balance = scoped.where(:source => source).first
+      next if balance.nil?
+
+      value = balance.value(attr)
+      break if !value.zero?
+    end
+    value
   end
 
   def indirect_parcial_controlled_companies(share_reference_date = nil)
