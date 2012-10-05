@@ -245,7 +245,7 @@ module ImportHelper
         'Qualificação:' => :qualification,
         'Part. Capital Social:' => :participation,
       }
-      formal_name = page.parser.css("td[valign=center] font[size='3']")[1].text.strip
+      formal_name = page.parser.css("td[valign=center] font[size='3']")[1].text.strip.squish
 
       company = Owner.first_or_new 'Receita', :cgc => cnpj, :formal_name => formal_name
       pp company
@@ -255,8 +255,8 @@ module ImportHelper
         attributes = {}
 
         table.css('table td font').each do |font|
-          field = font.children[0].text.strip
-          content = font.children[1].text.strip
+          field = font.children[0].text.strip.squish
+          content = font.children[1].text.strip.squish
           attributes[mapping[field]] = content
         end
 
@@ -494,18 +494,18 @@ module ImportHelper
           data = {}
           data[:asclaras_id] = $1.to_i
           data[:role_id] = $2.to_i
-          data[:name] = link.text.strip
-          data[:role] = tds[1].text.strip
-          city_state = tds[2].text.strip
+          data[:name] = link.text.strip.squish
+          data[:role] = tds[1].text.strip.squish
+          city_state = tds[2].text.strip.squish
           if city_state.size == 2
             data[:state] = city_state
           else
             data[:city] = city_state.split('/')[0]
             data[:state] = city_state.split('/')[1]
           end
-          data[:party] = tds[3].text.strip
-          data[:votes] = tds[4].text.strip.gsub('.', '').to_i
-          data[:status] = tds[7].text.strip
+          data[:party] = tds[3].text.strip.squish
+          data[:votes] = tds[4].text.strip.squish.gsub('.', '').to_i
+          data[:status] = tds[7].text.strip.squish
 
           Thread.join_to_limit(30)
           Thread.new do # works with mechanize
