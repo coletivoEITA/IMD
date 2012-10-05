@@ -106,7 +106,7 @@ module ExportHelper
             "#{s.company.name} (#{s.percentage.c}%)"
           end.join(' ')
 
-          power_indirect_control = owner.indirect_total_controlled_companies(share_reference_date).join(' ')
+          power_indirect_control = owner.indirect_total_controlled_companies(share_reference_date).join("\n")
           power_indirect_parcial = owner.indirect_parcial_controlled_companies(share_reference_date).join("\n")
 
           shareholders = owners_shares.select{ |s| s.percentage }.map do |s|

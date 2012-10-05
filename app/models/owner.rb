@@ -131,22 +131,20 @@ class Owner
   def indirect_parcial_controlled_companies(share_reference_date = nil)
 
     def __recursion(company, percentage, share_reference_date, visited = [])
-      shares = company.owned_shares.on.greatest.with_reference_date(share_reference_date)
-      shares.map do |owned_share|
+      company.owned_shares.on.greatest.with_reference_date(share_reference_date).map do |owned_share|
         owned_company = owned_share.company
         next if owned_share.percentage.nil?
 
         next if visited.include? owned_company
         visited << owned_company
+        next if company == visited.first and owned_share.control?
 
         p = percentage ? (owned_share.percentage*percentage)/100 : owned_share.percentage
-        owned = __recursion(owned_company, p, share_reference_date, visited)
+        owned = __recursion(owned_company, p, share_reference_date, visited).compact
         if owned.empty?
-          next if company == visited.first
           "#{owned_company.name} (#{owned_share.percentage.c}%, final=#{p.c}%)"
         else
-          owned = owned.compact.join(', ')
-          next if owned.blank?
+          owned = owned.join(', ')
           "#{owned_company.name} => {#{owned}}"
         end
       end
@@ -233,7 +231,7 @@ class Owner
 
           indirect_value = owned_company.send("indirect_#{attr}")
           if indirect_value.zero?
-            indirect_value = __recursion owned_company, attr, balance_reference_date, share_reference_date, visited
+            indirect_value = __recursion owned_company, attr, balance_reference_date, share_reference_date, visited, fully_controlled
             # cache value
             owned_company.send("indirect_#{attr}=", indirect_value)
           end
