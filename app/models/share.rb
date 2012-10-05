@@ -64,6 +64,8 @@ class Share
     return if self.total.blank? or self.total.to_i.zero?
 
     self.percentage = (self.quantity / total.to_f) * 100
+    # fix some data from economatica
+    self.percentage /= 1000 if self.percentage / 1000 < 100
   end
 
   def total
