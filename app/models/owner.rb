@@ -121,18 +121,24 @@ class Owner
     CgcHelper.cpf?(self.cgc.first)
   end
 
-  def value(attr, reference_date = nil)
+  def balance_with_value(attr, reference_date = nil)
     scoped = self.balances.with_reference_date(reference_date)
-    value = 0
+    balance = nil
     # get balance value in the following preference order
     ['Economatica', 'Valor'].each do |source|
       balance = scoped.where(:source => source).first
       next if balance.nil?
 
-      value = balance.value(attr)
-      break if !value.zero?
+      break if !balance.value(attr).zero?
+      balance = nil
     end
-    value
+    balance
+  end
+
+  def value(attr, reference_date = nil)
+    balance = balance_with_value attr, reference_date
+    return 0 if balance.nil?
+    balance.send(attr)
   end
 
   def indirect_parcial_controlled_companies(share_reference_date = nil)

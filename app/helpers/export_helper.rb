@@ -93,6 +93,9 @@ module ExportHelper
           economatica_value = economatica_value.nil? ? '0.00' : (economatica_value.value(attr)/1000000).c
           economatica_value = '-' if economatica_value == '0.00'
 
+          balance = balance_with_value(attr, balance_reference_date)
+          source = balance.nil? ? owner.source : balance.source
+
           indirect_value = (owner.send("indirect_#{attr}")/1000000).c
           indirect_value = '-' if indirect_value == '0.00'
           total_value = (owner.send("total_#{attr}")/1000000).c
@@ -118,7 +121,7 @@ module ExportHelper
           csv << [i.to_s, owner.valor_ranking_position, controlled, owner.name, owner.formal_name, "'#{owner.cgc.first}'",
                   valor_value, economatica_value,
                   indirect_value, total_value,
-                  index_value, owner.source,
+                  index_value, source,
                   power_direct_control, power_direct_parcial,
                   power_indirect_control, power_indirect_parcial,
                   shareholders, sum, owner.capital_type]
