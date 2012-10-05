@@ -86,6 +86,9 @@ module ExportHelper
           # uncomment to skip controlled
           #next if is_controlled
 
+          position = is_controlled ? '-' : i.to_s
+          i += 1 unless is_controlled
+
           valor_value = owner.balances.valor.with_reference_date(balance_reference_date).first
           valor_value = valor_value.nil? ? '0.00' : (valor_value.value(attr)/1000000).c
           valor_value = '-' if valor_value == '0.00'
@@ -100,7 +103,7 @@ module ExportHelper
           indirect_value = '-' if indirect_value == '0.00'
           total_value = (owner.send("total_#{attr}")/1000000).c
           total_value = '-' if total_value == '0.00'
-          index_value = total_value == '-' ? '-' : ((total_value.to_f / total)).c
+          index_value = total_value == '-' ? '-' : ((total_value.to_f / (total/1000000))*1000).c
 
           power_direct_control = owned_shares.select{ |s| s.control? }.map do |s|
             "#{s.company.name} (#{s.percentage.c}%)"
@@ -118,14 +121,13 @@ module ExportHelper
 
           sum = owners_shares.sum{ |s| s.percentage.nil? ? 0 : s.percentage }
 
-          csv << [i.to_s, owner.valor_ranking_position, controlled, owner.name, owner.formal_name, "'#{owner.cgc.first}'",
+          csv << [position, owner.valor_ranking_position, controlled, owner.name, owner.formal_name, "'#{owner.cgc.first}'",
                   valor_value, economatica_value,
                   indirect_value, total_value,
                   index_value, source,
                   power_direct_control, power_direct_parcial,
                   power_indirect_control, power_indirect_parcial,
                   shareholders, sum, owner.capital_type]
-          i += 1 unless is_controlled
         end
       end
     end
