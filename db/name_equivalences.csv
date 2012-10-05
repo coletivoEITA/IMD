@@ -7,13 +7,15 @@ Amil,Amil Assistencia Medica Internacional Ltda,Economatica associado
 Anglo Gold Ashanti,Anglogold Ashanti,Valor
 Arcelor BR,ArcelorMittal Brasil,Valor
 BR Malls Par,BR Malls Participações,Valor
+BRF Foods,BRF - Brasil Foods S.A.,Economatica associado
+BRF Foods,BRF Brasil Foods,Valor
 Banco BTG Pactual,Btgp Banco,Economatica
 Banespa,Banco do Estado de Sao Paulo S/A - Banespa .,Economatica associado
 Bhp Billiton,BHP Billiton Metais 1,Valor
 Braskem,Braskem S.A.,Economatica associado
 Brasmotor,Brasmotor S/A,Economatica associado
-BRF Foods,BRF Brasil Foods,Valor
-BRF Foods,BRF - Brasil Foods S.A.,Economatica associado
+Brookfield Incorporações,Brookfield Incorporacoes S.A.,Economatica associado
+Brookfield Incorporações,Brookfield,Economatica
 Bunge Brasil,Bunge Brasil S.A.,Economatica associado
 C. Vale,C.Vale,Valor
 CAF Brasil,Caf,Exame
@@ -29,8 +31,9 @@ Claro Telecom Participacoes,Claro Telecom,Valor
 Claro,Claro SA,Economatica associado
 Clealco,Clealco 1,Valor
 Coari Part,Coari Participacoes S.A.,Economatica associado
+Comgás,Comgas,Economatica
 Companhia Brasiliana de Energia,Brasiliana de Energia,Valor
-Copasa Mg,Copasa,Valor
+Copasa Mg,Copasa,Economatica
 Copersucar,Copersucar 1,Valor
 Cosan,Cosan 1,Valor
 Cr Almeida Obras,CR Almeida Engenharia,Valor
@@ -66,6 +69,9 @@ Le Lis Blanc,Le Lis Blanc Deux,Valor
 Leader,Leader Magazine,Valor
 Light,Light Energia SA,Economatica associado
 Líder Aviação,Líder Táxi Aéreo,Valor
+Magazine Luiza,Magaz Luiza,Economatica
+Magnesita Refratarios SA,Magnesita SA,Economatica
+Mahle Metal Leve,Metal Leve,Economatica
 Marcosa,Marcosa S/A Maquinas e Equipamentos,Economatica associado
 Marfrig,Marfrig Alimentos SA,Economatica associado
 Martin-Brower,Martin-Brower 2,Valor
@@ -79,27 +85,34 @@ Net,Net Servicos de Comunicacoes S.A,Economatica associado
 Odebrecht Serviços e Part.,Odebrecht Servicos e Participacoes SA,Economatica associado
 Odebrecht,Odebrecht S.A.,Economatica associado
 Oi,Oi SA,Economatica associado
+Pão de Açúcar,P.Acucar-Cbd,Economatica
+Pão de Açúcar,Cia Brasileira de Distribuicao,Economatica associado
 PDG Realt,PDG Realty,Valor
 Petrobras,Petroleo Brasileiro S/A Petrobras,Economatica associado
 Petroquisa,Petrobras Quimica S/A Petroquisa,Economatica associado
 Pettenati,Pettenati 1,Valor
 Peugeot Citroën,PSA Peugeot Citroën,Valor
 Pfizer,Pfizer 2,Valor
+Positivo,Positivo Informática,Valor
+Positivo,Positivo Inf,Economatica
 Promon Engenharia,Promon,Valor
 Prysmian,Prysmian Energia,Valor
 Puc-Sp,PUC SP,Valor
-Pão de Açúcar,Cia Brasileira de Distribuicao,Economatica associado
 Quattor,Quattor Petroquimica S.A.,Economatica associado
 Queiroz Galvão,Queiroz Galvao SA,Economatica associado
+Raia Drogasil,Raia Drogasil S.A.,Economatica associado
+Raia Drogasil,RaiaDrogasil,Economatica
 Randon,Randon Participacoes S/A,Economatica associado
 Rede Energia,Rede Energia S.A.,Economatica associado
 Renuka,Renuka do Brasil 1,Valor
+Rossi Residencial,Rossi Resid,Economatica
 Sanasa Campinas,Sanasa,Valor
 Serasa Experian,Serasa Experian 1,Valor
 Siemens,Siemens 1,Valor
 Sul Amer Nac,Sul America Cia Nac de Seg,Economatica associado
 Sul America,Sul America S.A.,Economatica associado
 Suzano Hold,Suzano Holding S/A,Economatica associado
+Suzano Papel e Celulose,Suzano Papel,Economatica
 Tarpon Inv,Tarpon Investimentos S.A.,Economatica associado
 Technicolor,Technicolor Brasil,Valor
 Telefônica,Telefônica Brasil,Valor
@@ -107,10 +120,11 @@ Telemar N L,Telemar,Exame
 Teleperformance Crm,Teleperformance,Valor
 Tenaris Confab,Confab Industrial S.A.,Economatica associado
 Termomecanica,Termomecânica,Valor
-Tim Part S/A,Tim Participacoes S.A.,Economatica associado
 Tim Part S/A,TIM,Valor
+Tim Part S/A,Tim Participacoes S.A.,Economatica associado
 Totvs,Totvs S.A.,Economatica associado
 Tower Automotive do Brasil,Tower Automotive,Valor
+Tractebel,Tractebel Energia,Valor
 Ultrapar,Ultra,Valor
 Ultrapar,Ultrapar Paticipacoes S.A.,Economatica associado
 Unidas Rent a Car,Unidas,Valor
@@ -130,5 +144,6 @@ Voith Hydro,Voith Hydro 1,Valor
 Vonpar Refrescos,Vonpar,Valor
 Votoran,Votorantim Cimentos,Valor
 Walmart,Walmart 2,Valor
+Wiest,Wiest Participacoes Ltda,Economatica associado
 Zaffari & Bourbon,Zaffari & Bourbon 2,Valor
 Zf,ZF do Brasil 2,Valor

@@ -96,7 +96,7 @@ module ExportHelper
           economatica_value = economatica_value.nil? ? '0.00' : (economatica_value.value(attr)/1000000).c
           economatica_value = '-' if economatica_value == '0.00'
 
-          balance = balance_with_value(attr, balance_reference_date)
+          balance = owner.balance_with_value(attr, balance_reference_date)
           source = balance.nil? ? owner.source : balance.source
 
           indirect_value = (owner.send("indirect_#{attr}")/1000000).c
