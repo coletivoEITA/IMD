@@ -27,7 +27,7 @@ class String
   end
 
   def filter_normalization
-    self.gsub(/(s.a|s\/a)\.?/i, '').downcase.remove_non_ascii.strip.squish
+    self.remove_non_ascii.gsub(/(s.a|s\/a|sa)\.?/i, '').strip.squish.downcase
   end
 
 end
