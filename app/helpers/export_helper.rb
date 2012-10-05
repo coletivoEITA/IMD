@@ -57,7 +57,7 @@ module ExportHelper
     def self.export_raking(attr = :revenue, balance_reference_date = '2011-12-31', share_reference_date = '2012-09-05')
 
       puts 'calculating values'
-      #CalculationHelper.calculate_owners_value attr, balance_reference_date, share_reference_date
+      CalculationHelper.calculate_owners_value attr, balance_reference_date, share_reference_date
 
       puts 'loading data'
       owners = Owner.order("total_#{attr}".to_sym.desc).all
