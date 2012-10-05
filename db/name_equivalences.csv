@@ -33,7 +33,7 @@ Clealco,Clealco 1,Valor
 Coari Part,Coari Participacoes S.A.,Economatica associado
 Comgás,Comgas,Economatica
 Companhia Brasiliana de Energia,Brasiliana de Energia,Valor
-Copasa Mg,Copasa,Economatica
+Copasa,Copasa Mg,Economatica
 Copersucar,Copersucar 1,Valor
 Cosan,Cosan 1,Valor
 Cr Almeida Obras,CR Almeida Engenharia,Valor
@@ -71,6 +71,7 @@ Light,Light Energia SA,Economatica associado
 Líder Aviação,Líder Táxi Aéreo,Valor
 Magazine Luiza,Magaz Luiza,Economatica
 Magnesita Refratarios SA,Magnesita SA,Economatica
+Magnesita Refratarios SA,Magnesita,Valor
 Mahle Metal Leve,Metal Leve,Economatica
 Marcosa,Marcosa S/A Maquinas e Equipamentos,Economatica associado
 Marfrig,Marfrig Alimentos SA,Economatica associado
@@ -115,7 +116,8 @@ Suzano Hold,Suzano Holding S/A,Economatica associado
 Suzano Papel e Celulose,Suzano Papel,Economatica
 Tarpon Inv,Tarpon Investimentos S.A.,Economatica associado
 Technicolor,Technicolor Brasil,Valor
-Telefônica,Telefônica Brasil,Valor
+Telefônica Brasil,Telef Brasil,Economatica
+Telefônica S.A.,Telefonica,Economatica
 Telemar N L,Telemar,Exame
 Teleperformance Crm,Teleperformance,Valor
 Tenaris Confab,Confab Industrial S.A.,Economatica associado
