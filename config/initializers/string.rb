@@ -26,8 +26,16 @@ class String
     end
   end
 
+  def transliterate
+    if RUBY_VERSION >= "1.9"
+      ActiveSupport::Inflector.transliterate(self)
+    else
+      self
+    end
+  end
+
   def filter_normalization
-    self.remove_non_ascii.gsub(/(s.a|s\/a|sa)\.?/i, '').strip.squish.downcase
+    self.transliterate.gsub(/(s.a|s\/a|sa)\.?/i, '').strip.squish.downcase
   end
 
 end
