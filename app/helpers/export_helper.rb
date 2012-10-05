@@ -64,7 +64,7 @@ module ExportHelper
 
       puts 'exporting data'
       CSV.open("db/#{attr}-ranking.csv", "w") do |csv|
-        csv << ['i', 'controlada?', 'nome', 'razão social', 'cnpj',
+        csv << ['i', 'i_aux', 'controlada?', 'nome', 'razão social', 'cnpj',
                 'valor da empresa i pela Valor (vendas)', 'valor da empresa i pela Economatica (vendas)',
                 'valor indireto (das empresas em que i tem participação)', 'valor total (valor da empresa i + valor indireto)',
                 'indicador de poder da empresa i', 'fonte dos dados da empresa i',
@@ -113,7 +113,7 @@ module ExportHelper
             "#{s.owner.name} (#{s.percentage.c}%)"
           end.join(' ')
 
-          csv << [i.to_s, controlled, owner.name, owner.formal_name, "'#{owner.cgc.first}'",
+          csv << [i.to_s, owner.valor_ranking_position, controlled, owner.name, owner.formal_name, "'#{owner.cgc.first}'",
                   valor_value, economatica_value,
                   indirect_value, total_value,
                   index_value, owner.source,
