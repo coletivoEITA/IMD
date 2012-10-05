@@ -57,20 +57,20 @@ module ExportHelper
     def self.export_raking(attr = :revenue, balance_reference_date = '2011-12-31', share_reference_date = '2012-09-05')
 
       puts 'calculating values'
-      CalculationHelper.calculate_owners_value attr, balance_reference_date, share_reference_date
+      #CalculationHelper.calculate_owners_value attr, balance_reference_date, share_reference_date
 
       puts 'loading data'
       owners = Owner.order("total_#{attr}".to_sym.desc).all
 
       puts 'exporting data'
       CSV.open("db/#{attr}-ranking.csv", "w") do |csv|
-        csv << ['i', 'controlada?', 'nome', 'razão social', 'cnpj',
-                'valor da empresa i pela Valor (vendas)', 'valor da empresa i pela Economatica (vendas)',
-                'valor indireto (das empresas em que i tem participação)', 'valor total (valor da empresa i + valor indireto)',
-                'indicador de poder da empresa i', 'fonte dos dados da empresa i',
-                'poder direto - controle', 'poder direto - parcial',
-                'poder indireto - controle', 'poder indireto - parcial',
-                'composição acionária direta', 'Estatal ou Privada?']
+        csv << ['i', 'contr?', 'nome', 'razão social', 'cnpj',
+                'Receita líquida pela Valor (milhões de reias)', 'Receita líquida pela Economatica (milhões de reias)',
+                '“Poder” indireto (das empresas em que i tem participação)', '“Poder” total (receita da empresa i + valor indireto)',
+                'Indicador', 'Fonte',
+                'Poder direto - controle', 'Poder direto - parcial',
+                'Poder indireto - controle', 'Poder indireto - parcial',
+                'Composição acionária direta', 'Estatal ou Privada?']
 
         total = owners.sum(&"total_#{attr}".to_sym)
 
@@ -101,17 +101,17 @@ module ExportHelper
 
           power_direct_control = owned_shares.select{ |s| s.control? }.map do |s|
             "#{s.company.name} (#{s.percentage.c}%)"
-          end.join(' ')
+          end.join("\n")
           power_direct_parcial = owned_shares.select{ |s| s.parcial? }.map do |s|
             "#{s.company.name} (#{s.percentage.c}%)"
-          end.join(' ')
+          end.join("\n")
 
           power_indirect_control = owner.indirect_total_controlled_companies(share_reference_date).join("\n")
           power_indirect_parcial = owner.indirect_parcial_controlled_companies(share_reference_date).join("\n")
 
           shareholders = owners_shares.select{ |s| s.percentage }.map do |s|
             "#{s.owner.name} (#{s.percentage.c}%)"
-          end.join(' ')
+          end.join("\n")
 
           csv << [i.to_s, controlled, owner.name, owner.formal_name, "'#{owner.cgc.first}'",
                   valor_value, economatica_value,
@@ -120,7 +120,7 @@ module ExportHelper
                   power_direct_control, power_direct_parcial,
                   power_indirect_control, power_indirect_parcial,
                   shareholders, owner.capital_type]
-          i += 1
+          i += 1 unless is_controlled
         end
       end
     end

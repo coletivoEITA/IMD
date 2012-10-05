@@ -137,11 +137,11 @@ class Owner
 
         next if visited.include? owned_company
         visited << owned_company
-        next if company == visited.first and owned_share.control?
 
         p = percentage ? (owned_share.percentage*percentage)/100 : owned_share.percentage
         owned = __recursion(owned_company, p, share_reference_date, visited).compact
         if owned.empty?
+          next if company == visited.first or owned_share.control?
           "#{owned_company.name} (#{owned_share.percentage.c}%, final=#{p.c}%)"
         else
           owned = owned.join(', ')
