@@ -10,4 +10,29 @@ module CheckHelper
     end.compact
   end
 
+  def self.check_similar_balance(attr = :revenue, balance_reference_date = '2011-12-31')
+    value_field = "own_#{attr}".to_sym
+    owners = Owner.where(value_field.ne => 0).order(value_field.asc).all
+    max_percentage_diff = 0.1
+
+    last = owners.first
+    last_value = last.value(attr, balance_reference_date)
+    owners.shift # remove first
+
+    CSV.open("db/similiar-balance-#{attr}.csv", "w") do |csv|
+      csv << ['diff', 'name', 'name']
+
+      owners.each do |owner|
+        value = owner.value(attr, balance_reference_date)
+        diff = ((value / last_value) - 1) * 100
+
+        csv << [diff, last.name, owner.name] if diff < max_percentage_diff
+
+        last = owner
+        last_value = value
+      end
+    end
+    true
+  end
+
 end
