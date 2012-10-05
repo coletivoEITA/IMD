@@ -23,6 +23,22 @@ module ImportHelper
     end
   end
 
+  def self.import_cvm
+    root_url = 'http://cvmweb.cvm.gov.br/SWB/Sistemas/SCW/CPublica/CiaAb/FormBuscaCiaAbOrdAlf.aspx'
+    letter_url = 'http://cvmweb.cvm.gov.br/SWB/Sistemas/SCW/CPublica/CiaAb/FormBuscaCiaAbOrdAlf.aspx?LetraInicial=A'
+    ian_url = 'http://siteempresas.bovespa.com.br/consbov/ExibeTodosDocumentosCVM.asp?CCVM=16802&CNPJ=02.288.752/0001-25&TipoDoc=C&QtLinks=3'
+    m = Mechanize.new
+
+    page = m.post ian_url, {'hdnCategoria' => 'IDI3 ', 'hdnPagina' => '', 'FechaI' => '', 'FechaV' => ''}
+    page.content
+
+    #m.get root_url
+    #m.get letter_url
+    #href = "javascript:__doPostBack('dlCiasCdCVM$_ctl1$Linkbutton1','')"
+    #href =~ /__doPostBack\('(.+)'.+'(.+)'\)/
+    #m.post letter_url, {'__EVENTTARGET' => $1, '__EVENTARGUMENT' => $2}
+  end
+
   EconomaticaCSVColumns = ActiveSupport::OrderedHash[
     'Nome', :name,
     'Classe', :classes,
