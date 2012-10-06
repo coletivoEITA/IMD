@@ -24,6 +24,18 @@ module ImportHelper
     end
   end
 
+  def self.import_cvm_multiple_download
+    url = 'https://WWW.RAD.CVM.GOV.BR/DOWNLOAD/SolicitaDownload.asp'
+
+    m = Mechanize.new
+    m.verify_mode = 0
+
+    page = m.post url, {'txtLogin' => '397dwl0000257', 'txtSenha' => 'outubro12',
+     'txtData' => '31/12/2012', 'txtHora' => '00:00', 'txtDocumento' => 'TODOS'}
+
+    pp page.content
+  end
+
   def self.import_cvm
     root_url = 'http://cvmweb.cvm.gov.br/SWB/Sistemas/SCW/CPublica/CiaAb/FormBuscaCiaAbOrdAlf.aspx'
     letter_url = 'http://cvmweb.cvm.gov.br/SWB/Sistemas/SCW/CPublica/CiaAb/FormBuscaCiaAbOrdAlf.aspx?LetraInicial=A'
