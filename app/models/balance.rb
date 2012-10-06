@@ -40,4 +40,23 @@ class Balance
     (MonthsReference / self.months) * self.send(attr)
   end
 
+  def reference_year
+    reference_date.to_date.year
+  end
+
+  def source_with_months
+    case self.months
+    when 3
+      "#{source} último trimestre de #{reference_year} (multiplicado por 4)"
+    when 4
+      "#{source} último quadrimestre de #{reference_year} (multiplicado por 3)"
+    when 6
+      "#{source} último semestre de #{reference_year} (multiplicado por 2)"
+    when 9
+      "#{source} últimos noves meses de #{reference_year} (multiplicado por 4/3)"
+    else
+      "#{source} #{reference_year} (anual)"
+    end
+  end
+
 end

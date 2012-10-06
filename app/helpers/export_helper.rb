@@ -67,13 +67,13 @@ module ExportHelper
 
       puts 'exporting data'
       CSV.open("db/#{attr}-ranking.csv", "w") do |csv|
-        csv << ['i', 'i_aux', 'contr?', 'nome', 'razão social', 'cnpj',
+        csv << ['i', 'contr?', 'nome', 'razão social', 'cnpj',
                 'Receita líquida pela Valor (milhões de reias)', 'Receita líquida pela Economatica (milhões de reias)',
                 '“Poder” indireto (das empresas em que i tem participação)', '“Poder” total (receita da empresa i + valor indireto)',
                 'Indicador', 'Fonte',
                 'Poder direto - controle', 'Poder direto - parcial',
                 'Poder indireto - controle', 'Poder indireto - parcial',
-                'Composição acionária direta', 'AUX somatoria composicao', 'Estatal ou Privada?']
+                'Composição acionária direta', 'Estatal ou Privada?']
 
         total = owners.sum(&"total_#{attr}".to_sym)
 
@@ -100,7 +100,7 @@ module ExportHelper
           economatica_value = '-' if economatica_value == '0.00'
 
           balance = owner.balance_with_value(attr, balance_reference_date)
-          source = balance.nil? ? owner.source : balance.source
+          source = balance.nil? ? owner.source : balance.source_with_months
 
           indirect_value = (owner.send("indirect_#{attr}")/1000000).c
           indirect_value = '-' if indirect_value == '0.00'
@@ -122,15 +122,15 @@ module ExportHelper
             "#{s.owner.name} (#{s.percentage.c}%)"
           end.join("\n")
 
-          sum = owners_shares.sum{ |s| s.percentage.nil? ? 0 : s.percentage }
+          #shares_percent_sum = owners_shares.sum{ |s| s.percentage.nil? ? 0 : s.percentage }
 
-          csv << [position, owner.valor_ranking_position, controlled, owner.name, owner.formal_name, "'#{owner.cgc.first}'",
+          csv << [position, controlled, owner.name, owner.formal_name, "'#{owner.cgc.first}'",
                   valor_value, economatica_value,
                   indirect_value, total_value,
                   index_value, source,
                   power_direct_control, power_direct_parcial,
                   power_indirect_control, power_indirect_parcial,
-                  shareholders, sum, owner.capital_type]
+                  shareholders, owner.capital_type]
         end
       end
     end
