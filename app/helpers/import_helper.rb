@@ -211,9 +211,44 @@ module ImportHelper
     end
   end
 
-  def self.import_receita_company_info
-    m = Mechanize.new
-    url = "http://www.receita.fazenda.gov.br/PessoaJuridica/CNPJ/cnpjreva/Cnpjreva_Solicitacao2.asp?cnpj=%{cnpj}"
+  def self.import_receita_company_info(options = {})
+
+    def self.get_page(cnpj)
+      m = Mechanize.new
+      url_host = "http://www.receita.fazenda.gov.br"
+      url = "#{url_host}/PessoaJuridica/CNPJ/cnpjreva/Cnpjreva_Solicitacao2.asp?cnpj=%{cnpj}"
+
+      page = m.get url % {:cnpj => cnpj}
+
+      captcha_path = page.parser.css('#imgcaptcha')[0].attr('src')
+      captcha_img = m.get("#{url_host}#{captcha_path}").content.read
+      captcha_code = CaptchaHelper.open_and_type captcha_img
+
+      form = page.forms.first
+      captcha_input = form.fields.select{ |f| f.name == 'captcha' }.first
+      captcha_input.value = captcha_code
+      page = form.submit
+      page
+    end
+
+    def self.parse_page(cnpj, page)
+      pp page.content
+    end
+
+    def self.process_cnpj(cnpj)
+      cnpj = CgcHelper.format cnpj
+      page = nil
+      loop do
+        break if page = get_page(cnpj)
+        puts 'Error while getting page, try again'
+      end
+      parse_page(cnpj, page)
+    end
+
+    if cnpj = options[:cnpj]
+      process_cnpj(cnpj)
+      return
+    end
   end
 
   def self.import_receita_companies_members(options = {})
@@ -228,17 +263,7 @@ module ImportHelper
       page = page.frames[1].click
 
       captcha_img = m.get(captcha).content.read
-      captcha_path = '/tmp/captch_path.jpg'
-      File.open(captcha_path, 'wb'){ |f| f.write captcha_img }
-      pid = -Process.fork do
-        Process.setpgrp
-        system "qiv #{captcha_path}"
-        #system "jp2a #{captcha_path}"
-      end
-
-      print "Type captcha: "
-      captcha_code = gets.split("\n").first
-      Process.kill 9, pid
+      captcha_code = CaptchaHelper.open_and_type captcha_img
 
       form = page.forms.first
       captcha_input = form.fields.last
@@ -501,7 +526,7 @@ module ImportHelper
           next if tds.size == 0
 
           link = tds[0].css('a')[0]
-          next unless link and link.attr('href') =~ /CACodigo=(.+)&cargo=(.+)/
+          next unless link.attr('href') =~ /CACodigo=(.+)&cargo=(.+)/
 
           data = {}
           data[:asclaras_id] = $1.to_i
