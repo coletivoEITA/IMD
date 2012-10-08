@@ -84,22 +84,22 @@ class Owner
 	source_id = attributes[:source_id]
 
     ne = NameEquivalence.first :synonymous => name, :source => source
-    name = attributes[:name] = ne.name if ne
+    name = attributes[:name] = ne.name unless ne.blank?
     ne = NameEquivalence.first :synonymous => formal_name, :source => source
-    formal_name = attributes[:formal_name] = ne.name if ne
+    formal_name = attributes[:formal_name] = ne.name unless ne.blank?
 
-    name_n = name.filter_normalization if name
-    formal_name_n = formal_name.filter_normalization if formal_name
+    name_n = name.filter_normalization unless name.blank?
+    formal_name_n = formal_name.filter_normalization unless formal_name.blank?
 
     exact_match = self.first(attributes)
     owner_by_cgc = owner_by_name = owner_by_formal_name = nil
-    owner_by_cgc = self.find_by_cgc(cgc) if cgc
-    owner_by_name = self.find_by_name_n(name_n) if name
-    owner_by_formal_name = self.find_by_formal_name_n(formal_name_n) if formal_name
+    owner_by_cgc = self.find_by_cgc(cgc) unless cgc.blank?
+    owner_by_name = self.find_by_name_n(name_n) unless name.blank?
+    owner_by_formal_name = self.find_by_formal_name_n(formal_name_n) unless formal_name.blank?
     owner = exact_match || owner_by_cgc || owner_by_name || owner_by_formal_name || self.new
 
     owner.source ||= source
-    owner.add_cgc(cgc)
+    owner.add_cgc(cgc) unless cgc.blank?
     attributes.each do |attr, value|
       next if attr.to_s == 'cgc'
       owner.send("#{attr}=", owner.send(attr) || value)

@@ -652,7 +652,7 @@ module ImportHelper
 
       owner = Owner.first_or_new nil, :name => name
       pp owner
-      owner.formal_name = formal_name
+      owner.formal_name = formal_name unless formal_name.blank?
       owner.add_cgc cnpj
       owner.legal_nature = legal_nature
       owner.save!

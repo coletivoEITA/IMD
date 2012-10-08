@@ -67,7 +67,7 @@ module ExportHelper
 
       puts 'exporting data'
       CSV.open("output/#{attr}-ranking.csv", "w") do |csv|
-        csv << ['i', 'contr?', 'nome', 'razão social', 'cnpj',
+        csv << ['Posição no Ranking', 'contr?', 'Nome', 'Razão Social', 'CNPJ', 'Natureza Jurídica',
                 'Receita líquida pela Valor (milhões de reias)', 'Receita líquida pela Economatica (milhões de reias)',
                 '“Poder” indireto (das empresas em que i tem participação)', '“Poder” total (receita da empresa i + valor indireto)',
                 'Indicador', 'Fonte',
@@ -79,6 +79,8 @@ module ExportHelper
 
         i = 0
         owners.each do |owner|
+          legal_nature = owner.legal_nature || '-'
+
           owners_shares = owner.owners_shares.on.greatest.with_reference_date(share_reference_date).all
           owned_shares = owner.owned_shares.on.greatest.with_reference_date(share_reference_date).all
 
@@ -106,7 +108,7 @@ module ExportHelper
           indirect_value = '-' if indirect_value == '0.00'
           total_value = (owner.send("total_#{attr}")/1000000).c
           total_value = '-' if total_value == '0.00'
-          index_value = total_value == '-' ? '-' : ((total_value.to_f / (1345 * 12)).c
+          index_value = total_value == '-' ? '-' : (total_value.to_f / (1345 * 12)).c
 
           power_direct_control = owned_shares.select{ |s| s.control? }.map do |s|
             "#{s.company.name} (#{s.percentage.c}%)"
@@ -124,7 +126,7 @@ module ExportHelper
 
           #shares_percent_sum = owners_shares.sum{ |s| s.percentage.nil? ? 0 : s.percentage }
 
-          csv << [position, controlled, owner.name, owner.formal_name, owner.cgc.first,
+          csv << [position, controlled, owner.name, owner.formal_name, owner.cgc.first, legal_nature,
                   valor_value, economatica_value,
                   indirect_value, total_value,
                   index_value, source,
