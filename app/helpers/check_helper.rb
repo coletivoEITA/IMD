@@ -36,50 +36,33 @@ module CheckHelper
   end
 
   def self.check_levenshtein
-    attr = :name
+    attr = :name_n
     CSV.open("db/levenshtein-#{attr}-distance.csv", "w") do |csv|
       csv << ['levenshtein', 'nome 1', 'nome 2']
 
       values = Owner.all.collect(&attr)
-      pairs = {}
-      values.each do |a|
-        values.each do |b|
-          next if a == b
-          next if pairs[[a,b]] or pairs[[b,a]]
-          d = Levenshtein.distance a, b
-          pairs[[a,b]] = d
-        end
-      end
-
-      pairs.each do |(a,b), d|
+      values.combination(2).to_a.each do |a, b|
+        d = Levenshtein.distance a, b
         csv << [d, a, b]
       end
     end
   end
 
   def self.check_same_words
-    attr = :name
-    CSV.open("db/#{attr.to_s.pluralize}-with-same-words.csv", "w") do |csv|
+    attr = :name_n
+    CSV.open("db/#{attr}-with-same-words.csv", "w") do |csv|
       csv << ['nome 1', 'nome 2', 'palavras comuns']
 
       values = Owner.all.collect(&attr)
-      pairs = {}
-      values.each do |a|
-        values.each do |b|
-          next if a == b
-          next if pairs[[a,b]] or pairs[[b,a]]
+      values.combination(2).to_a.each do |a, b|
+        a_words = a.split(' ')
+        b_words = b.split(' ')
+        c_words = a_words.select{ |aw| b_words.find_index(aw) }
+        next if c_words.empty?
 
-          a_words = a.filter_normalization.split(' ')
-          b_words = b.filter_normalization.split(' ')
-          c_words = a_words.select{ |a| b_words.find_index(a) }
-          next if c_words.empty?
-          pairs[[a,b]] = c_words.join(', ')
-        end
+        csv << [a, b, c_words.join(', ')]
       end
 
-      pairs.each do |(a,b), words|
-        csv << [a, b, words]
-      end
     end
   end
 
