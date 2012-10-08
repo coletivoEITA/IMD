@@ -51,3 +51,6 @@ gem 'therubyracer'
 gem 'mechanize'
 
 gem 'unicode'
+
+gem "rspec-rails", "~> 2.0", :group => [:test, :development]
+

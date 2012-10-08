@@ -27,15 +27,11 @@ class String
   end
 
   def transliterate
-    if RUBY_VERSION >= "1.9"
-      ActiveSupport::Inflector.transliterate(self)
-    else
-      self
-    end
+    ActiveSupport::Inflector.transliterate(self)
   end
 
   def filter_normalization
-    self.transliterate.gsub(/(s.a|s\/a|sa)\.?/i, '').strip.squish.downcase
+    self.squish.gsub(/\b(s.a|s\/a|sa)\.?$/i, '').strip.transliterate.downcase
   end
 
 end

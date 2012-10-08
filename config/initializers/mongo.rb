@@ -1,7 +1,16 @@
 # coding: UTF-8
 
-#MongoMapper.connection = Mongo::Connection.new("localhost", 27017, :pool_size => 100, :pool_timeout => 500)
-MongoMapper.database = "imd-#{Rails.env}"
+env = Rails.env.to_s
+config = YAML::load_file "#{Rails.root}/config/mongo.yml" rescue {}
+config ||= {env => {}}
+db_name = (config[env]['database'] || "imd-#{env}")
+db_host = (config[env]['host'] || 'localhost')
+db_port = (config[env]['port'] || '27017').to_i
+db_pool = (config[env]['pool'] || '5').to_i
+db_timeout = (config[env]['timeout'] || '1').to_i
+
+MongoMapper.connection = Mongo::Connection.new db_host, db_port, :pool_size => db_pool, :pool_timeout => db_timeout
+MongoMapper.database = db_name
 
 Owner.ensure_index :source
 Owner.ensure_index :cgc
