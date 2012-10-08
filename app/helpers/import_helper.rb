@@ -642,4 +642,21 @@ module ImportHelper
     end
   end
 
+  def self.import_legal_nature_csv(file)
+    csv = CSV.table file, :headers => true, :header_converters => nil, :converters => nil
+    csv.each_with_index do |row, i|
+      name = row.values_at(0).first
+      formal_name = row.values_at(1).first
+      cnpj = row.values_at(2).first
+      legal_nature = row.values_at(3).first
+
+      owner = Owner.first_or_new nil, :name => name
+      pp owner
+      owner.formal_name = formal_name
+      owner.add_cgc cnpj
+      owner.legal_nature = legal_nature
+      owner.save!
+    end
+  end
+
 end
