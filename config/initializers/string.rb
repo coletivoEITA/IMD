@@ -27,11 +27,7 @@ class String
   end
 
   def transliterate
-    if RUBY_VERSION >= "1.9"
-      ActiveSupport::Inflector.transliterate(self)
-    else
-      self
-    end
+    ActiveSupport::Inflector.transliterate(self)
   end
 
   def filter_normalization

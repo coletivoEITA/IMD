@@ -501,7 +501,7 @@ module ImportHelper
           next if tds.size == 0
 
           link = tds[0].css('a')[0]
-          next unless link.attr('href') =~ /CACodigo=(.+)&cargo=(.+)/
+          next unless link and link.attr('href') =~ /CACodigo=(.+)&cargo=(.+)/
 
           data = {}
           data[:asclaras_id] = $1.to_i
