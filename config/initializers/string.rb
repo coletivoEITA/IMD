@@ -31,7 +31,7 @@ class String
   end
 
   def filter_normalization
-    self.transliterate.gsub(/(s.a|s\/a|sa)\.?/i, '').strip.squish.downcase
+    self.strip.squish.transliterate.gsub(/\b(s.a|s\/a|sa)\.?$/i, '').strip.downcase
   end
 
 end
