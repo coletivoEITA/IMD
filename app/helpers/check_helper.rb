@@ -19,7 +19,7 @@ module CheckHelper
     last_value = last.value(attr, balance_reference_date)
     owners.shift # remove first
 
-    CSV.open("db/similiar-balance-#{attr}.csv", "w") do |csv|
+    CSV.open("output/similiar-balance-#{attr}.csv", "w") do |csv|
       csv << ['diff', 'name', 'name']
 
       owners.each do |owner|
@@ -37,7 +37,7 @@ module CheckHelper
 
   def self.check_levenshtein
     attr = :name_n
-    CSV.open("db/levenshtein-#{attr}-distance.csv", "w") do |csv|
+    CSV.open("output/levenshtein-#{attr}-distance.csv", "w") do |csv|
       csv << ['levenshtein', 'nome 1', 'nome 2']
 
       values = Owner.all.collect(&attr)
@@ -50,7 +50,7 @@ module CheckHelper
 
   def self.check_same_words
     attr = :name_n
-    CSV.open("db/#{attr}-with-same-words.csv", "w") do |csv|
+    CSV.open("output/#{attr}-with-same-words.csv", "w") do |csv|
       csv << ['nome 1', 'nome 2', 'palavras comuns']
 
       values = Owner.all.collect(&attr)

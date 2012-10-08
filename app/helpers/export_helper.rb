@@ -3,7 +3,7 @@
 module ExportHelper
 
   def self.export_companies_donations_by_party(options = {})
-    FasterCSV.open("db/companeis-donation-by-party.csv", "w") do |csv|
+    FasterCSV.open("output/companeis-donation-by-party.csv", "w") do |csv|
 	  #set header
       csv << ['nome', 'razão social', 'cnpj', 'total doado', '% por partido']
 	  #TODO:refactore - filter donation by option arguments
@@ -32,7 +32,7 @@ module ExportHelper
   end
 
   def self.export_grantor_donations_by_candidacy
-    FasterCSV.open("db/grantor-donation-by-candidacy.csv", "w") do |csv|
+    FasterCSV.open("output/grantor-donation-by-candidacy.csv", "w") do |csv|
 	  #set header
       csv << ['nome', 'razão social', 'cnpj',
               'total doado', '% por candidatura']
@@ -66,7 +66,7 @@ module ExportHelper
       owners = Owner.order(value_field.desc).where(:name.ne => 'Acoes em Tesouraria').all
 
       puts 'exporting data'
-      CSV.open("db/#{attr}-ranking.csv", "w") do |csv|
+      CSV.open("output/#{attr}-ranking.csv", "w") do |csv|
         csv << ['i', 'contr?', 'nome', 'razão social', 'cnpj',
                 'Receita líquida pela Valor (milhões de reias)', 'Receita líquida pela Economatica (milhões de reias)',
                 '“Poder” indireto (das empresas em que i tem participação)', '“Poder” total (receita da empresa i + valor indireto)',
@@ -75,7 +75,7 @@ module ExportHelper
                 'Poder indireto - controle', 'Poder indireto - parcial',
                 'Composição acionária direta', 'Estatal ou Privada?']
 
-        total = owners.sum(&"total_#{attr}".to_sym)
+        #total = owners.sum(&"total_#{attr}".to_sym)
 
         i = 0
         owners.each do |owner|
@@ -106,7 +106,7 @@ module ExportHelper
           indirect_value = '-' if indirect_value == '0.00'
           total_value = (owner.send("total_#{attr}")/1000000).c
           total_value = '-' if total_value == '0.00'
-          index_value = total_value == '-' ? '-' : ((total_value.to_f / (total/1000000))*1000).c
+          index_value = total_value == '-' ? '-' : ((total_value.to_f / (1345 * 12)).c
 
           power_direct_control = owned_shares.select{ |s| s.control? }.map do |s|
             "#{s.company.name} (#{s.percentage.c}%)"
