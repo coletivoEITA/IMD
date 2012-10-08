@@ -51,8 +51,34 @@ module CheckHelper
         end
       end
 
-      pairs.each do |(a,b),d|
+      pairs.each do |(a,b), d|
         csv << [d, a, b]
+      end
+    end
+  end
+
+  def self.check_same_words
+    attr = :name
+    CSV.open("db/#{attr.to_s.pluralize}-with-same-words.csv", "w") do |csv|
+      csv << ['nome 1', 'nome 2', 'palavras comuns']
+
+      values = Owner.all.collect(&attr)
+      pairs = {}
+      values.each do |a|
+        values.each do |b|
+          next if a == b
+          next if pairs[[a,b]] or pairs[[b,a]]
+
+          a_words = a.filter_normalization.split(' ')
+          b_words = b.filter_normalization.split(' ')
+          c_words = a_words.select{ |a| b_words.find_index(a) }
+          next if c_words.empty?
+          pairs[[a,b]] = c_words.join(', ')
+        end
+      end
+
+      pairs.each do |(a,b), words|
+        csv << [a, b, words]
       end
     end
   end
