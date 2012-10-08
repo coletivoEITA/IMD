@@ -229,7 +229,7 @@ module ImportHelper
 
       captcha_img = m.get(captcha).content.read
       captcha_path = '/tmp/captch_path.jpg'
-      File.open(captcha_path, 'w'){ |f| f.write captcha_img }
+      File.open(captcha_path, 'wb'){ |f| f.write captcha_img }
       pid = -Process.fork do
         Process.setpgrp
         system "qiv #{captcha_path}"
