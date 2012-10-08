@@ -124,7 +124,7 @@ module ExportHelper
 
           #shares_percent_sum = owners_shares.sum{ |s| s.percentage.nil? ? 0 : s.percentage }
 
-          csv << [position, controlled, owner.name, owner.formal_name, "'#{owner.cgc.first}'",
+          csv << [position, controlled, owner.name, owner.formal_name, owner.cgc.first,
                   valor_value, economatica_value,
                   indirect_value, total_value,
                   index_value, source,

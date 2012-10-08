@@ -26,6 +26,9 @@ class Owner
   key :stock_market, String
   key :stock_code, String
   key :shares_quantity, Hash # {'class' => 'quantity'}
+  # extra info
+  key :open_date, Date
+  key :legal_nature, String
 
   key :members_count, Integer # nil means members not loaded
 

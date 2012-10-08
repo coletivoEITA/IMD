@@ -225,14 +225,49 @@ module ImportHelper
       captcha_code = CaptchaHelper.open_and_type captcha_img
 
       form = page.forms.first
+      form.action = 'valida.asp'
+
       captcha_input = form.fields.select{ |f| f.name == 'captcha' }.first
       captcha_input.value = captcha_code
+
       page = form.submit
-      page
+      pp page.content
+      $page = page
     end
 
     def self.parse_page(cnpj, page)
-      pp page.content
+      attr_map = {
+        'NOME EMPRESARIAL' => :formal_name,
+        #'TÍTULO DO ESTABELECIMENTO (NOME DE FANTASIA)' => :company_name,
+        'DATA DE ABERTURA' => proc{ |o, v| o.open_date = DateHelper.date_from_brazil(v) },
+        #'CÓDIGO E DESCRIÇÃO DA ATIVIDADE ECONÔMICA PRINCIPAL' =>
+        #'CÓDIGO E DESCRIÇÃO DAS ATIVIDADES ECONÔMICAS SECUNDÁRIAS' =>
+        'CÓDIGO E DESCRIÇÃO DA NATUREZA JURÍDICA' => :legal_nature,
+        #'LOGRADOURO' =>
+        #'NÚMERO' =>
+        #'COMPLEMENTO' =>
+        #'CEP' =>
+        #'BAIRRO/DISTRITO' =>
+        #'MUNICÍPIO' =>
+        #'UF' =>
+        #'SITUAÇÃO CADASTRAL' =>
+        #'DATA DA SITUAÇÃO CADASTRAL' =>
+      }
+
+      owner = Owner.first_or_new 'Receita', :cgc => cnpj
+      attr_map.each do |field_name, attr|
+        field = page.parser.css("font:contains('#{field_name}')")[0]
+        raise "Can't find field #{field_name}" if field.nil?
+        value = field.parent.css('font')[1].text.squish
+
+        if attr.is_a?(Proc)
+          attr.call(owner, value)
+        else
+          owner.send("#{attr}=", value)
+        end
+      end
+      owner.save!
+      pp owner
     end
 
     def self.process_cnpj(cnpj)
