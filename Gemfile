@@ -54,3 +54,4 @@ gem 'unicode'
 
 gem "rspec-rails", "~> 2.0", :group => [:test, :development]
 
+gem 'levenshtein'
