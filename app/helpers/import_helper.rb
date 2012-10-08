@@ -231,8 +231,6 @@ module ImportHelper
       captcha_input.value = captcha_code
 
       page = form.submit
-      pp page.content
-      $page = page
     end
 
     def self.parse_page(cnpj, page)
