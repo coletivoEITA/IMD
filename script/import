@@ -14,7 +14,7 @@ ImportHelper.import_economatica_csv "db/economatica-period-#{share_reference_dat
 # add legal nature
 ImportHelper.import_legal_nature_csv 'db/legal-nature-and-cnpj-for-names.csv'
 
-# add capital type
+# add capital type from EXAME
 ImportHelper.import_exame_maiores 1.868
 # take companies from EXAME that didn't match any existing company
 Owner.all(:source => 'Exame').each{ |o| o.destroy }

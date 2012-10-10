@@ -75,10 +75,13 @@ module ExportHelper
                 'Poder indireto - controle', 'Poder indireto - parcial',
                 'Composição acionária direta', 'Estatal ou Privada?']
 
-        #total = owners.sum(&"total_#{attr}".to_sym)
+        #total = owners.sum(&value_field)
 
         i = 0
         owners.each do |owner|
+          cgc = owner.cgc.first
+          cgc = cgc ? CgcHelper.format(cgc) : '-'
+
           legal_nature = owner.legal_nature || '-'
 
           owners_shares = owner.owners_shares.on.greatest.with_reference_date(share_reference_date).all
@@ -126,7 +129,7 @@ module ExportHelper
 
           #shares_percent_sum = owners_shares.sum{ |s| s.percentage.nil? ? 0 : s.percentage }
 
-          csv << [position, controlled, owner.name, owner.formal_name, owner.cgc.first, legal_nature,
+          csv << [position, controlled, owner.name, owner.formal_name, cgc, legal_nature,
                   valor_value, economatica_value,
                   indirect_value, total_value,
                   index_value, source,

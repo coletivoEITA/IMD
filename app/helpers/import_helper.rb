@@ -269,7 +269,7 @@ module ImportHelper
     end
 
     def self.process_cnpj(cnpj)
-      cnpj = CgcHelper.format cnpj
+      cnpj = CgcHelper.parse cnpj
       page = nil
       loop do
         break if page = get_page(cnpj)
@@ -360,7 +360,7 @@ module ImportHelper
     end
 
     def self.process_cnpj(cnpj)
-      cnpj = CgcHelper.format cnpj
+      cnpj = CgcHelper.parse cnpj
       page = nil
       loop do
         break if page = get_page(cnpj)

@@ -2,13 +2,17 @@
 
 module CgcHelper
 
-  def self.format(cgc)
+  def self.parse(cgc)
     cgc = self.remove_non_numbers(cgc)
     if cgc.size > 11
       '%014d' % cgc.to_i
     else
       '%011d' % cgc.to_i
     end
+  end
+
+  def self.format(cgc)
+    '%s/%s-%s' % [cgc[0..8], cgc[8..11], cgc[12..13]]
   end
 
   def self.extract_cnpj_root(cnpj)
