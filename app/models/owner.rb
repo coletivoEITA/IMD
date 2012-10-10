@@ -109,7 +109,7 @@ class Owner
 
   def self.find_by_cgc(cgc)
     return nil if cgc.blank?
-    cgc = CgcHelper.format cgc
+    cgc = CgcHelper.parse cgc
     if CgcHelper.cnpj?(cgc)
       self.find_by_cnpj_root(CgcHelper.extract_cnpj_root(cgc)) || super(cgc)
     else
@@ -160,8 +160,8 @@ class Owner
           next if company == visited.first or owned_share.control?
           "#{owned_company.name} (#{owned_share.percentage.c}%, final=#{p.c}%)"
         else
-          owned = owned.join(', ')
-          "#{owned_company.name} => {#{owned}}"
+          owned = owned.join("\n- ")
+          "#{owned_company.name} => {\n- #{owned}}"
         end
       end
     end
@@ -279,11 +279,11 @@ class Owner
   end
 
   def cgc=(value)
-    self['cgc'] = CgcHelper.format value
+    self['cgc'] = CgcHelper.parse value
   end
   def add_cgc(cgc)
     return if cgc.blank?
-    cgc = CgcHelper.format cgc
+    cgc = CgcHelper.parse cgc
     self.cgc << cgc unless self.cgc.include?(cgc)
   end
 

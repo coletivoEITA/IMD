@@ -1,11 +1,28 @@
 #!/usr/bin/env ruby
 require File.dirname(__FILE__) + '/../config/boot'
 
+share_reference_date = '2012-09-05'
+balance_reference_date = '2011-12-31'
+
 ImportHelper.clear_db
 ImportHelper.import_name_equivalences
-#ImportHelper.import_exame_maiores 1.868
 ImportHelper.import_valor 'db/ranking-valor-2011.csv', '2011-12-31'
 #ImportHelper.import_companies 'db/mdic-importers.csv', 'db/mdic-exporters.csv'
-ImportHelper.import_economatica_csv 'db/economatica-period-2011-12-31.csv', '2011-12-31'
-ImportHelper.import_economatica_csv 'db/economatica-period-2012-09-05.csv', '2012-09-05'
+ImportHelper.import_economatica_csv "db/economatica-period-#{balance_reference_date}.csv", balance_reference_date
+ImportHelper.import_economatica_csv "db/economatica-period-#{share_reference_date}.csv", share_reference_date
+
+# add legal nature
 ImportHelper.import_legal_nature_csv 'db/legal-nature-and-cnpj-for-names.csv'
+
+# add capital type from EXAME
+ImportHelper.import_exame_maiores 1.868
+# take companies from EXAME that didn't match any existing company
+Owner.all(:source => 'Exame').each{ |o| o.destroy }
+
+# add relationship between bndes and bndespar (missing at economatica)
+bndespar = Owner.first(:name => 'Bndespar - BNDES Participacoes SA')
+bndes = Owner.first(:name => 'BNDES - Banco Nac de Desenvol Economico e Social')
+bndespar.shares_quantity['ON'] = '1'
+bndespar.save!
+bndespar.owners_shares.create!(:name => bndes.name, :quantity => 1, :sclass => 'ON', :owner => bndes,
+                               :source => 'Bovespa', :reference_date => share_reference_date)
