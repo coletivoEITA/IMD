@@ -7,8 +7,9 @@ module ImportHelper
     Share.destroy_all
     Balance.destroy_all
     Candidacy.destroy_all
-    Donation.destroy_all
+    Donation.destroy_all    
     CompanyMember.destroy_all
+	Grantor.destroy_all
     #NameEquivalence.destroy_all
   end
 
@@ -523,11 +524,74 @@ module ImportHelper
     end
   end
 
+  def self.import_asclaras_grantor_by_range(options = {})
+    url_home = 'http://asclaras.org.br'
+    url_grantor = "#{url_home}/@doador.php?doador=%{grantor_id}&ano=%{year}"
+    m = Mechanize.new
+    queue = Queue.new
+	#range = Range.new(2755490,3499999,false)
+	range_begin_2010 = 3714508
+	range_end_2010 = 3879490
+	year = 2010
+	finished = false
+
+    Thread.new do	
+      mutex = Mutex.new           	 
+      begin
+        Thread.join_to_limit 3, [Thread.main]		  
+		Thread.new do
+		  finished = true if range_begin_2010 > range_end_2010
+		  pp '----------------------------'		
+		  page = m.get(url_grantor % {:grantor_id => range_begin_2010, :year => year})
+		  queue << [page, range_begin_2010, year]		
+		  range_begin_2010 = range_begin_2010 + 1				
+		end
+	  end while !finished
+	
+      Thread.join_all [Thread.main]
+	  finished = true	
+	end
+
+    # queue processing
+    while !finished
+      if queue.empty?
+        sleep 1
+        next
+      end
+
+      item = queue.pop
+	  import_asclaras_grantor item[0], item[1], item[2]
+
+	  pp "grantor: %{grantor_id} year: %{year}" % {:grantor_id => item[1], :year => item[2]}
+      pp '============================'     
+    end
+  end
+
+  def self.import_asclaras_grantor(page, grantor_id, year)
+    span = page.parser.css('span.destaque')[0]
+	grantor_name = span.children[0].text	
+	#TODO:refactore - find a way to group cgc
+    grantor_cgc = []
+    page.parser.css('tr#aba102 td.conteudo table tr').each do |tr|
+	  data = tr.search('td') 
+	  next if data.count != 2
+	  name, cgc = data[0].text, data[1].text
+
+      owner = Owner.first_or_new 'àsclaras', :cgc => cgc, :name => name
+      owner.save!
+
+	  grantor = Grantor.first_or_new :asclaras_id => grantor_id, :owner_id => owner.id, :year => year
+      grantor.save!
+    end
+  end
+
+
   def self.import_asclaras(options = {})
     url_home = 'http://asclaras.org.br'
     # asclaras.org live on 3 out 2012
     url_candidacy = "#{url_home}/partes/index/@candidatos_frame.php?CAoffset=%{offset}&ano=%{year}&estado=%{state}&municipio=%{city}"
     url_donation = "#{url_home}/@candidato.php?CACodigo=%{candidate_id}&cargo=%{role_id}&ano=%{year}"
+    url_grantor = "#{url_home}/@doador.php?doador=%{grantor_id}&ano=%{year}"
 
     m = Mechanize.new
     queue = Queue.new
@@ -619,6 +683,8 @@ module ImportHelper
     end
   end
 
+
+# due to asclaras html design changes this method is depreciated
   def self.import_asclaras_candidate(page, year, data = {})
     if data[:name].nil?
       title = page.parser.css('td.tituloI')[0]
