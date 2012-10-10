@@ -315,7 +315,7 @@ module ImportHelper
         'Qualificação:' => :qualification,
         'Part. Capital Social:' => :participation,
       }
-      formal_name = page.parser.css("td[valign=center] font[size='3']")[1].text.strip.squish
+      formal_name = page.parser.css("td[valign=center] font[size='3']")[1].text.squish
 
       company = Owner.first_or_new 'Receita', :cgc => cnpj, :formal_name => formal_name
       pp company
@@ -325,8 +325,8 @@ module ImportHelper
         attributes = {}
 
         table.css('table td font').each do |font|
-          field = font.children[0].text.strip.squish
-          content = font.children[1].text.strip.squish
+          field = font.children[0].text.squish
+          content = font.children[1].text.squish
           attributes[mapping[field]] = content
         end
 
@@ -531,6 +531,7 @@ module ImportHelper
 
     m = Mechanize.new
     queue = Queue.new
+    finished = false
     years = options[:year] ? [options[:year]] : [2002, 2004, 2006, 2008, 2010]
     #State = RJ = 18	... Todos -1
     state = options[:state] || -1
@@ -544,58 +545,77 @@ module ImportHelper
       return
     end
 
-    years.each do |year|
-      offset = options[:offset] || 0
-      begin
-        page = m.get(url_candidacy % {:offset => offset, :year => year, :state => state, :city => city})
-        links = page.links
+    Thread.new do
+      years.each do |year|
+        offset = options[:offset] || 0
+        mutex = Mutex.new
+        year_finished = false
 
-        pp '----------------------------'
-        pp "offset: #{offset}"
+        begin
+          Thread.join_to_limit 3, [Thread.main]
+          Thread.new do
+            o = nil
+            mutex.synchronize do
+              o = offset
+              offset += 10
+            end
 
-        #Get all link on a page as a Mechanize.Page.Link object
-        page.parser.css('tr').each do |tr|
-          tds = tr.css('td.linhas1') + tr.css('td.linhas2')
-          next if tds.size == 0
+            page = m.get(url_candidacy % {:offset => o, :year => year, :state => state, :city => city})
+            links = page.links
+            year_finished = true if links.count == 0
 
-          link = tds[0].css('a')[0]
-          next unless link.attr('href') =~ /CACodigo=(.+)&cargo=(.+)/
+            pp '----------------------------'
+            pp "offset: #{o}"
 
-          data = {}
-          data[:asclaras_id] = $1.to_i
-          data[:role_id] = $2.to_i
-          data[:name] = link.text.strip.squish
-          data[:role] = tds[1].text.strip.squish
-          city_state = tds[2].text.strip.squish
-          if city_state.size == 2
-            data[:state] = city_state
-          else
-            data[:city] = city_state.split('/')[0]
-            data[:state] = city_state.split('/')[1]
+            #Get all link on a page as a Mechanize.Page.Link object
+            page.parser.css('tr').each do |tr|
+              tds = tr.css('td.linhas1') + tr.css('td.linhas2')
+              next if tds.size == 0
+
+              link = tds[0].css('a')[0]
+              next unless link and link.attr('href') =~ /CACodigo=(.+)&cargo=(.+)/
+
+              data = {}
+              data[:asclaras_id] = $1.to_i
+              data[:role_id] = $2.to_i
+              data[:name] = link.text.squish
+              data[:role] = tds[1].text.squish
+              city_state = tds[2].text.squish
+              if city_state.size == 2
+                data[:state] = city_state
+              else
+                data[:city] = city_state.split('/')[0]
+                data[:state] = city_state.split('/')[1]
+              end
+              data[:party] = tds[3].text.squish
+              data[:votes] = tds[4].text.squish.gsub('.', '').to_i
+              data[:status] = tds[7].text.squish
+
+              page = m.get(url_donation % {:candidate_id => data[:asclaras_id], :role_id => data[:role_id], :year => year})
+              queue << [page, year, data]
+            end
           end
-          data[:party] = tds[3].text.strip.squish
-          data[:votes] = tds[4].text.strip.squish.gsub('.', '').to_i
-          data[:status] = tds[7].text.strip.squish
 
-          Thread.join_to_limit(30)
-          Thread.new do # works with mechanize
-            page = m.get(url_donation % {:candidate_id => data[:asclaras_id], :role_id => data[:role_id], :year => year})
-            queue << [Thread.current, page, year, data]
-          end
-        end
+        end while !year_finished
+      end
 
-        Thread.join_all if links.count == 0
-        while queue.size > 0
-          item = queue.pop
+      Thread.join_all [Thread.main]
+      finished = true
+    end
 
-          pp '============================'
-          pp "candidato #{item[3][:asclaras_id]} #{item[3][:name]}"
+    # queue processing
+    while !finished
+      if queue.empty?
+        sleep 1
+        next
+      end
 
-          import_asclaras_candidate item[1], item[2], item[3]
-        end
+      item = queue.pop
 
-        offset += links.count
-      end while links.count > 0
+      pp '============================'
+      pp "candidato #{item[2][:asclaras_id]} #{item[2][:name]}"
+
+      import_asclaras_candidate item[0], item[1], item[2]
     end
   end
 
