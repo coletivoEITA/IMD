@@ -529,6 +529,7 @@ module ImportHelper
     url_grantor = "#{url_home}/@doador.php?doador=%{grantor_id}&ano=%{year}"
     m = Mechanize.new
     queue = Queue.new
+    mutex = Mutex.new 
 	#range = Range.new(2755490,3499999,false)
 	range_begin_2010 = 3714508
 	range_end_2010 = 3879490
@@ -536,7 +537,7 @@ module ImportHelper
 	finished = false
 
     Thread.new do	
-      mutex = Mutex.new           	 
+
       begin
         Thread.join_to_limit 3, [Thread.main]		  
 		Thread.new do
@@ -544,12 +545,13 @@ module ImportHelper
 		  pp '----------------------------'		
 		  page = m.get(url_grantor % {:grantor_id => range_begin_2010, :year => year})
 		  queue << [page, range_begin_2010, year]		
-		  range_begin_2010 = range_begin_2010 + 1				
+          mutex.synchronize do
+		  	range_begin_2010 = range_begin_2010 + 1			
+		  end
 		end
 	  end while !finished
 	
       Thread.join_all [Thread.main]
-	  finished = true	
 	end
 
     # queue processing
