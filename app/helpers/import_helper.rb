@@ -530,10 +530,11 @@ module ImportHelper
     m = Mechanize.new
     queue = Queue.new
     mutex = Mutex.new 
-	#range = Range.new(2755490,3499999,false)
-	range_begin_2010 = 3714508
-	range_end_2010 = 3879490
-	year = 2010
+	range_begin_2008 = 2755490
+	range_end_2008 = 3499999
+	#range_begin_2010 = 3714508
+	#range_end_2010 = 3879490
+	year = 2008
 	finished = false
 
     Thread.new do	
@@ -541,12 +542,12 @@ module ImportHelper
       begin
         Thread.join_to_limit 3, [Thread.main]		  
 		Thread.new do
-		  finished = true if range_begin_2010 > range_end_2010
+		  finished = true if range_begin_2008 > range_end_2008
 		  pp '----------------------------'		
-		  page = m.get(url_grantor % {:grantor_id => range_begin_2010, :year => year})
-		  queue << [page, range_begin_2010, year]		
+		  page = m.get(url_grantor % {:grantor_id => range_begin_2008, :year => year})
+		  queue << [page, range_begin_2008, year]		
           mutex.synchronize do
-		  	range_begin_2010 = range_begin_2010 + 1			
+		  	range_begin_2008 = range_begin_2008 + 1			
 		  end
 		end
 	  end while !finished
@@ -571,20 +572,22 @@ module ImportHelper
 
   def self.import_asclaras_grantor(page, grantor_id, year)
     span = page.parser.css('span.destaque')[0]
-	grantor_name = span.children[0].text	
-	#TODO:refactore - find a way to group cgc
-    grantor_cgc = []
-    page.parser.css('tr#aba102 td.conteudo table tr').each do |tr|
-	  data = tr.search('td') 
-	  next if data.count != 2
-	  name, cgc = data[0].text, data[1].text
+	if !span.children[0].nil?
+		grantor_name = span.children[0].text	
+		#TODO:refactore - find a way to group cgc
+		grantor_cgc = []
+		page.parser.css('tr#aba102 td.conteudo table tr').each do |tr|
+		  data = tr.search('td') 
+		  next if data.count != 2
+		  name, cgc = data[0].text, data[1].text
 
-      owner = Owner.first_or_new 'àsclaras', :cgc => cgc, :name => name
-      owner.save!
+		  owner = Owner.first_or_new 'àsclaras', :cgc => cgc, :name => name
+		  owner.save!
 
-	  grantor = Grantor.first_or_new :asclaras_id => grantor_id, :owner_id => owner.id, :year => year
-      grantor.save!
-    end
+		  grantor = Grantor.first_or_new :asclaras_id => grantor_id, :owner_id => owner.id, :year => year
+		  grantor.save!
+		end
+	end
   end
 
 
