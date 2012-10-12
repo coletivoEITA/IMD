@@ -524,30 +524,25 @@ module ImportHelper
     end
   end
 
-  def self.import_asclaras_grantor_by_range(options = {})
+  def self.import_asclaras_grantor_by_range(range_begin, range_end, year)
     url_home = 'http://asclaras.org.br'
     url_grantor = "#{url_home}/@doador.php?doador=%{grantor_id}&ano=%{year}"
     m = Mechanize.new
     queue = Queue.new
     mutex = Mutex.new 
-	range_begin_2008 = 2755490
-	range_end_2008 = 3499999
-	#range_begin_2010 = 3714508
-	#range_end_2010 = 3879490
-	year = 2008
 	finished = false
 
     Thread.new do	
-
       begin
         Thread.join_to_limit 3, [Thread.main]		  
 		Thread.new do
-		  finished = true if range_begin_2008 > range_end_2008
+		  #range_end is imported (inclusive)
+		  finished = true if range_begin >= range_end
 		  pp '----------------------------'		
-		  page = m.get(url_grantor % {:grantor_id => range_begin_2008, :year => year})
-		  queue << [page, range_begin_2008, year]		
+		  page = m.get(url_grantor % {:grantor_id => range_begin, :year => year})
+		  queue << [page, range_begin, year]		
           mutex.synchronize do
-		  	range_begin_2008 = range_begin_2008 + 1			
+		  	range_begin = range_begin + 1			
 		  end
 		end
 	  end while !finished
@@ -572,7 +567,7 @@ module ImportHelper
 
   def self.import_asclaras_grantor(page, grantor_id, year)
     span = page.parser.css('span.destaque')[0]
-	if !span.children[0].nil?
+	if !span.nil? && !span.children[0].nil?
 		grantor_name = span.children[0].text	
 		#TODO:refactore - find a way to group cgc
 		grantor_cgc = []
