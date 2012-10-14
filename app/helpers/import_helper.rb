@@ -7,7 +7,7 @@ module ImportHelper
     Share.destroy_all
     Balance.destroy_all
     Candidacy.destroy_all
-    Donation.destroy_all    
+    Donation.destroy_all
     CompanyMember.destroy_all
 	Grantor.destroy_all
     #NameEquivalence.destroy_all
@@ -54,12 +54,12 @@ module ImportHelper
   end
 
   EconomaticaCSVColumns = ActiveSupport::OrderedHash[
-    'Nome', :name,
+    'Nome', :stock_name,
     'Classe', :classes,
     'CNPJ', :cgc,
     'Pais Sede', :country,
     'Ativo /|Cancelado', :traded,
-    'ID da|empresa', nil,
+    'ID da|empresa', :cvm_id,
     'Setor NAICS|ult disponiv', :naics,
     'Setor|Economática', :economatica_sector,
     'Tipo de Ativo', nil,
@@ -125,7 +125,7 @@ module ImportHelper
     field = EconomaticaCSVColumns[header]
     if field.nil?
       EconomaticaCSVColumns.each do |regexp, f|
-        next unless regexp.is_a(Regexp)
+        next unless regexp.is_a?(Regexp)
         if header =~ regexp
           field = f
           break
@@ -195,12 +195,7 @@ module ImportHelper
         elsif field == 'shares_quantity'
           company.shares_quantity[share_class] = value
         else
-          old_value = company.send(field)
-          if Owner.keys[field].type != Array
-            company.send "#{field}=", value
-          else
-            old_value << value unless old_value.include?(value)
-          end
+          owner.set_value field, value
         end
 
       end
@@ -259,11 +254,7 @@ module ImportHelper
         raise "Can't find field #{field_name}" if field.nil?
         value = field.parent.css('font')[1].text.squish
 
-        if attr.is_a?(Proc)
-          attr.call(owner, value)
-        else
-          owner.send("#{attr}=", value)
-        end
+        owner.set_value attr, value
       end
       owner.save!
       pp owner
@@ -397,6 +388,57 @@ module ImportHelper
 
   end
 
+  def self.import_bovespa(options = {})
+    m = Mechanize.new
+    url = "http://www.bmfbovespa.com.br/cias-listadas/empresas-listadas/ResumoEmpresaPrincipal.aspx?codigoCvm=%{cvm_id}&idioma=pt-br"
+    frame_url = "http://www.bmfbovespa.com.br/pt-br/mercados/acoes/empresas/ExecutaAcaoConsultaInfoEmp.asp?CodCVM=%{cvm_id}"
+    source = 'Bovespa'
+
+    attr_map = {
+      'CNPJ' => proc{ |o, v| o.add_cgc v },
+      'Nome de Pregão' => :stock_name,
+      'Site' => :website,
+    }
+
+    cvm_id = options[:cvm_id]
+
+    page = m.get url % {:cvm_id => cvm_id}
+    formal_name = page.parser.css('h1 span.label')[0].text.squish
+
+    page = m.get frame_url % {:cvm_id => cvm_id}
+
+    reference_date = options[:reference_date]
+    if reference_date.nil?
+      # TODO fetch from .obs2col
+      raise 'give a reference date'
+    end
+
+    company = Owner.first_or_new source, :cvm_id => cvm_id, :formal_name => formal_name
+    attr_map.each do |field_name, attr|
+      field = page.parser.css("td.IdentificacaoDado:contains('#{field_name}')")[0]
+      raise "Can't find field #{field_name}" if field.nil?
+      value = field.parent.css('td')[1].text.squish
+
+      company.set_value attr, value
+    end
+    company.save!
+
+    $page = page
+
+    page.parser.css('#divPosicaoAcionaria .tabela tr').each do |tr|
+      tds = tr.css('td')
+      next if tds.size != 4
+      name = tds[0].text.squish
+      on_percentage = tds[1].text.squish.gsub(',', '.').to_f
+      pn_percentage = tds[2].text.squish.gsub(',', '.').to_f
+      total_shares = tds[3].text.squish.gsub(',', '.').to_f
+
+      Share.first_or_create(:company_id => company.id, :name => name, :source => source, :reference_date => reference_date,
+                            :sclass => 'ON', :percentage => on_percentage) unless on_percentage.zero?
+      Share.first_or_create(:company_id => company.id, :name => name, :source => source, :reference_date => reference_date,
+                            :sclass => 'PN', :percentage => pn_percentage) unless pn_percentage.zero?
+    end
+  end
 
   def self.import_companies(*files)
     csvs = *files.map do |file|
@@ -529,24 +571,24 @@ module ImportHelper
     url_grantor = "#{url_home}/@doador.php?doador=%{grantor_id}&ano=%{year}"
     m = Mechanize.new
     queue = Queue.new
-    mutex = Mutex.new 
+    mutex = Mutex.new
 	finished = false
 
-    Thread.new do	
+    Thread.new do
       begin
-        Thread.join_to_limit 3, [Thread.main]		  
+        Thread.join_to_limit 3, [Thread.main]
 		Thread.new do
 		  #range_end is imported (inclusive)
 		  finished = true if range_begin >= range_end
-		  pp '----------------------------'		
+		  pp '----------------------------'
 		  page = m.get(url_grantor % {:grantor_id => range_begin, :year => year})
-		  queue << [page, range_begin, year]		
+		  queue << [page, range_begin, year]
           mutex.synchronize do
-		  	range_begin = range_begin + 1			
+		  	range_begin = range_begin + 1
 		  end
 		end
 	  end while !finished
-	
+
       Thread.join_all [Thread.main]
 	end
 
@@ -561,18 +603,18 @@ module ImportHelper
 	  import_asclaras_grantor item[0], item[1], item[2]
 
 	  pp "grantor: %{grantor_id} year: %{year}" % {:grantor_id => item[1], :year => item[2]}
-      pp '============================'     
+      pp '============================'
     end
   end
 
   def self.import_asclaras_grantor(page, grantor_id, year)
     span = page.parser.css('span.destaque')[0]
 	if !span.nil? && !span.children[0].nil?
-		grantor_name = span.children[0].text	
+		grantor_name = span.children[0].text
 		#TODO:refactore - find a way to group cgc
 		grantor_cgc = []
 		page.parser.css('tr#aba102 td.conteudo table tr').each do |tr|
-		  data = tr.search('td') 
+		  data = tr.search('td')
 		  next if data.count != 2
 		  name, cgc = data[0].text, data[1].text
 

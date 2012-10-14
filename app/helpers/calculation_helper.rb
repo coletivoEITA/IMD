@@ -2,7 +2,7 @@
 
 module CalculationHelper
 
-  def self.calculate_owners_value(attr = :revenue, balance_reference_date = '2011-12-31', share_reference_date = '2012-09-05')
+  def self.calculate_owners_value(attr = :revenue, balance_reference_date = $balance_reference_date, share_reference_date = $share_reference_date)
     Owner.set({}, "own_#{attr}" => 0)
     Owner.set({}, "indirect_#{attr}" => 0)
     Owner.set({}, "total_#{attr}" => 0)

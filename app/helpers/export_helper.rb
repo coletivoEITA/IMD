@@ -52,9 +52,9 @@ module ExportHelper
     end
   end
 
-  def self.export_owners_rankings(attr = :revenue, balance_reference_date = '2011-12-31', share_reference_date = '2012-09-05')
+  def self.export_owners_rankings(attr = :revenue, balance_reference_date = $balance_reference_date, share_reference_date = $share_reference_date)
 
-    def self.export_raking(attr = :revenue, balance_reference_date = '2011-12-31', share_reference_date = '2012-09-05')
+    def self.export_raking(attr = :revenue, balance_reference_date = $balance_reference_date, share_reference_date = $share_reference_date)
 
       puts 'calculating values'
       Share.each{ |s| s.calculate_percentage; s.save }
@@ -140,7 +140,7 @@ module ExportHelper
       end
     end
 
-    export_raking attr, '2011-12-31', '2012-09-05'
+    export_raking attr, $balance_reference_date, $share_reference_date
     true
   end
 

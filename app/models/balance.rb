@@ -6,7 +6,7 @@ class Balance
   timestamps!
 
   key :source, String, :required => :true
-  key :reference_date, String, :required => :true
+  key :reference_date, Time, :required => :true
 
   key :company_id, ObjectId, :required => :true
   belongs_to :company, :class_name => 'Owner'

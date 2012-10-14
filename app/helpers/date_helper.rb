@@ -6,4 +6,8 @@ module DateHelper
     Date.strptime date, '%d/%m/%Y'
   end
 
+  def self.time_from_ordered(date)
+    Time.strptime date, '%Y-%m-%d'
+  end
+
 end
