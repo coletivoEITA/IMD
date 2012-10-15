@@ -86,7 +86,7 @@ module ExportHelper
           owned_shares = owner.owned_shares.on.greatest.with_reference_date(share_reference_date).all
 
           controller = owner.controller
-          is_controlled = controller && controller != $uniao
+          is_controlled = controller && controller.id != $uniao.id
           controlled = is_controlled ? 'sim' : ''
 
           # uncomment to skip controlled
