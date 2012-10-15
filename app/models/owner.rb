@@ -174,7 +174,7 @@ class Owner
           next if control == true
           "#{owned_company.name} (#{owned_share.percentage.c}%, final=#{p.c}%)"
         else
-          sep = "\n#{'  '*level}- "
+          sep = "\n#{'•• '*level}"
           owned = owned.join(sep)
           "#{owned_company.name} => {#{sep}#{owned}}"
         end

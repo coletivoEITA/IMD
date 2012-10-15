@@ -63,18 +63,17 @@ module ExportHelper
       puts 'loading data'
       value_field = "total_#{attr}".to_sym
       owners = Owner.order(value_field.desc).where(:name.ne => 'Acoes em Tesouraria').all
+      #total = owners.sum(&value_field)
 
       puts 'exporting data'
       CSV.open("output/#{attr}-ranking.csv", "w") do |csv|
         csv << ['Posição no Ranking', 'contr?', 'Nome', 'Razão Social', 'CNPJ', 'Natureza Jurídica',
                 'Receita líquida pela Valor (milhões de reias)', 'Receita líquida pela Economatica (milhões de reias)',
                 '“Poder” indireto (das empresas em que i tem participação)', '“Poder” total (receita da empresa i + valor indireto)',
-                'Indicador', 'Fonte',
+                'Indicador (por milhão de rendas médias)', 'Fonte',
                 'Poder direto - controle', 'Poder direto - parcial',
                 'Poder indireto - controle', 'Poder indireto - parcial',
                 'Composição acionária direta', 'Estatal ou Privada?']
-
-        #total = owners.sum(&value_field)
 
         i = 0
         owners.each do |owner|
