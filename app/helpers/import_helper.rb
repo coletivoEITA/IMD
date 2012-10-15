@@ -524,6 +524,35 @@ module ImportHelper
     end
   end
 
+  def self.import_asclaras_grantor_locally()
+    empty_donator = []
+	file_path = '/home/caioformiga/workspace/EITA/script/'	
+	dir = Dir.new(file_path)
+	dir.each { |file_name| 
+	  if file_name != "." && file_name != ".." && file_name != 'asclaras_grantor.pl' && file_name != 'teste.pl'
+	    html_file = file_path + file_name		    
+	    html = Nokogiri::HTML File.open html_file
+		begin
+			year = html.xpath(".//input[@name='ano']").attr('value').value
+			donator_id = html.xpath(".//input[@name='doador']").attr('value').value
+			#import grantor using html locally		
+			import_asclaras_grantor(nil, html, donator_id, year)
+			pp "grantor: "+donator_id+" year: "+year
+		    pp '============================'
+		rescue NoMethodError
+			empty_donator << donator_id
+		end
+		#delete html file  
+		file_full_path = file_path + file_name
+		pp 'deleting file: ' + file_full_path
+		if !File.directory?(file_full_path)
+		  File.delete(file_full_path)		  
+		end
+		pp 'deleted'
+	  end
+	}
+  end
+
   def self.import_asclaras_grantor_by_range(range_begin, range_end, year)
     url_home = 'http://asclaras.org.br'
     url_grantor = "#{url_home}/@doador.php?doador=%{grantor_id}&ano=%{year}"
@@ -531,23 +560,43 @@ module ImportHelper
     queue = Queue.new
     mutex = Mutex.new 
 	finished = false
+	logged_donators = []
 
     Thread.new do	
       begin
         Thread.join_to_limit 3, [Thread.main]		  
 		Thread.new do
+		  error_count = 0
 		  #range_end is imported (inclusive)
 		  finished = true if range_begin >= range_end
 		  pp '----------------------------'		
-		  page = m.get(url_grantor % {:grantor_id => range_begin, :year => year})
-		  queue << [page, range_begin, year]		
-          mutex.synchronize do
-		  	range_begin = range_begin + 1			
+		  begin	
+		    page = m.get(url_grantor % {:grantor_id => range_begin, :year => year})
+		    queue << [page, range_begin, year]		
+            mutex.synchronize do
+		  	  range_begin = range_begin + 1	
+		    end
+		  rescue SystemCallError
+			#create log file for further calls
+            mutex.synchronize do
+			  logged_donators << range_begin
+			end
 		  end
 		end
 	  end while !finished
 	
       Thread.join_all [Thread.main]
+	end
+
+	#processing logged donator due to any erros for further processing.
+	logged_donators.each do |logged_donator|
+	  begin
+		page = m.get(url_grantor % {:grantor_id => logged_donator, :year => year})
+	    queue << [page, nil, logged_donator, year]			
+	  rescue SystemCallError
+	    pp '----------------------------'		
+		pp 'error to import: ' + logged_donator.to_s
+	  end
 	end
 
     # queue processing
@@ -556,22 +605,24 @@ module ImportHelper
         sleep 1
         next
       end
-
       item = queue.pop
-	  import_asclaras_grantor item[0], item[1], item[2]
-
+	  import_asclaras_grantor(item[0], nil, item[1], item[2])
 	  pp "grantor: %{grantor_id} year: %{year}" % {:grantor_id => item[1], :year => item[2]}
       pp '============================'     
     end
   end
 
-  def self.import_asclaras_grantor(page, grantor_id, year)
-    span = page.parser.css('span.destaque')[0]
+  def self.import_asclaras_grantor(page = nil, html = nil, grantor_id = nil, year = nil)
+	if !page.nil?
+	  html = page.parser		
+	end
+
+    span = html.css('span.destaque')[0]
 	if !span.nil? && !span.children[0].nil?
 		grantor_name = span.children[0].text	
 		#TODO:refactore - find a way to group cgc
 		grantor_cgc = []
-		page.parser.css('tr#aba102 td.conteudo table tr').each do |tr|
+		html.css('tr#aba102 td.conteudo table tr').each do |tr|
 		  data = tr.search('td') 
 		  next if data.count != 2
 		  name, cgc = data[0].text, data[1].text
