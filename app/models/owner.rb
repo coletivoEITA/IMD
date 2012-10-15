@@ -147,7 +147,7 @@ class Owner
 
   def controller_share(reference_date = $share_reference_date)
     s = self.owners_shares.on.greatest.with_reference_date(reference_date).first
-    s if s.control?
+    s if s and s.control?
   end
   def controller(reference_date = $share_reference_date)
     s = self.controller_share(reference_date)
