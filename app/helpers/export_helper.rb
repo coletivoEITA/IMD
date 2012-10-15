@@ -67,7 +67,7 @@ module ExportHelper
 
       puts 'exporting data'
       CSV.open("output/#{attr}-ranking.csv", "w") do |csv|
-        csv << ['Posição no Ranking', 'contr?', 'Nome', 'Razão Social', 'CNPJ', 'Natureza Jurídica',
+        csv << ['Posição no Ranking', 'Controlada?', 'Nome', 'Razão Social', 'CNPJ', 'Natureza Jurídica',
                 'Receita líquida pela Valor (milhões de reias)', 'Receita líquida pela Economatica (milhões de reias)',
                 '“Poder” indireto (das empresas em que i tem participação)', '“Poder” total (receita da empresa i + valor indireto)',
                 'Indicador (por milhão de rendas médias)', 'Fonte',
