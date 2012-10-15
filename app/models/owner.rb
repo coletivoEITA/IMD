@@ -161,15 +161,14 @@ class Owner
         owned_company = owned_share.company
         next if owned_share.percentage.nil?
 
+        # reset for each subtree
+        visited = [company] if level == 1
         next if visited.include? owned_company
         visited << owned_company
 
         p = percentage ? (owned_share.percentage*percentage)/100 : owned_share.percentage
         control = control.nil? ? owned_share.control? : (control && owned_share.control?)
         owned = __recursion(owned_company, p, control, share_reference_date, visited, level+1).compact
-
-        # reset for each subtree
-        visited = [company] if level == 1
 
         if owned.empty?
           next if control == true
@@ -191,15 +190,14 @@ class Owner
         next unless owned_share.control?
         owned_company = owned_share.company
 
+        # reset for each subtree
+        visited = [company] if level == 1
         next if visited.include? owned_company
         visited << owned_company
 
         list = []
         list << "#{owned_company.name} (controlada por #{company.name})" if level != 1
         list += __recursion(owned_company, share_reference_date, visited, level+1)
-
-        # reset for each subtree
-        visited = [company] if level == 1
 
         list
       end.flatten.compact
@@ -210,14 +208,16 @@ class Owner
 
   def controlled_companies(share_reference_date = $share_reference_date)
 
-    def __recursion(company, share_reference_date, visited = [])
+    def __recursion(company, share_reference_date, visited = [], level = 1)
       company.owned_shares.on.greatest.with_reference_date(share_reference_date).each do |owned_share|
         owned_company = owned_share.company
 
+        # reset for each subtree
+        visited = [company] if level == 1
         next if visited.include? owned_company
         visited << owned_company
 
-        __recursion(owned_company, share_reference_date, visited)
+        __recursion owned_company, share_reference_date, visited, level+1
       end
     end
 
@@ -234,7 +234,8 @@ class Owner
   end
   def calculate_indirect_value(attr = :revenue, balance_reference_date = $balance_reference_date, share_reference_date = $share_reference_date)
 
-    def __recursion(company, attr, balance_reference_date, share_reference_date, visited = [], fully_controlled = [])
+    def __recursion(company, attr, balance_reference_date, share_reference_date,
+                    visited = [], fully_controlled = [], level = 1)
 
       company.owned_shares.on.with_reference_date(share_reference_date).inject(0) do |sum, owned_share|
         owned_company = owned_share.company
@@ -250,7 +251,9 @@ class Owner
         # so we set wij = 0
         next sum if not is_controller and fully_controlled.include?(owned_company)
 
-        next if visited.include? owned_company
+        # reset for each subtree
+        visited = [company] if level == 1
+        next sum if visited.include? owned_company
         visited << owned_company
 
         total_value = owned_company.send("total_#{attr}")
@@ -262,7 +265,7 @@ class Owner
 
           indirect_value = owned_company.send("indirect_#{attr}")
           if indirect_value.zero?
-            indirect_value = __recursion owned_company, attr, balance_reference_date, share_reference_date, visited, fully_controlled
+            indirect_value = __recursion owned_company, attr, balance_reference_date, share_reference_date, visited, fully_controlled, level+1
             # cache value
             owned_company.send("indirect_#{attr}=", indirect_value)
           end
