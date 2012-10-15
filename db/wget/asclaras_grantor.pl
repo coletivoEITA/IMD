@@ -6,7 +6,7 @@
 #closedir(D);
 
 $ano = 2008;
-$x = 3099999;
+$x = 3088341; #3099999; comented on 16-ou-2012
 $y = 2779028;
 while ($x > $y) {
 	system ("wget 'http://www.asclaras.org.br/\@doador.php?doador=$x&ano=$ano'");

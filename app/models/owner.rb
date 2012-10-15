@@ -10,6 +10,7 @@ class Owner
 
   # companies
   key :formal_name, String
+  key :stock_name, String
   key :cgc, Array
   key :cnpj_root, String
   key :capital_type, String
@@ -21,13 +22,14 @@ class Owner
   key :sector, String
   key :economatica_sector, String
   # company stock info
+  key :cvm_id, Integer
   key :classes, Array
   key :traded, Boolean
   key :stock_market, String
   key :stock_code, String
   key :shares_quantity, Hash # {'class' => 'quantity'}
   # extra info
-  key :open_date, Date
+  key :open_date, Time
   key :legal_nature, String
 
   key :members_count, Integer # nil means members not loaded
@@ -52,9 +54,6 @@ class Owner
   # normalized versions
   key :name_n, String
   key :formal_name_n, String
-
-  #in case there is any data to access from www.asclaras.org later
-  key :asclaras_id, Integer
 
   many :balances, :foreign_key => :company_id, :dependent => :destroy_all
   many :owners_shares, :class_name => 'Share', :foreign_key => :company_id, :dependent => :destroy_all
@@ -81,17 +80,15 @@ class Owner
     cgc = attributes[:cgc]
     name = attributes[:name]
     formal_name = attributes[:formal_name]
-	source_id = attributes[:source_id]
 
-    ne = NameEquivalence.first :synonymous => name, :source => source
-    name = attributes[:name] = ne.name unless ne.blank?
-    ne = NameEquivalence.first :synonymous => formal_name, :source => source
-    formal_name = attributes[:formal_name] = ne.name unless ne.blank?
+    exact_match = self.first(attributes)
 
+    attributes[:name], name = NameEquivalence.replace source, name
+    attributes[:formal_name], formal_name = NameEquivalence.replace source, formal_name
     name_n = name.filter_normalization unless name.blank?
     formal_name_n = formal_name.filter_normalization unless formal_name.blank?
 
-    exact_match = self.first(attributes)
+    exact_match ||= self.first(attributes)
     owner_by_cgc = owner_by_name = owner_by_formal_name = nil
     owner_by_cgc = self.find_by_cgc(cgc) unless cgc.blank?
     owner_by_name = self.find_by_name_n(name_n) unless name.blank?
@@ -287,16 +284,29 @@ class Owner
     self.cgc << cgc unless self.cgc.include?(cgc)
   end
 
+  def set_value(attr, value)
+    key = Owner.keys[attr.to_s]
+    if attr.is_a?(Proc)
+      attr.call self, value
+    elsif key and key.type == Array
+      old_value = self.send attr
+      old_value << value unless old_value.include?(value)
+    else
+      self.send("#{attr}=", value)
+    end
+  end
+
   protected
 
   def assign_defaults
-    self.name ||= self.formal_name
+    self.name ||= NameEquivalence.replace(self.source, self.formal_name || self.stock_name)
     self.cnpj_root ||= CgcHelper.extract_cnpj_root(self.cgc.first) if self.cnpj?
   end
 
   def normalize_fields
     self.name_n = self.name.filter_normalization
     self.formal_name_n = self.formal_name.filter_normalization if self.formal_name
+    self.stock_name = self.stock_name.upcase if self.stock_name
   end
 
   def validate_cgc

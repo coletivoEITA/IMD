@@ -2,7 +2,7 @@
 
 module CheckHelper
 
-  def self.check_more_than_100percent_shares(share_type = 'ON', share_reference_date = '2012-09-05')
+  def self.check_more_than_100percent_shares(share_type = 'ON', share_reference_date = $share_reference_date)
     Owner.all.map do |o|
       shares = o.owners_shares.where(:sclass => share_type).with_reference_date(share_reference_date).all
       sum = shares.sum{ |s| s.percentage.nil? ? 0 : s.percentage }
@@ -10,7 +10,7 @@ module CheckHelper
     end.compact
   end
 
-  def self.check_similar_balance(attr = :revenue, balance_reference_date = '2011-12-31')
+  def self.check_similar_balance(attr = :revenue, balance_reference_date = $balance_reference_date)
     value_field = "own_#{attr}".to_sym
     owners = Owner.where(value_field.ne => 0).order(value_field.asc).all
     max_percentage_diff = 0.1
