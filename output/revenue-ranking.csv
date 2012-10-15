@@ -22,7 +22,7 @@ Petrobras => {
 •• Braskem => {
 •• •• Quattor Petr (100.00%, final=23.63%)}}
 Eletropaulo (20.03%, final=20.03%)","",
-1,"",Petrobras,Petrobras,33000167/0001-01,-,244176.00,244176.14,15603.29,259779.43,16.10,Economatica 2011 (anual),Petroquisa (100.00%),Braskem (47.03%),"","Petroquisa => {
+1,"",Petrobras,Petrobras,33000167/0001-01,SOCIEDADE ANÔNIMA ABERTA,244176.00,244176.14,15603.29,259779.43,16.10,Economatica 2011 (anual),Petroquisa (100.00%),Braskem (47.03%),"","Petroquisa => {
 •• Copesul (15.63%, final=15.63%)}
 Braskem => {
 •• Quattor Petr (100.00%, final=47.03%)
@@ -33,9 +33,9 @@ Bndespar - BNDES Participacoes SA (2.33%)",state
 Bndespar - BNDES Participacoes SA (6.86%)
 Acoes em Tesouraria (2.73%)
 Aberdeen Asset Management Plc (0.04%)",private
-2,"",Valepar S.A.,Valepar S.A.,-,-,-,-,103416.50,103416.50,6.41,Economatica associado,Vale (53.88%),"",Caemi (controlada por Vale),"Vale => {
+2,"",Valepar S.A.,Valepar S.A.,01772413/0001-57,SOCIEDADE ANÔNIMA FECHADA,-,-,103416.50,103416.50,6.41,Economatica associado,Vale (53.88%),"",Caemi (controlada por Vale),"Vale => {
 •• Log-In (33.56%, final=18.08%)}","",
-3,"",Gerdau Met,Gerdau Met,92690783/0001-09,-,-,35406.78,35406.78,70813.56,4.39,Economatica 2011 (anual),Gerdau (76.84%),"","","","Indac Ind. Adm. e Comercio S.A. (39.00%)
+3,"",Gerdau Met,Gerdau Met,92690783/0001-09,SOCIEDADE ANÔNIMA ABERTA,-,35406.78,35406.78,70813.56,4.39,Economatica 2011 (anual),Gerdau (76.84%),"","","","Indac Ind. Adm. e Comercio S.A. (39.00%)
 Grupo Gerdau Empreendimentos Ltda (26.29%)
 Banco J. P. Morgan S.A. (7.69%)",
 -,sim,Pão de Açúcar,Pão de Açúcar,47508411/0001-56,-,46594.50,46594.49,21016.72,67611.20,4.19,Economatica 2011 (anual),Viavarejo (52.41%),"","","","Wilkes Participacoes S/A (65.61%)
@@ -43,8 +43,8 @@ Sudaco Participacoes Ltda (28.71%)
 Casino Guichard Perrachon (5.62%)
 Abilio Dos Santos Diniz (0.00%)
 Ana Maria Falleiros Dos Santos Diniz D'Avila (0.00%)",private
-4,"",Wilkes Participacoes S/A,Wilkes Participacoes S/A,-,-,-,-,67611.20,67611.20,4.19,Economatica associado,Pão de Açúcar (65.61%),"",Viavarejo (controlada por Pão de Açúcar),"","",
-5,"",JBS,JBS S.A.,02916265/0001-60,-,61796.80,61796.76,-,61796.76,3.83,Economatica 2011 (anual),"",Vigor Food (21.32%),"","Vigor Food (21.32%, final=21.32%)","Fb Participacoes S.A. (44.12%)
+4,"",Wilkes Participacoes S/A,Wilkes Participacoes S/A,04745350/0001-38,SOCIEDADE ANÔNIMA FECHADA,-,-,67611.20,67611.20,4.19,Economatica associado,Pão de Açúcar (65.61%),"",Viavarejo (controlada por Pão de Açúcar),"","",
+5,"",JBS,JBS S.A.,02916265/0001-60,SOCIEDADE ANÔNIMA ABERTA,61796.80,61796.76,-,61796.76,3.83,Economatica 2011 (anual),"",Vigor Food (21.32%),"","Vigor Food (21.32%, final=21.32%)","Fb Participacoes S.A. (44.12%)
 Bndespar - BNDES Participacoes SA (30.95%)
 Prot - Fundo de Invest. em Participacoes (3.61%)
 Acoes em Tesouraria (3.43%)
@@ -124,7 +124,7 @@ Oi => {
 •• Telemar Norte Leste S/A => {
 •• •• Coari Part (100.00%, final=0.06%)
 •• •• Tele Nort Cl (99.57%, final=0.06%)}}","",
--,sim,Bndespar - BNDES Participacoes SA,Bndespar - BNDES Participacoes SA,00383281/0001-09,-,-,-,53712.22,53712.22,3.33,Economatica associado,"","Tupy (35.77%)
+-,sim,Bndespar - BNDES Participacoes SA,Bndespar - BNDES Participacoes SA,00383281/0001-09,SOCIEDADE ANÔNIMA ABERTA,-,-,53712.22,53712.22,3.33,Economatica associado,"","Tupy (35.77%)
 Vigor Food (31.41%)
 JBS (30.95%)
 Fibria (30.44%)
@@ -215,14 +215,14 @@ Brasil (0.13%, final=0.13%)
 AES Elpa => {
 •• Eletropaulo (77.81%, final=0.00%)}
 AES Tiete (0.00%, final=0.00%)",BNDES - Banco Nac de Desenvol Economico e Social (100.00%),
-7,"",Ultrapar,Ultrapar,33256439/0001-39,-,48661.30,48661.30,-,48661.30,3.01,Economatica 2011 (anual),"Ipiranga Dis (100.00%)
+7,"",Ultrapar,Ultrapar,33256439/0001-39,SOCIEDADE ANÔNIMA ABERTA,48661.30,48661.30,-,48661.30,3.01,Economatica 2011 (anual),"Ipiranga Dis (100.00%)
 Ipiranga Pet (100.00%)
 Ipiranga Ref (100.00%)","","","","Ultra S/A Participacoes (24.03%)
 Aberdeen Asset Management Plc (12.16%)
 Parth Investiments Company (7.99%)
 Previ Cx Prev Funcs Bco Brasil (6.00%)
 Acoes em Tesouraria (1.53%)",
-8,"",Oi,Oi,76535764/0001-43,-,27907.00,9245.25,37147.39,46392.65,2.87,Economatica 2011 (anual),Telemar Norte Leste S/A (100.00%),"","Coari Part (controlada por Telemar Norte Leste S/A)
+8,"",Oi,Oi,76535764/0001-43,SOCIEDADE ANÔNIMA ABERTA,27907.00,9245.25,37147.39,46392.65,2.87,Economatica 2011 (anual),Telemar Norte Leste S/A (100.00%),"","Coari Part (controlada por Telemar Norte Leste S/A)
 Tele Nort Cl (controlada por Telemar Norte Leste S/A)","","Telemar Participacoes S.A. (48.51%)
 Acoes em Tesouraria (16.37%)
 Valverde Participacoes S.A. (7.93%)
@@ -232,9 +232,9 @@ Bndespar - BNDES Participacoes SA (0.90%)
 Funcef-Fundacao Economiarios Federais (0.09%)
 BNDES - Banco Nac de Desenvol Economico e Social (0.06%)
 Petros - Fund. Petrobras de Seg. Social (0.04%)",private
--,sim,Telemar Norte Leste S/A,Telemar Norte Leste S/A,33000118/0001-79,-,-,27906.99,9240.40,37147.39,2.30,Economatica 2011 (anual),"Coari Part (100.00%)
+-,sim,Telemar Norte Leste S/A,TELEMAR NORTE LESTE S/A ,33000118/0001-79,SOCIEDADE ANÔNIMA FECHADA,-,27906.99,9240.40,37147.39,2.30,Economatica 2011 (anual),"Coari Part (100.00%)
 Tele Nort Cl (99.57%)","","","",Oi (100.00%),private
-9,"",Eletrobras,Eletrobras,00001180/0001-26,-,29532.70,33061.36,2774.82,35836.18,2.22,Economatica 2011 (anual),Eletropar (83.72%),"Celpa (34.79%)
+9,"",Eletrobras,Eletrobras,00001180/0001-26,SOCIEDADE ANÔNIMA ABERTA,29532.70,33061.36,2774.82,35836.18,2.22,Economatica 2011 (anual),Eletropar (83.72%),"Celpa (34.79%)
 Cemar (33.48%)
 Ceee-Gt (32.23%)
 Ceee-D (32.23%)
@@ -262,23 +262,23 @@ Fundo Garantidor de Habitacao Fghab (0.09%)",state
 -,sim,Gerdau,Gerdau S.A.,33611500/0001-19,-,35406.80,35406.78,-,35406.78,2.19,Economatica 2011 (anual),"","","","","Gerdau Met (76.84%)
 Bndespar - BNDES Participacoes SA (6.63%)
 Acoes em Tesouraria (0.30%)",private
-10,"",Odebrecht Serviços e Part.,Odebrecht Serviços e Part.,10904193/0001-69,-,-,-,33176.16,33176.16,2.06,Economatica associado,Braskem (50.11%),"",Quattor Petr (controlada por Braskem),"Braskem => {
+10,"",Odebrecht Serviços e Part.,Odebrecht Serviços e Part.,10904193/0001-69,SOCIEDADE ANÔNIMA FECHADA,-,-,33176.16,33176.16,2.06,Economatica associado,Braskem (50.11%),"",Quattor Petr (controlada por Braskem),"Braskem => {
 •• Copesul (29.46%, final=14.76%)}","",private
 -,sim,Braskem,Braskem,42150391/0001-70,-,33176.20,33176.16,-,33176.16,2.06,Economatica 2011 (anual),Quattor Petr (100.00%),Copesul (29.46%),"","Copesul (29.46%, final=29.46%)","Odebrecht Serviços e Part. (50.11%)
 Petrobras (47.03%)
 Acoes em Tesouraria (0.00%)
 Odebrecht (0.00%)",private
-11,"",Companhia Brasiliana de Energia,Companhia Brasiliana de Energia,-,-,9918.00,-,21557.11,31475.11,1.95,Valor 2011 (anual),"AES Elpa (98.26%)
+11,"",Companhia Brasiliana de Energia,Companhia Brasiliana de Energia,04128563/0001-10,SOCIEDADE ANÔNIMA FECHADA,9918.00,-,21557.11,31475.11,1.95,Valor 2011 (anual),"AES Elpa (98.26%)
 AES Tiete (71.35%)","",Eletropaulo (controlada por AES Elpa),"","",
 -,sim,Telefônica Brasil,Telefônica Brasil S/A,02558157/0001-62,-,29128.70,29128.74,-,29128.74,1.80,Economatica 2011 (anual),"","","","","SP Telecomunicacoes Holding Ltda (50.51%)
 Telefonica S.A (25.69%)
 Telefonica Internacional S/A (15.44%)
 Telefonica Chile SA (0.18%)
 Acoes em Tesouraria (0.06%)",private
-12,"",SP Telecomunicacoes Holding Ltda,SP Telecomunicacoes Holding Ltda,-,-,-,-,29128.74,29128.74,1.80,Economatica associado,Telefônica Brasil (50.51%),"","","","",
-13,"",Indac Ind. Adm. e Comercio S.A.,Indac Ind. Adm. e Comercio S.A.,-,-,-,-,27614.37,27614.37,1.71,Economatica associado,"",Gerdau Met (39.00%),"","Gerdau Met => {
+12,"",SP Telecomunicacoes Holding Ltda,SP Telecomunicacoes Holding Ltda,-,SOCIEDADE EMPRESARIA LIMITADA ,-,-,29128.74,29128.74,1.80,Economatica associado,Telefônica Brasil (50.51%),"","","","",
+13,"",Indac Ind. Adm. e Comercio S.A.,Indac Ind. Adm. e Comercio S.A.,92690817/0001-57,SOCIEDADE ANÔNIMA FECHADA,-,-,27614.37,27614.37,1.71,Economatica associado,"",Gerdau Met (39.00%),"","Gerdau Met => {
 •• Gerdau (76.84%, final=29.97%)}","",
-14,"",Fb Participacoes S.A.,Fb Participacoes S.A.,-,-,-,-,27266.41,27266.41,1.69,Economatica associado,"","Vigor Food (44.62%)
+14,"",Fb Participacoes S.A.,Fb Participacoes S.A.,11309502/0001-15,SOCIEDADE ANÔNIMA FECHADA,-,-,27266.41,27266.41,1.69,Economatica associado,"","Vigor Food (44.62%)
 JBS (44.12%)","","Vigor Food (44.62%, final=44.62%)
 JBS => {
 •• Vigor Food (21.32%, final=9.41%)}","",
@@ -287,9 +287,9 @@ Fund Antonio e Helena Zerrenner Inb (17.13%)
 Ambrew S/A (8.75%)
 Previ Cx Prev Funcs Bco Brasil (1.03%)
 Acoes em Tesouraria (0.03%)",private
-15,"",Interbrew International B.V.,Interbrew International B.V.,-,-,-,-,27126.72,27126.72,1.68,Economatica associado,AmBev (65.48%),"",Antarctica Paulista (controlada por AmBev),"AmBev => {
+15,"",Interbrew International B.V.,Interbrew International B.V.,06614548/0001-08,EMPRESA DOMICILIADA NO EXTERIOR ,-,-,27126.72,27126.72,1.68,Economatica associado,AmBev (65.48%),"",Antarctica Paulista (controlada por AmBev),"AmBev => {
 •• Polar (18.60%, final=12.18%)}","",
-16,"",BRF Foods,BRF Foods,01838723/0001-27,-,25706.20,25706.24,-,25706.24,1.59,Economatica 2011 (anual),"",Sadia S/A. (10.27%),"","Sadia S/A. (10.27%, final=10.27%)","Previ Cx Prev Funcs Bco Brasil (12.41%)
+16,"",BRF Foods,BRF Foods,01838723/0001-27,SOCIEDADE ANÔNIMA ABERTA,25706.20,25706.24,-,25706.24,1.59,Economatica 2011 (anual),"",Sadia S/A. (10.27%),"","Sadia S/A. (10.27%, final=10.27%)","Previ Cx Prev Funcs Bco Brasil (12.41%)
 Petros - Fund. Petrobras de Seg. Social (10.16%)
 Tarpon Inv (8.05%)
 Blackrock, Inc (4.05%)
@@ -297,8 +297,8 @@ Fundacao Vale do Rio Doce de Seg. Social - Valia (1.70%)
 Fund Tel de Seguro Social/Sistel (1.35%)
 Acoes em Tesouraria (0.34%)
 Fprv1 Sabia Fim Previdenciario (0.12%)",private
-17,"",Carrefour,Carrefour Comércio e Indústria Ltda.,45543915/0001-81,-,24899.70,-,-,24899.70,1.54,Valor 2011 (anual),"","","","","",private
-18,"",CPFL Energia,CPFL Energia,02429144/0001-93,-,12764.00,12764.03,11734.31,24498.34,1.52,Economatica 2011 (anual),"CPFL Piratininga (100.00%)
+17,"",Carrefour,Carrefour Comércio e Indústria Ltda.,45543915/0001-81,SOCIEDADE EMPRESARIA LIMITADA ,24899.70,-,-,24899.70,1.54,Valor 2011 (anual),"","","","","",private
+18,"",CPFL Energia,CPFL Energia,02429144/0001-93,SOCIEDADE ANÔNIMA ABERTA,12764.00,12764.03,11734.31,24498.34,1.52,Economatica 2011 (anual),"CPFL Piratininga (100.00%)
 CPFL Geracao (100.00%)
 Paul F Luz (100.00%)
 Rio Gde Ener (100.00%)","","","","Fundo Mutuo Inv. Acoes BB Cart. Livre I (31.02%)
@@ -306,13 +306,13 @@ VBC Energia (25.55%)
 Energia Sao Paulo Fundo de Investimento em Participacoes (11.96%)
 Bndespar - BNDES Participacoes SA (8.42%)
 Bonaire Participacoes S/A (0.66%)",
-19,"",Volkswagen,Volkswagen do Brasil Ind.Veiculos Automotores Ltda,59104422/0001-50,-,24001.10,-,-,24001.10,1.49,Valor 2011 (anual),"","","","","",private
+19,"",Volkswagen,Volkswagen do Brasil Ind.Veiculos Automotores Ltda,59104422/0001-50,SOCIEDADE EMPRESARIA LIMITADA ,24001.10,-,-,24001.10,1.49,Valor 2011 (anual),"","","","","",private
 -,sim,Bunge Alimentos,Bunge Alimentos S.A.,84046101/0001-93,-,23056.70,-,-,23056.70,1.43,Valor 2011 (anual),"","","","",Bunge Brasil (100.00%),private
-20,"",Bunge Brasil Holdings B.V.,Bunge Brasil Holdings B.V.,-,-,-,-,23056.70,23056.70,1.43,Economatica associado,Bunge Brasil (69.66%),"",Bunge Alimentos (controlada por Bunge Brasil),"","",
+20,"",Bunge Brasil Holdings B.V.,Bunge Brasil Holdings B.V.,06051618/0001-67,EMPRESA DOMICILIADA NO EXTERIOR ,-,-,23056.70,23056.70,1.43,Economatica associado,Bunge Brasil (69.66%),"",Bunge Alimentos (controlada por Bunge Brasil),"","",
 -,sim,Bunge Brasil,Bunge Brasil,61074092/0001-49,-,-,-,23056.70,23056.70,1.43,Economatica,Bunge Alimentos (100.00%),"","","","Bunge Brasil Holdings B.V. (69.66%)
 Bunge Inv e Consultoria Ltda (19.62%)
 Previ Cx Prev Funcs Bco Brasil (6.64%)",
-21,"",Telemar Participacoes S.A.,Telemar Participacoes S.A.,02107946/0001-87,-,-,-,22507.35,22507.35,1.39,Economatica associado,Telemar (58.69%),Oi (48.51%),"","Oi => {
+21,"",Telemar Participacoes S.A.,Telemar Participacoes S.A.,02107946/0001-87,SOCIEDADE ANÔNIMA ABERTA,-,-,22507.35,22507.35,1.39,Economatica associado,Telemar (58.69%),Oi (48.51%),"","Oi => {
 •• Telemar Norte Leste S/A => {
 •• •• Coari Part (100.00%, final=48.51%)
 •• •• Tele Nort Cl (99.57%, final=48.31%)}}","Ag Telecom Participações S.A (19.36%)
@@ -323,7 +323,7 @@ Fundação Atlântico de Seguridade Social (11.51%)
 Caixa de Previdência Dos Funcionários Do Banco Do Brasil - Previ (9.69%)
 Fundação Dos Economiários Federais - Funcef (7.48%)
 Fundação Petrobrás de Seguridade Social - Petros (7.48%)",
-22,"",Previ Cx Prev Funcs Bco Brasil,Previ Cx Prev Funcs Bco Brasil,-,-,-,-,22468.57,22468.57,1.39,Economatica associado,Sauipe (93.94%),"Tupy (35.81%)
+22,"",Previ Cx Prev Funcs Bco Brasil,Previ CAIXA DE PREVIDENCIA DOS FUNCS DO BANCO DO BRASIL,33754482/0001-24,ASSOCIACAO PRIVADA ,-,-,22468.57,22468.57,1.39,Economatica associado,Sauipe (93.94%),"Tupy (35.81%)
 Fras-Le (34.00%)
 Celesc (33.11%)
 Paranapanema (23.96%)
@@ -396,34 +396,34 @@ AmBev => {
 •• Antarctica Paulista (88.09%, final=0.90%)
 •• Polar (18.60%, final=0.19%)}
 Litel (0.00%, final=0.00%)","",
-23,"",Marfrig,Marfrig,03853896/0001-40,-,21884.90,21884.91,68.75,21953.65,1.36,Economatica 2011 (anual),Excelsior (53.89%),"","","","Mms Participacoes S/A (43.74%)
+23,"",Marfrig,Marfrig,03853896/0001-40,SOCIEDADE ANÔNIMA ABERTA,21884.90,21884.91,68.75,21953.65,1.36,Economatica 2011 (anual),Excelsior (53.89%),"","","","Mms Participacoes S/A (43.74%)
 Bndespar - BNDES Participacoes SA (13.97%)
 Osi International Holding Limited (5.83%)
 Templeton Asset Management, Ltd (5.05%)
 Marcos Antonio Molina Dos Santos (2.92%)
 Marcia Ap. Pascoal Marcal Dos Santos (2.20%)
 Acoes em Tesouraria (0.23%)",private
-24,"",Fiat,Fiat Automóveis S/A,16701716/0001-56,-,21496.00,-,-,21496.00,1.33,Valor 2011 (anual),"","","","","",private
-25,"",Odebrecht,Odebrecht,15105588/0001-15,-,21432.70,-,-,21432.70,1.33,Valor 2011 (anual),"",Braskem (0.00%),"","Braskem => {
+24,"",Fiat,Fiat Automóveis S/A,16701716/0001-56,SOCIEDADE ANÔNIMA FECHADA,21496.00,-,-,21496.00,1.33,Valor 2011 (anual),"","","","","",private
+25,"",Odebrecht,ODBINV S/A,15105588/0001-15,SOCIEDADE ANÔNIMA FECHADA,21432.70,-,-,21432.70,1.33,Valor 2011 (anual),"",Braskem (0.00%),"","Braskem => {
 •• Quattor Petr (100.00%, final=0.00%)
 •• Copesul (29.46%, final=0.00%)}","",
 -,sim,Viavarejo,Via Varejo S.A,33041260/0652-90,-,-,21016.72,-,21016.72,1.30,Economatica 2011 (anual),"","","","","Pão de Açúcar (52.41%)
 Samuel Klein (25.14%)
 Michael Klein (21.85%)",private
-26,"",Estado de Minas Gerais,Estado de Minas Gerais,-,-,-,-,20852.15,20852.15,1.29,Economatica associado,"Copasa (51.44%)
+26,"",Estado de Minas Gerais,Estado de Minas Gerais,-,Estado,-,-,20852.15,20852.15,1.29,Economatica associado,"Copasa (51.44%)
 Cemig (50.96%)","","","Cemig => {
 •• Light => {
 •• •• Renova (29.73%, final=3.95%)}}","",
-27,"",Walmart,Wal-Mart Brasil Ltda,00063960/0001-09,-,20314.20,-,-,20314.20,1.26,Valor 2011 (anual),"","","","","",private
+27,"",Walmart,WMS SUPERMERCADOS DO BRASIL LTDA. ,00063960/0001-09,SOCIEDADE EMPRESARIA LIMITADA ,20314.20,-,-,20314.20,1.26,Valor 2011 (anual),"","","","","",private
 -,sim,AES Elpa,AES Elpa,01917705/0001-30,-,-,9835.58,9835.58,19671.16,1.22,Economatica 2011 (anual),Eletropaulo (77.81%),"","","","Companhia Brasiliana de Energia (98.26%)
 Bndespar - BNDES Participacoes SA (0.00%)",
-28,"",Sudaco Participacoes Ltda,Sudaco Participacoes Ltda,-,-,-,-,19411.89,19411.89,1.20,Economatica associado,"",Pão de Açúcar (28.71%),"","Pão de Açúcar => {
+28,"",Sudaco Participacoes Ltda,Sudaco Participacoes Ltda,-,SOCIEDADE EMPRESARIA LIMITADA ,-,-,19411.89,19411.89,1.20,Economatica associado,"",Pão de Açúcar (28.71%),"","Pão de Açúcar => {
 •• Viavarejo (52.41%, final=15.05%)}","",
-29,"",Nestlé,Nestlé Brasil Ltda,60409075/0001-52,-,19266.30,-,-,19266.30,1.19,Valor 2011 (anual),"","","","","",private
-30,"",Cargill,Cargill,60498706/0001-57,-,18872.60,-,-,18872.60,1.17,Valor 2011 (anual),Seara Alim (71.63%),"","","","",private
-31,"",Grupo Gerdau Empreendimentos Ltda,Grupo Gerdau Empreendimentos Ltda,-,-,-,-,18615.11,18615.11,1.15,Economatica associado,"",Gerdau Met (26.29%),"","Gerdau Met => {
+29,"",Nestlé,NESTLE BRASIL LTDA. ,60409075/0001-52,SOCIEDADE EMPRESARIA LIMITADA ,19266.30,-,-,19266.30,1.19,Valor 2011 (anual),"","","","","",private
+30,"",Cargill,Cargill,60498706/0001-57,SOCIEDADE ANÔNIMA FECHADA,18872.60,-,-,18872.60,1.17,Valor 2011 (anual),Seara Alim (71.63%),"","","","",private
+31,"",Grupo Gerdau Empreendimentos Ltda,Grupo Gerdau Empreendimentos Ltda,-,SOCIEDADE EMPRESARIA LIMITADA ,-,-,18615.11,18615.11,1.15,Economatica associado,"",Gerdau Met (26.29%),"","Gerdau Met => {
 •• Gerdau (76.84%, final=20.20%)}","",
-32,"",Cosan Limited,Cosan Limited,-,-,-,-,18302.94,18302.94,1.13,Economatica associado,Cosan (59.76%),"","","","",
+32,"",Cosan Limited,Cosan Limited,08887330/0001-52,EMPRESA DOMICILIADA NO EXTERIOR ,-,-,18302.94,18302.94,1.13,Economatica associado,Cosan (59.76%),"","","","",
 -,sim,Cosan,Cosan S.A. Indústria e Comércio,50746577/0001-15,-,24096.90,18302.94,-,18302.94,1.13,Economatica últimos noves meses de 2011 (multiplicado por 4/3),"","","","","Cosan Limited (59.76%)
 Roberto de Rezende Barbosa (4.65%)
 Renato e R Barbosa (2.89%)
@@ -434,12 +434,12 @@ Rezende Barbosa SA Adm e Part (0.71%)
 Commonwealth Carriers SA (0.21%)
 Island Services Management Corp (0.10%)
 Usina Bom Jesus SA Acucar e Alcool (0.00%)",private
-33,"",CSN,Csn,33042730/0001-04,-,16519.60,16519.58,1430.11,17949.69,1.11,Economatica 2011 (anual),"","Usiminas (11.72%)
+33,"",CSN,Csn,33042730/0001-04,SOCIEDADE ANÔNIMA ABERTA,16519.60,16519.58,1430.11,17949.69,1.11,Economatica 2011 (anual),"","Usiminas (11.72%)
 Panatlântica (9.57%)","","Usiminas => {
 •• Cosipa (94.57%, final=11.09%)}
 Panatlântica (9.57%, final=9.57%)","Vicunha Siderurgia S/A (47.86%)
 Rio Iaco Participacoes S.A. (3.99%)",private
-34,"",Neoenergia,Neoenergia,01083200/0001-18,-,9770.80,9770.85,7934.23,17705.08,1.10,Economatica 2011 (anual),"Celpe (99.58%)
+34,"",Neoenergia,Neoenergia,01083200/0001-18,SOCIEDADE ANÔNIMA ABERTA,9770.80,9770.85,7934.23,17705.08,1.10,Economatica 2011 (anual),"Celpe (99.58%)
 Afluente (89.77%)
 Coelba (89.77%)
 Afluente T (87.84%)
@@ -453,14 +453,14 @@ Agc Energia SA (32.96%)",
 -,sim,Arcelor BR,,24315012/0001-73,-,17285.50,-,-,17285.50,1.07,Valor 2011 (anual),"","","","","Arcelor (66.32%)
 Acoes em Tesouraria (0.53%)",
 35,"",Arcelor,Arcelor,-,-,-,-,17285.50,17285.50,1.07,Economatica associado,Arcelor BR (66.32%),"","","","",
-36,"",Tim Brasil Servicos e Participacoes S.A.,Tim Brasil Servicos e Participacoes S.A.,-,-,-,-,17085.98,17085.98,1.06,Economatica associado,Tim Part S/A (66.70%),"","Tim Sul (controlada por Tim Part S/A)
+36,"",Tim Brasil Servicos e Participacoes S.A.,Tim Brasil Servicos e Participacoes S.A.,02600854/0001-34,SOCIEDADE ANÔNIMA FECHADA,-,-,17085.98,17085.98,1.06,Economatica associado,Tim Part S/A (66.70%),"","Tim Sul (controlada por Tim Part S/A)
 Tim Nordeste (controlada por Tim Part S/A)","","",
 -,sim,Tim Part S/A,Tim Part S/A,02558115/0001-21,-,17086.00,17085.98,-,17085.98,1.06,Economatica 2011 (anual),"Tim Sul (100.00%)
 Tim Nordeste (100.00%)","","","","Tim Brasil Servicos e Participacoes S.A. (66.70%)
 Acoes em Tesouraria (0.03%)
 Administradores (0.00%)",
-37,"",Mercedes-Benz,Mercedes-Benz do Brasil Ltda,59104273/0001-29,-,16200.00,-,-,16200.00,1.00,Valor 2011 (anual),"","","","","",private
-38,"",FPS Fundo de Participacao Social,FPS Fundo de Participacao Social,-,-,-,-,15637.52,15637.52,0.97,Economatica associado,"","Sam Industr (18.28%)
+37,"",Mercedes-Benz,MERCEDES-BENZ DO BRASIL LTDA. ,59104273/0001-29,SOCIEDADE EMPRESARIA LIMITADA ,16200.00,-,-,16200.00,1.00,Valor 2011 (anual),"","","","","",private
+38,"",FPS Fundo de Participacao Social,FPS Fundo de Participacao Social,-,Estado,-,-,15637.52,15637.52,0.97,Economatica associado,"","Sam Industr (18.28%)
 Petrobras (6.02%)","","Sam Industr (18.28%, final=18.28%)
 Petrobras => {
 •• Petroquisa => {
@@ -470,23 +470,23 @@ Petrobras => {
 -,sim,Embratel Part,Embratel Part,02558124/0001-12,-,-,12233.26,2394.30,14627.57,0.91,Economatica 2011 (anual),"",Net (35.76%),"","Net => {
 •• Cma Part (54.84%, final=19.61%)}","Telmex Solutions Telecom. Ltda (54.77%)
 Controladora de Serv. Telec. S.A. de C.V (43.44%)",
-39,"",Telmex Solutions Telecom. Ltda,Telmex Solutions Telecom. Ltda,-,-,-,-,14627.57,14627.57,0.91,Economatica associado,Embratel Part (54.77%),"","","Embratel Part => {
+39,"",Telmex Solutions Telecom. Ltda,Telmex Solutions Telecom. Ltda,-,SOCIEDADE EMPRESARIA LIMITADA ,-,-,14627.57,14627.57,0.91,Economatica associado,Embratel Part (54.77%),"","","Embratel Part => {
 •• Net => {
 •• •• Cma Part (54.84%, final=10.74%)}}","",
-40,"",Honda South America 2,,-,-,14466.80,-,-,14466.80,0.90,Valor 2011 (anual),"","","","","",
+40,"",Honda South America 2,,-,SOCIEDADE EMPRESARIA LIMITADA ,14466.80,-,-,14466.80,0.90,Valor 2011 (anual),"","","","","",
+41,"",S-Velame Adm. de Rec. e Part. S/A,S-VELAME ADMINISTRACAO DE RECURSOS E PARTICIPACOES S.A. ,07048386/0001-50,SOCIEDADE ANÔNIMA FECHADA,-,-,14433.76,14433.76,0.89,Economatica associado,Lojas Americanas (53.48%),"",B2W Varejo (controlada por Lojas Americanas),"","",
 -,sim,Lojas Americanas,Lojas Americanas S.A.,33014556/0001-96,-,10201.60,10201.62,4232.14,14433.76,0.89,Economatica 2011 (anual),B2W Varejo (58.87%),"","","","S-Velame Adm. de Rec. e Part. S/A (53.48%)
 Gif3 Li-2 Llc (12.56%)
 Companhia Global de Varejo, Llc - Credit Suisse (Brasil) S/A Ctvm (7.93%)
 Tobias Cepelowicz (6.79%)
 Acoes em Tesouraria (3.01%)",private
-41,"",S-Velame Adm. de Rec. e Part. S/A,S-Velame Adm. de Rec. e Part. S/A,-,-,-,-,14433.76,14433.76,0.89,Economatica associado,Lojas Americanas (53.48%),"",B2W Varejo (controlada por Lojas Americanas),"","",
+42,"",Holdco I S.A.,Holdco I S.A.,15125401/0001-45,EMPRESA DOMICILIADA NO EXTERIOR ,-,-,14241.30,14241.30,0.88,Economatica associado,TAM (99.28%),"",Multiplus (controlada por TAM),"","",
 -,sim,TAM,Tam S/A,01832635/0001-18,-,12994.50,12994.49,1246.81,14241.30,0.88,Economatica 2011 (anual),Multiplus (73.14%),"","","",Holdco I S.A. (99.28%),private
-42,"",Holdco I S.A.,Holdco I S.A.,-,-,-,-,14241.30,14241.30,0.88,Economatica associado,TAM (99.28%),"",Multiplus (controlada por TAM),"","",
-43,"",Correios,,-,-,13214.10,-,-,13214.10,0.82,Valor 2011 (anual),"","","","","",
-44,"",Governo do Estado de Sao Paulo,Governo do Estado de Sao Paulo,-,-,-,-,13063.25,13063.25,0.81,Economatica associado,"Emae (97.62%)
+43,"",Correios,,-,Estado,13214.10,-,-,13214.10,0.82,Valor 2011 (anual),"","","","","",
+44,"",Governo do Estado de Sao Paulo,Governo do Estado de Sao Paulo,-,Estado,-,-,13063.25,13063.25,0.81,Economatica associado,"Emae (97.62%)
 Cesp (94.08%)
 Sabesp (50.26%)",Vasp (4.62%),"","Vasp (4.62%, final=4.62%)","",
-45,"",Fundo Mutuo Inv. Acoes BB Cart. Livre I,Fundo Mutuo Inv. Acoes BB Cart. Livre I,-,-,-,-,12733.42,12733.42,0.79,Economatica associado,521 Particip (100.00%),"CPFL Energia (31.02%)
+45,"",Fundo Mutuo Inv. Acoes BB Cart. Livre I,Fundo Mutuo Inv. Acoes BB Cart. Livre I,73899742/0001-74,CLUBE/FUNDO DE INVESTIMENTO ,-,-,12733.42,12733.42,0.79,Economatica associado,521 Particip (100.00%),"CPFL Energia (31.02%)
 Neoenergia (26.77%)
 Sauipe (0.00%)","","CPFL Energia => {
 •• CPFL Piratininga (100.00%, final=31.02%)
@@ -500,10 +500,10 @@ Neoenergia => {
 •• Afluente T (87.84%, final=23.51%)
 •• Cosern (85.41%, final=22.86%)}
 Sauipe (0.00%, final=0.00%)","",
-46,"",Embratel,Embratel,33530486/0001-29,-,12233.30,-,150.97,12384.27,0.77,Valor 2011 (anual),"",Net (2.25%),"","Net => {
+46,"",Embratel,Embratel,33530486/0001-29,SOCIEDADE ANÔNIMA FECHADA,12233.30,-,150.97,12384.27,0.77,Valor 2011 (anual),"",Net (2.25%),"","Net => {
 •• Cma Part (54.84%, final=1.24%)}","",private
-47,"",Claro Telecom Participacoes,Claro Telecom Participacoes,-,-,12369.80,-,-,12369.80,0.77,Valor 2011 (anual),"","","","","",
-48,"",Usiminas,Usiminas,60894730/0001-05,-,11902.00,11901.96,-,11901.96,0.74,Economatica 2011 (anual),Cosipa (94.57%),"","","","Nippon Usiminas Co Ltd (23.86%)
+47,"",Claro Telecom Participacoes,Claro Telecom Participacoes,07043628/0001-13,SOCIEDADE ANÔNIMA FECHADA,12369.80,-,-,12369.80,0.77,Valor 2011 (anual),"","","","","",
+48,"",Usiminas,Usiminas,60894730/0001-05,SOCIEDADE ANÔNIMA ABERTA,11902.00,11901.96,-,11901.96,0.74,Economatica 2011 (anual),Cosipa (94.57%),"","","","Nippon Usiminas Co Ltd (23.86%)
 Ternium Investiments S.Ar.L (16.86%)
 CSN (11.72%)
 Previ Cx Prev Funcs Bco Brasil (10.54%)
@@ -513,7 +513,7 @@ Tenaris Confab (4.97%)
 Prosid Investiments S.C.A. (3.98%)
 Siderar S.A.I.C. (1.99%)
 Mitsubishi Corporation do Brasil S.A. (1.48%)",private
-49,"",Ultra S/A Participacoes,Ultra S/A Participacoes,-,-,-,-,11694.93,11694.93,0.72,Economatica associado,"",Ultrapar (24.03%),"","Ultrapar => {
+49,"",Ultra S/A Participacoes,Ultra S/A Participacoes,54041439/0001-91,SOCIEDADE ANÔNIMA FECHADA,-,-,11694.93,11694.93,0.72,Economatica associado,"",Ultrapar (24.03%),"","Ultrapar => {
 •• Ipiranga Dis (100.00%, final=24.03%)
 •• Ipiranga Pet (100.00%, final=24.03%)
 •• Ipiranga Ref (100.00%, final=24.03%)}","",
@@ -523,23 +523,23 @@ Mitsubishi Corporation do Brasil S.A. (1.48%)",private
 •• •• Telemar Norte Leste S/A => {
 •• •• •• Coari Part (100.00%, final=9.39%)
 •• •• •• Tele Nort Cl (99.57%, final=9.35%)}}}",Edsp75 Participacoes S.A. (100.00%),
-50,"",Edsp75 Participacoes S.A.,Edsp75 Participacoes S.A.,-,-,-,-,11688.07,11688.07,0.72,Economatica associado,LF Tel (100.00%),"","","LF Tel => {
+50,"",Edsp75 Participacoes S.A.,Edsp75 Participacoes S.A.,09626007/0001-98,SOCIEDADE ANÔNIMA FECHADA,-,-,11688.07,11688.07,0.72,Economatica associado,LF Tel (100.00%),"","","LF Tel => {
 •• Telemar Participacoes S.A. => {
 •• •• Telemar (58.69%, final=11.36%)
 •• •• Oi => {
 •• •• •• Telemar Norte Leste S/A => {
 •• •• •• •• Coari Part (100.00%, final=9.39%)
 •• •• •• •• Tele Nort Cl (99.57%, final=9.35%)}}}}","",
-51,"",Globo,Globo,27865757/0001-02,-,10977.40,-,693.57,11670.97,0.72,Valor 2011 (anual),"",Net (10.36%),"","Net => {
+51,"",Globo,GLOBO COMUNICACAO E PARTICIPACOES S/A ,27865757/0001-02,SOCIEDADE ANÔNIMA FECHADA,10977.40,-,693.57,11670.97,0.72,Valor 2011 (anual),"",Net (10.36%),"","Net => {
 •• Cma Part (54.84%, final=5.68%)}","",private
-52,"",Empresa de Eletric. Vale Paranapanema SA,Empresa de Eletric. Vale Paranapanema SA,-,-,-,-,11375.15,11375.15,0.70,Economatica associado,Rede Energia (82.87%),"","Cemat (controlada por Rede Energia)
+52,"",Empresa de Eletric. Vale Paranapanema SA,Empresa de Eletric. Vale Paranapanema SA,07297359/0001-11,SOCIEDADE ANÔNIMA FECHADA,-,-,11375.15,11375.15,0.70,Economatica associado,Rede Energia (82.87%),"","Cemat (controlada por Rede Energia)
 Enersul (controlada por Rede Energia)","Rede Energia => {
 •• Celpa (10.20%, final=8.46%)}","",
 -,sim,Rede Energia,Rede Energia,61584140/0001-49,-,7782.40,7782.42,3592.73,11375.15,0.70,Economatica 2011 (anual),"Cemat (61.84%)
 Enersul (60.16%)",Celpa (10.20%),"","Celpa (10.20%, final=10.20%)","Empresa de Eletric. Vale Paranapanema SA (82.87%)
 Denerge Desenvolvimento Energ. S/A (14.83%)",
-53,"",Copersucar,Copersucar S/A,10265949/0001-77,-,11033.10,-,-,11033.10,0.68,Valor 2011 (anual),"","","","","",private
-54,"",Jereissati,Jereissati,60543816/0001-93,-,-,5123.36,5122.85,10246.22,0.63,Economatica 2011 (anual),"La Fonte Tel (80.10%)
+53,"",Copersucar,Copersucar S/A,10265949/0001-77,COOPERATIVA,11033.10,-,-,11033.10,0.68,Valor 2011 (anual),"","","","","",private
+54,"",Jereissati,Jereissati,60543816/0001-93,SOCIEDADE ANÔNIMA ABERTA,-,5123.36,5122.85,10246.22,0.63,Economatica 2011 (anual),"La Fonte Tel (80.10%)
 Iguatemi Shopping Centers (55.35%)","","","La Fonte Tel => {
 •• Iguatemi Shopping Centers (0.91%, final=0.73%)}","Sociedade Fiduciaria Brasileira (30.65%)
 Southmall Holding Ltda (24.65%)
@@ -549,7 +549,7 @@ Jpsul Participacoes e Repres. Coms (10.31%)
 Carlos Francisco R. Jereissati (6.19%)
 Acoes em Tesouraria (0.01%)",
 -,sim,Sabesp,Cia. Saneamento Básico do Estado de São Paulo-Sabesp,43776517/0001-80,-,9941.60,9941.64,-,9941.64,0.62,Economatica 2011 (anual),"","","","",Governo do Estado de Sao Paulo (50.26%),state
-55,"",Embraer,Embraer S.A,07689002/0001-89,-,9858.10,9858.06,-,9858.06,0.61,Economatica 2011 (anual),"","","","","Previ Cx Prev Funcs Bco Brasil (10.64%)
+55,"",Embraer,Embraer S.A,07689002/0001-89,SOCIEDADE ANÔNIMA ABERTA,9858.10,9858.06,-,9858.06,0.61,Economatica 2011 (anual),"","","","","Previ Cx Prev Funcs Bco Brasil (10.64%)
 Oppenheimer Funds Inc. (8.61%)
 Thornburg Investment Management'S (7.15%)
 Bndespar - BNDES Participacoes SA (5.48%)
@@ -558,23 +558,23 @@ Cia Bozano Simonsen Com & Ind (4.40%)
 Acoes em Tesouraria (2.12%)",private
 -,sim,Eletropaulo,Eletropaulo Metropolitana Eletricidade de São Paulo S.A.,61695227/0001-93,-,-,9835.58,-,9835.58,0.61,Economatica 2011 (anual),"","","","","AES Elpa (77.81%)
 Uniao Federal (Tesouro Nacional) (20.03%)",private
-56,"",Suzano Hold,Suzano Hold,60651809/0001-05,-,-,4852.26,4847.99,9700.25,0.60,Economatica 2011 (anual),Suzano Papel e Celulose (97.25%),"","","","Fanny Feffer (27.50%)
+56,"",Suzano Hold,Suzano Hold,60651809/0001-05,SOCIEDADE ANÔNIMA ABERTA,-,4852.26,4847.99,9700.25,0.60,Economatica 2011 (anual),Suzano Papel e Celulose (97.25%),"","","","Fanny Feffer (27.50%)
 David Feffer (18.12%)
 Jorge Feffer (18.12%)
 Ruben Feffer (18.12%)
 Daniel Feffer (18.12%)",
-57,"",Mms Participacoes S/A,Mms Participacoes S/A,-,-,-,-,9603.56,9603.56,0.60,Economatica associado,"",Marfrig (43.74%),"","Marfrig => {
+57,"",Mms Participacoes S/A,Mms Participacoes S/A,08542030/0001-31,SOCIEDADE ANÔNIMA FECHADA,-,-,9603.56,9603.56,0.60,Economatica associado,"",Marfrig (43.74%),"","Marfrig => {
 •• Excelsior (53.89%, final=23.57%)}","",
-58,"",Estado do Parana,Estado do Parana,-,-,-,-,9518.56,9518.56,0.59,Economatica associado,"Sanepar (60.00%)
+58,"",Estado do Parana,ESTADO DO PARANA,76416940/0001-28,Estado,-,-,9518.56,9518.56,0.59,Economatica associado,"Sanepar (60.00%)
 Copel (58.63%)","","","","",
-59,"",EDP Energias do Brasil,Edp Energias do Brasil S/A,03983431/0001-03,-,5401.70,5401.66,3928.71,9330.37,0.58,Economatica 2011 (anual),"Escelsa (100.00%)
+59,"",EDP Energias do Brasil,Edp Energias do Brasil S/A,03983431/0001-03,SOCIEDADE ANÔNIMA ABERTA,5401.70,5401.66,3928.71,9330.37,0.58,Economatica 2011 (anual),"Escelsa (100.00%)
 Bandeirante Energ (100.00%)","","","","Energias de Portugal Investments And Services Sociedad Ltda (35.36%)
 Balwerk-Cons. Econ. e Part. Soc. Ltda. (15.73%)
 Acoes em Tesouraria (0.18%)
 Administradores (0.00%)",
 -,sim,Tele Nort Cl,,02558154/0001-29,-,-,9240.40,-,9240.40,0.57,Economatica 2011 (anual),"","","","","Telemar Norte Leste S/A (99.57%)
 Acoes em Tesouraria (0.00%)",
-60,"",Camargo Corrêa,Camargo Correa S/A,61522512/0001-02,-,4427.90,-,4774.89,9202.79,0.57,Valor 2011 (anual),"Alpargatas (66.99%)
+60,"",Camargo Corrêa,CAMARGO CORREA S/A ,61522512/0001-02,SOCIEDADE ANÔNIMA FECHADA,4427.90,-,4774.89,9202.79,0.57,Valor 2011 (anual),"Alpargatas (66.99%)
 Camargo Corrêa Desenvolvimento Imobiliário (66.14%)",VBC Energia (19.73%),"","VBC Energia => {
 •• CPFL Energia => {
 •• •• CPFL Piratininga (100.00%, final=5.04%)
@@ -582,7 +582,8 @@ Camargo Corrêa Desenvolvimento Imobiliário (66.14%)",VBC Energia (19.73%),"","
 •• •• Paul F Luz (100.00%, final=5.04%)
 •• •• Rio Gde Ener (100.00%, final=5.04%)}
 •• CCR (1.76%, final=0.35%)}","",private
-61,"",Unilever,Unilever Brasil Ltda,61068276/0001-04,-,9067.30,-,-,9067.30,0.56,Valor 2011 (anual),"","","","","",private
+61,"",Unilever,UNILEVER BRASIL LTDA. ,61068276/0001-04,SOCIEDADE EMPRESARIA LIMITADA ,9067.30,-,-,9067.30,0.56,Valor 2011 (anual),"","","","","",private
+62,"",Jplspe Empreendimentos e Partic.Ltda,J.P.L.S.P.E. EMPREENDIMENTOS E PARTICIPACOES S.A. ,08808932/0001-77,SOCIEDADE ANÔNIMA FECHADA,-,-,9008.83,9008.83,0.56,Economatica associado,Amil (64.24%),"",Medial Saude (controlada por Amil),"","",
 -,sim,Amil,Amil,36461242/0001-20,-,-,9008.83,-,9008.83,0.56,Economatica 2011 (anual),Medial Saude (98.01%),"","","","Jplspe Empreendimentos e Partic.Ltda (64.24%)
 Capital Research & Mngmt Co (5.06%)
 Genesis Asset Managers, Llp (5.06%)
@@ -590,7 +591,6 @@ Administradores (1.79%)
 Edson de Godoy Bueno (1.65%)
 Dulce Pugliese de Godoy Bueno (1.35%)
 Acoes em Tesouraria (0.77%)",private
-62,"",Jplspe Empreendimentos e Partic.Ltda,Jplspe Empreendimentos e Partic.Ltda,-,-,-,-,9008.83,9008.83,0.56,Economatica associado,Amil (64.24%),"",Medial Saude (controlada por Amil),"","",
 -,sim,Sul America,Sul America,29978814/0001-87,-,-,8944.55,-,8944.55,0.55,Economatica 2011 (anual),"",Sul Amer Nac (23.76%),"","Sul Amer Nac => {
 •• D F Vasconc (0.17%, final=0.04%)}","Sulasapar Participacoes S/A (60.04%)
 Ing Insurance International BV (12.91%)
@@ -600,22 +600,22 @@ Acoes em Tesouraria (0.97%)
 Christiane Claude de Larragoiti Lucas (0.70%)
 Chantal de Larragoiti Lucas (0.70%)
 Patrick Antonio Claude de Larragoiti Lucas (0.70%)",
-63,"",Sulasapar Participacoes S/A,Sulasapar Participacoes S/A,-,-,-,-,8944.55,8944.55,0.55,Economatica associado,Sul America (60.04%),"","","Sul America => {
+63,"",Sulasapar Participacoes S/A,SULASAPAR PARTICIPACOES S/A ,03759567/0001-34,SOCIEDADE ANÔNIMA FECHADA,-,-,8944.55,8944.55,0.55,Economatica associado,Sul America (60.04%),"","","Sul America => {
 •• Sul Amer Nac => {
 •• •• D F Vasconc (0.17%, final=0.02%)}}","",
-64,"",Votoran,Votorantim Cimentos S.A.,01637895/0001-32,-,8698.40,-,-,8698.40,0.54,Valor 2011 (anual),"","","","","",private
-65,"",Volkswagen Camin. e Ônibus,,-,-,8665.40,-,-,8665.40,0.54,Valor 2011 (anual),"","","","","",
-66,"",Vicunha Aços S.A,Vicunha Aços S.A,-,-,-,-,8589.93,8589.93,0.53,Bovespa associado,Vicunha Siderurgia S/A (99.99%),"","","Vicunha Siderurgia S/A => {
+64,"",Votoran,VOTORANTIM CIMENTOS S.A. ,01637895/0001-32,SOCIEDADE ANÔNIMA FECHADA,8698.40,-,-,8698.40,0.54,Valor 2011 (anual),"","","","","",private
+65,"",Volkswagen Camin. e Ônibus,MAN LATIN AMERICA INDUSTRIA E COMERCIO DE VEICULOS LTDA ,06020318/0001-10,SOCIEDADE EMPRESARIA LIMITADA ,8665.40,-,-,8665.40,0.54,Valor 2011 (anual),"","","","","",
+66,"",Vicunha Aços S.A,Vicunha Aços S.A,04213131/0001-08,SOCIEDADE ANÔNIMA FECHADA,-,-,8589.93,8589.93,0.53,Bovespa associado,Vicunha Siderurgia S/A (99.99%),"","","Vicunha Siderurgia S/A => {
 •• CSN => {
 •• •• Usiminas => {
 •• •• •• Cosipa (94.57%, final=5.30%)}
 •• •• Panatlântica (9.57%, final=4.58%)}}","",
--,sim,Vicunha Siderurgia S/A,Vicunha Siderurgia S/A,02871007/0001-04,-,-,-,8589.93,8589.93,0.53,Economatica associado,"",CSN (47.86%),"","CSN => {
+-,sim,Vicunha Siderurgia S/A,VICUNHA SIDERURGIA S/A. ,02871007/0001-04,SOCIEDADE ANÔNIMA ABERTA,-,-,8589.93,8589.93,0.53,Economatica associado,"",CSN (47.86%),"","CSN => {
 •• Usiminas => {
 •• •• Cosipa (94.57%, final=5.31%)}
 •• Panatlântica (9.57%, final=4.58%)}","Vicunha Aços S.A (99.99%)
 Outros (0.01%)",
-67,"",Toyota,Toyota do Brasil Ltda,59104760/0001-91,-,8530.50,-,-,8530.50,0.53,Valor 2011 (anual),"","","","","",private
+67,"",Toyota,TOYOTA DO BRASIL LTDA ,59104760/0001-91,SOCIEDADE EMPRESARIA LIMITADA ,8530.50,-,-,8530.50,0.53,Valor 2011 (anual),"","","","","",private
 68,"",Itaúsa - Investimentos Itaú S.A.,Itaúsa - Investimentos Itaú S.A.,61532644/0001-15,-,-,5094.00,3370.63,8464.63,0.52,Economatica 2011 (anual),"Elekeiroz (98.24%)
 Itautec (94.01%)","ItauUnibanco (38.66%)
 Duratex (35.40%)","","ItauUnibanco (38.66%, final=38.66%)
@@ -629,24 +629,24 @@ Olavo Egydio Setubal Júnior (3.35%)
 Roberto Egydio Setubal (3.33%)
 Alfredo Egydio Setubal (3.32%)
 Ricardo Egydio Setubal (3.32%)",
-69,"",Renault,Renault do Brasil S.A.,00913443/0001-73,-,7947.80,-,-,7947.80,0.49,Valor 2011 (anual),"","","","","",private
+69,"",Renault,RENAULT DO BRASIL S.A ,00913443/0001-73,SOCIEDADE ANÔNIMA FECHADA,7947.80,-,-,7947.80,0.49,Valor 2011 (anual),"","","","","",private
 70,"",LDC Brasil,,-,-,7851.40,-,-,7851.40,0.49,Valor 2011 (anual),"","","","","",
-71,"",Endesa Brasil,Endesa Brasil,-,-,6579.30,-,1231.80,7811.10,0.48,Valor 2011 (anual),"","Ampla Invest (46.89%)
+71,"",Endesa Brasil,ENDESA BRASIL S.A. ,07523555/0001-67,SOCIEDADE ANÔNIMA FECHADA,6579.30,-,1231.80,7811.10,0.48,Valor 2011 (anual),"","Ampla Invest (46.89%)
 Ampla Energ (0.00%)","","Ampla Invest (46.89%, final=46.89%)
 Ampla Energ (0.00%, final=0.00%)","",
 -,sim,Copel,Copel Distribuição S.A.,76483817/0001-20,-,7776.20,7776.16,-,7776.16,0.48,Economatica 2011 (anual),"","","","","Estado do Parana (58.63%)
 Bndespar - BNDES Participacoes SA (26.41%)",state
-72,"",Alesat,Alesat Combustíveis S.A,23314594/0001-00,-,7774.20,-,-,7774.20,0.48,Valor 2011 (anual),"","","","","",private
-73,"",Fundo de Investimento em Participacoes Volluto,Fundo de Investimento em Participacoes Volluto,-,-,-,-,7631.27,7631.27,0.47,Economatica associado,Gol (100.00%),Cia. Providência (17.46%),"","Cia. Providência (17.46%, final=17.46%)","",
+72,"",Alesat,Alesat Combustíveis S.A,23314594/0001-00,SOCIEDADE ANÔNIMA FECHADA,7774.20,-,-,7774.20,0.48,Valor 2011 (anual),"","","","","",private
+73,"",Fundo de Investimento em Participacoes Volluto,Fundo de Investimento em Participacoes Volluto,-,CLUBE/FUNDO DE INVESTIMENTO ,-,-,7631.27,7631.27,0.47,Economatica associado,Gol (100.00%),Cia. Providência (17.46%),"","Cia. Providência (17.46%, final=17.46%)","",
 -,sim,Gol,Vrg Linhas Aéreas S/A,06164253/0001-87,-,7539.30,7539.31,-,7539.31,0.47,Economatica 2011 (anual),"","","","","Fundo de Investimento em Participacoes Volluto (100.00%)
 Constantino de Oliveira Junior (0.00%)
 Ricardo Constantino (0.00%)
 Henrique Constantino (0.00%)
 Joaquim Constantino Neto (0.00%)",private
 74,"",Telefonica S.A,Telefonica S.A,-,-,-,-,7484.01,7484.01,0.46,Economatica associado,"",Telefônica Brasil (25.69%),"","Telefônica Brasil (25.69%, final=25.69%)","",
-75,"",Whirlpool,Whirlpool S.A,59105999/0001-86,-,7465.30,7465.33,-,7465.33,0.46,Economatica 2011 (anual),"","","","","Whirlpool do Brasil Ltda (49.94%)
+75,"",Whirlpool,Whirlpool S.A,59105999/0001-86,SOCIEDADE ANÔNIMA ABERTA,7465.30,7465.33,-,7465.33,0.46,Economatica 2011 (anual),"","","","","Whirlpool do Brasil Ltda (49.94%)
 Brasmotor (44.23%)",private
-76,"",Iberdrola Energia S.A.,Iberdrola Energia S.A.,-,-,-,-,7163.16,7163.16,0.44,Economatica associado,"","Neoenergia (39.00%)
+76,"",Iberdrola Energia S.A.,Iberdrola Energia S.A.,05470823/0001-02,EMPRESA DOMICILIADA NO EXTERIOR ,-,-,7163.16,7163.16,0.44,Economatica associado,"","Neoenergia (39.00%)
 Afluente T (8.50%)
 Afluente (5.12%)
 Coelba (5.12%)","","Neoenergia => {
@@ -658,22 +658,22 @@ Coelba (5.12%)","","Neoenergia => {
 Afluente T (8.50%, final=8.50%)
 Afluente (5.12%, final=5.12%)
 Coelba (5.12%, final=5.12%)","",
-77,"",Samarco,Samarco Mineração S.A.,16628281/0001-61,-,7058.90,-,-,7058.90,0.44,Valor 2011 (anual),"","","","","",private
+77,"",Samarco,SAMARCO MINERACAO S.A.,16628281/0001-61,SOCIEDADE ANÔNIMA FECHADA,7058.90,-,-,7058.90,0.44,Valor 2011 (anual),"","","","","",private
 78,"",Whirlpool do Brasil Ltda,Whirlpool do Brasil Ltda,-,-,-,-,7029.60,7029.60,0.44,Economatica associado,Brasmotor (55.08%),Whirlpool (49.94%),"","Brasmotor => {
 •• Whirlpool (44.23%, final=24.36%)}
 Whirlpool (49.94%, final=49.94%)","",
-79,"",Light,Light,03378521/0001-75,-,6944.80,6944.78,11.28,6956.06,0.43,Economatica 2011 (anual),"",Renova (29.73%),"","Renova (29.73%, final=29.73%)","Cemig (26.06%)
+79,"",Light,Light,03378521/0001-75,SOCIEDADE ANÔNIMA ABERTA,6944.80,6944.78,11.28,6956.06,0.43,Economatica 2011 (anual),"",Renova (29.73%),"","Renova (29.73%, final=29.73%)","Cemig (26.06%)
 Bndespar - BNDES Participacoes SA (13.51%)
 Rme Rio Minas Energia Part. S/A (13.03%)
 Luce Empreendimentos e Participacoes (Lepsa) (13.03%)
 Alliance Bernstein L.P. (5.11%)",private
-80,"",PDG Realt,,02950811/0001-89,-,6877.40,6877.38,-,6877.38,0.43,Economatica 2011 (anual),"","","","","T. Rowe Price Associates, Inc. (10.02%)
+80,"",PDG Realt,,02950811/0001-89,SOCIEDADE ANÔNIMA ABERTA,6877.40,6877.38,-,6877.38,0.43,Economatica 2011 (anual),"","","","","T. Rowe Price Associates, Inc. (10.02%)
 Blackrock, Inc (7.03%)
 CSHG (5.04%)
 Acoes em Tesouraria (0.66%)",
-81,"",Caoa Veículos,,-,-,6798.50,-,-,6798.50,0.42,Valor 2011 (anual),"","","","","",
-82,"",Const. Andrade Gutierrez,Const. Andrade Gutierrez,-,-,6697.90,-,-,6697.90,0.41,Valor 2011 (anual),"","","","","",
-83,"",Gb Empreendimentos e Part. S/A,Gb Empreendimentos e Part. S/A,-,-,-,-,6695.89,6695.89,0.41,Economatica associado,Net (51.00%),"",Cma Part (controlada por Net),"","",
+81,"",Caoa Veículos,CAOA MONTADORA DE VEICULOS S.A ,03471344/0001-77,SOCIEDADE ANÔNIMA FECHADA,6798.50,-,-,6798.50,0.42,Valor 2011 (anual),"","","","","",
+82,"",Const. Andrade Gutierrez,Const. Andrade Gutierrez,17262213/0214-34,SOCIEDADE ANÔNIMA FECHADA,6697.90,-,-,6697.90,0.41,Valor 2011 (anual),"","","","","",
+83,"",Gb Empreendimentos e Part. S/A,Gb Empreendimentos e Part. S/A,04527900/0001-42,SOCIEDADE ANÔNIMA FECHADA,-,-,6695.89,6695.89,0.41,Economatica associado,Net (51.00%),"",Cma Part (controlada por Net),"","",
 -,sim,Net,Net,00108786/0001-65,-,6695.90,6695.89,-,6695.89,0.41,Economatica 2011 (anual),Cma Part (54.84%),"","","","Gb Empreendimentos e Part. S/A (51.00%)
 Embratel Part (35.76%)
 Globo (10.36%)
@@ -696,7 +696,7 @@ Iguatemi Shopping Centers (5.02%, final=5.02%)
 Vale => {
 •• Caemi (100.00%, final=0.04%)
 •• Log-In (33.56%, final=0.01%)}","",
-85,"",Peugeot Citroën,Peugeot Citroën do Brasil Automóveis Ltda,00000000/000-,-,6601.90,-,-,6601.90,0.41,Valor 2011 (anual),"","","","","",private
+85,"",Peugeot Citroën,PEUGEOT-CITROEN DO BRASIL AUTOMOVEIS LTDA ,00000000/000-,SOCIEDADE EMPRESARIA LIMITADA ,6601.90,-,-,6601.90,0.41,Valor 2011 (anual),"","","","","",private
 -,sim,Magazine Luiza,Magazine Luiza S.A.,47960950/0001-21,-,6419.40,6419.37,-,6419.37,0.40,Economatica 2011 (anual),"","","","","Ltd Administracao e Participacoes S.A. (60.61%)
 Wagner Garcia Participacoes S.A. (4.51%)
 Luiza Trajano Donato (1.03%)
@@ -707,11 +707,11 @@ Franco Bittar Garcia (0.04%)
 Fabricio Bittar Garcia (0.04%)
 Flavia Bittar Garcia (0.04%)
 Administradores (0.02%)",private
-86,"",Ltd Administracao e Participacoes S.A.,Ltd Administracao e Participacoes S.A.,-,-,-,-,6419.37,6419.37,0.40,Economatica associado,Magazine Luiza (60.61%),"","","","",
-87,"",Controladora de Serv. Telec. S.A. de C.V,Controladora de Serv. Telec. S.A. de C.V,-,-,-,-,6354.59,6354.59,0.39,Economatica associado,"",Embratel Part (43.44%),"","Embratel Part => {
+86,"",Ltd Administracao e Participacoes S.A.,Ltd Administracao e Participacoes S.A.,66117474/0001-26,SOCIEDADE ANÔNIMA FECHADA,-,-,6419.37,6419.37,0.40,Economatica associado,Magazine Luiza (60.61%),"","","","",
+87,"",Controladora de Serv. Telec. S.A. de C.V,CONSERTEL LTDA ,09117672/0001-56,SOCIEDADE EMPRESARIA LIMITADA ,-,-,6354.59,6354.59,0.39,Economatica associado,"",Embratel Part (43.44%),"","Embratel Part => {
 •• Net => {
 •• •• Cma Part (54.84%, final=8.52%)}}","",
-88,"",VBC Energia,VBC Energia,00095147/0001-02,-,-,-,6350.60,6350.60,0.39,Economatica,"","CPFL Energia (25.55%)
+88,"",VBC Energia,VBC Energia,00095147/0001-02,SOCIEDADE ANÔNIMA ABERTA,-,-,6350.60,6350.60,0.39,Economatica,"","CPFL Energia (25.55%)
 CCR (1.76%)","","CPFL Energia => {
 •• CPFL Piratininga (100.00%, final=25.55%)
 •• CPFL Geracao (100.00%, final=25.55%)
@@ -721,7 +721,7 @@ CCR (1.76%, final=1.76%)","Atila Holdings S.A. (44.93%)
 Camargo Correa Energia S.A. (28.09%)
 Camargo Corrêa (19.73%)
 Camargo Correa Invest. em Infra Estrutur (7.25%)",
-89,"",Cyrela Realty,,73178600/0001-18,-,6126.80,6126.78,-,6126.78,0.38,Economatica 2011 (anual),"","","","","Elie Horn (23.86%)
+89,"",Cyrela Realty,,73178600/0001-18,SOCIEDADE ANÔNIMA ABERTA,6126.80,6126.78,-,6126.78,0.38,Economatica 2011 (anual),"","","","","Elie Horn (23.86%)
 Grupo Tarpon (10.33%)
 Carmignac Inv Bco Santander S.A. (8.04%)
 Blackrock, Inc (5.45%)
@@ -731,8 +731,8 @@ Eh Capital Management (1.82%)
 Rogerio Jonas Zylbersztajn (1.53%)
 Fernando Goldsztein (0.80%)
 Ricardo Sessegolo (0.17%)",
-90,"",Itaipu Binacional,Itaipu Binacional,00395988/0001-35,-,6114.80,-,-,6114.80,0.38,Valor 2011 (anual),"","","","","",state
-91,"",Bratel Brasil S.A.,Bratel Brasil S.A.,-,-,-,-,5994.30,5994.30,0.37,Economatica associado,"","Telemar Participacoes S.A. (12.07%)
+90,"",Itaipu Binacional,Itaipu Binacional,00395988/0001-35,EMPRESA BINACIONAL,6114.80,-,-,6114.80,0.38,Valor 2011 (anual),"","","","","",state
+91,"",Bratel Brasil S.A.,Bratel Brasil S.A.,12956126/0001-13,SOCIEDADE ANÔNIMA FECHADA,-,-,5994.30,5994.30,0.37,Economatica associado,"","Telemar Participacoes S.A. (12.07%)
 Oi (7.07%)
 Telemar (0.05%)","","Telemar Participacoes S.A. => {
 •• Telemar (58.69%, final=7.08%)
@@ -745,16 +745,16 @@ Oi => {
 •• •• Coari Part (100.00%, final=7.07%)
 •• •• Tele Nort Cl (99.57%, final=7.03%)}}
 Telemar (0.05%, final=0.05%)","",
-92,"",Basf,Basf S.A.,48539407/0001-18,-,5947.60,-,-,5947.60,0.37,Valor 2011 (anual),"","","","","",private
-93,"",Fibria,Fibria,60643228/0001-21,-,5854.30,5854.30,-,5854.30,0.36,Economatica 2011 (anual),"",Aracruz (16.95%),"","Aracruz (16.95%, final=16.95%)","Bndespar - BNDES Participacoes SA (30.44%)
+92,"",Basf,Basf S.A.,48539407/0001-18,SOCIEDADE ANÔNIMA FECHADA,5947.60,-,-,5947.60,0.37,Valor 2011 (anual),"","","","","",private
+93,"",Fibria, FIBRIA CELULOSE S/A ,60643228/0001-21,SOCIEDADE ANÔNIMA ABERTA,5854.30,5854.30,-,5854.30,0.36,Economatica 2011 (anual),"",Aracruz (16.95%),"","Aracruz (16.95%, final=16.95%)","Bndespar - BNDES Participacoes SA (30.44%)
 Votorantim Investimentos Industriais S.A (29.44%)
 Gavea Investimentos Ltda. (5.01%)
 Acoes em Tesouraria (0.06%)",private
-94,"",Agc Energia SA,Agc Energia SA,-,-,-,-,5810.64,5810.64,0.36,Economatica associado,"",Cemig (32.96%),"","Cemig => {
+94,"",Agc Energia SA,Agc Energia SA,11221326/0001-65,SOCIEDADE ANÔNIMA FECHADA,-,-,5810.64,5810.64,0.36,Economatica associado,"",Cemig (32.96%),"","Cemig => {
 •• Light => {
 •• •• Renova (29.73%, final=2.55%)}}","",
 -,sim,Paul F Luz,Companhia Paulista de Força e Luz - Cpfl,33050196/0001-88,-,-,5594.93,-,5594.93,0.35,Economatica 2011 (anual),"","","","",CPFL Energia (100.00%),private
-95,"",Natura,Natura Cosméticos S.A.,71673990/0001-77,-,5591.40,5591.37,-,5591.37,0.35,Economatica 2011 (anual),"","","","","Lisis Participacoes S/A (22.36%)
+95,"",Natura,NATURA COSMETICOS S/A,71673990/0001-77,SOCIEDADE ANÔNIMA ABERTA,5591.40,5591.37,-,5591.37,0.35,Economatica 2011 (anual),"","","","","Lisis Participacoes S/A (22.36%)
 Utopia Participacoes S/A (21.34%)
 Passos Participacoes S/A (5.27%)
 Anp Participacoes S/A (5.26%)
@@ -764,15 +764,15 @@ Guilherme Peirao Leal (0.81%)
 Acoes em Tesouraria (0.52%)
 Pedro Luiz Barreiros Passos (0.20%)
 Anizio Pinotti (0.20%)",private
-96,"",Coamo,Coamo Agroindustrial Cooperativa,75904383/0001-21,-,5550.50,-,-,5550.50,0.34,Valor 2011 (anual),"","","","","",private
+96,"",Coamo,COAMO AGROINDUSTRIAL COOPERATIVA,75904383/0001-21,COOPERATIVA,5550.50,-,-,5550.50,0.34,Valor 2011 (anual),"","","","","",private
 -,sim,Souza Cruz,Souza Cruz S.A,33009911/0001-39,-,5550.20,5550.18,-,5550.18,0.34,Economatica 2011 (anual),"","","","",British American Tobacco International (Holdings) BV (75.26%),private
 97,"",British American Tobacco International (Holdings) BV,British American Tobacco International (Holdings) BV,-,-,-,-,5550.18,5550.18,0.34,Economatica associado,Souza Cruz (75.26%),"","","","",
 -,sim,Makro,Makro Atacadista S.A.,47427653/0001-15,-,5499.80,-,-,5499.80,0.34,Valor 2011 (anual),"","","","",Orkan South America Holding AG (99.64%),private
 98,"",Orkan South America Holding AG,Orkan South America Holding AG,-,-,-,-,5499.80,5499.80,0.34,Economatica associado,Makro (99.64%),"","","","",
-99,"",Banco J. P. Morgan S.A.,Banco J. P. Morgan S.A.,-,-,-,-,5442.55,5442.55,0.34,Economatica associado,"",Gerdau Met (7.69%),"","Gerdau Met => {
+99,"",Banco J. P. Morgan S.A.,Banco J. P. Morgan S.A.,33172537/0001-98,SOCIEDADE ANÔNIMA FECHADA,-,-,5442.55,5442.55,0.34,Economatica associado,"",Gerdau Met (7.69%),"","Gerdau Met => {
 •• Gerdau (76.84%, final=5.91%)}","",
-100,"",GBarbosa,,-,-,5368.70,-,-,5368.70,0.33,Valor 2011 (anual),"","","","","",
-101,"",Samuel Klein,Samuel Klein,-,-,-,-,5284.65,5284.65,0.33,Economatica associado,"",Viavarejo (25.14%),"","Viavarejo (25.14%, final=25.14%)","",
+100,"",GBarbosa, CENCOSUD BRASIL COMERCIAL LTDA ,39346861/0057-16,SOCIEDADE EMPRESARIA LIMITADA ,5368.70,-,-,5368.70,0.33,Valor 2011 (anual),"","","","","",
+101,"",Samuel Klein,Samuel Klein,01666851/868-,PESSOA FÍSICA,-,-,5284.65,5284.65,0.33,Economatica associado,"",Viavarejo (25.14%),"","Viavarejo (25.14%, final=25.14%)","",
 -,sim,WEG,,84429695/0001-11,-,5189.40,5189.41,-,5189.41,0.32,Economatica 2011 (anual),"","","","","Weg Participacoes e Servicos S.A. (51.06%)
 Clica Voigt Administradora Ltda (1.64%)
 Si Voigt Administradora Ltda (1.64%)
@@ -783,14 +783,14 @@ Zocalo Participacoes Ltda (0.97%)
 Balder Participacoes Ltda (0.96%)
 Helana Participacoes Ltda (0.96%)
 Starp Participacoes Ltda (0.93%)",
-102,"",Weg Participacoes e Servicos S.A.,Weg Participacoes e Servicos S.A.,-,-,-,-,5189.41,5189.41,0.32,Economatica associado,WEG (51.06%),"","","","",
-103,"",CCR,,02846056/0001-97,-,5134.30,5134.30,-,5134.30,0.32,Economatica 2011 (anual),"","","","","Andrade Gutierrez Concessoes S.A. (16.61%)
+102,"",Weg Participacoes e Servicos S.A.,Weg Participacoes e Servicos S.A.,83489963/0001-28,SOCIEDADE ANÔNIMA FECHADA,-,-,5189.41,5189.41,0.32,Economatica associado,WEG (51.06%),"","","","",
+103,"",CCR,,02846056/0001-97,SOCIEDADE ANÔNIMA ABERTA,5134.30,5134.30,-,5134.30,0.32,Economatica 2011 (anual),"","","","","Andrade Gutierrez Concessoes S.A. (16.61%)
 Camargo Correa Invest. em Infra Estrutur (15.24%)
 Soares Penido Concessoes S.A. (11.93%)
 Soares Penido Obras, Const. e Inv. Ltda. (5.29%)
 VBC Energia (1.76%)
 Agc Participacoes Ltda. (0.39%)",
-104,"",Brookfield Incorporações,Brookfield Incorporações,07700557/0001-84,-,3727.30,3727.27,1382.64,5109.91,0.32,Economatica 2011 (anual),Company (100.00%),"","","","Brookfield Brasil Ltda (43.28%)
+104,"",Brookfield Incorporações,Brookfield Incorporações,07700557/0001-84,SOCIEDADE ANÔNIMA ABERTA,3727.30,3727.27,1382.64,5109.91,0.32,Economatica 2011 (anual),Company (100.00%),"","","","Brookfield Brasil Ltda (43.28%)
 Administradores (6.63%)
 Alliance Bernstein L.P. (5.52%)
 Walter Francisco Lafemina (2.32%)
@@ -935,7 +935,7 @@ Niblak Participacoes S.A. (7.80%)",private
 138,"",Casino Guichard Perrachon,Casino Guichard Perrachon,-,-,-,-,3798.42,3798.42,0.24,Economatica associado,"",Pão de Açúcar (5.62%),"","Pão de Açúcar => {
 •• Viavarejo (52.41%, final=2.94%)}","",
 139,"",Syngenta,Syngenta Proteção de Cultivos Ltda,60744463/0001-90,-,3742.90,-,-,3742.90,0.23,Valor 2011 (anual),"","","","","",private
-140,"",Valverde Participacoes S.A.,Valverde Participacoes S.A.,-,-,-,-,3678.45,3678.45,0.23,Economatica associado,"","Telemar (9.59%)
+140,"",Valverde Participacoes S.A.,Valverde Participacoes S.A.,12493925/0001-09,SOCIEDADE ANÔNIMA FECHADA,-,-,3678.45,3678.45,0.23,Economatica associado,"","Telemar (9.59%)
 Oi (7.93%)","","Telemar (9.59%, final=9.59%)
 Oi => {
 •• Telemar Norte Leste S/A => {
@@ -1287,7 +1287,7 @@ Acoes em Tesouraria (4.70%)",private
 Mahle Gmbh (3.06%)
 Credit Suisse Hedging Griffo Asset Management S.A. (1.74%)
 Conselheiros e Diretores Nao Estatutarios (0.01%)",private
-236,"",Prot - Fundo de Invest. em Participacoes,Prot - Fundo de Invest. em Participacoes,-,-,-,-,2231.48,2231.48,0.14,Economatica associado,"",JBS (3.61%),"","JBS => {
+236,"",Prot - Fundo de Invest. em Participacoes,Prot - Fundo de Invest. em Participacoes,14543775/0001-18,CLUBE/FUNDO DE INVESTIMENTO ,-,-,2231.48,2231.48,0.14,Economatica associado,"",JBS (3.61%),"","JBS => {
 •• Vigor Food (21.32%, final=0.77%)}","",
 237,"",Siderca Socied. Anom. Ind. Y Coml.,Siderca Socied. Anom. Ind. Y Coml.,-,-,-,-,2226.90,2226.90,0.14,Economatica associado,Tenaris Confab (99.22%),"","","Tenaris Confab => {
 •• Usiminas => {
@@ -1573,7 +1573,7 @@ Opus Gestao de Recursos (9.18%)",
 -,sim,CEB,,00070698/0001-11,-,1377.60,1377.62,-,1377.62,0.09,Economatica 2011 (anual),"","","","",Sec de Est de Faz do Distrito Federal (89.34%),
 350,"",Schneider,Schneider Electric Brasil Ltda,82743287/0001-04,-,1375.20,-,-,1375.20,0.09,Valor 2011 (anual),"","","","","",private
 351,"",TRW Automotive,,-,-,1373.40,-,-,1373.40,0.09,Valor 2011 (anual),"","","","","",
-352,"",Banco Original SA,Banco Original SA,-,-,-,-,1372.12,1372.12,0.09,Economatica associado,"",JBS (2.22%),"","JBS => {
+352,"",Banco Original SA,Banco Original SA,92894922/0001-08,SOCIEDADE ANÔNIMA FECHADA,-,-,1372.12,1372.12,0.09,Economatica associado,"",JBS (2.22%),"","JBS => {
 •• Vigor Food (21.32%, final=0.47%)}","",
 353,"",Lojas Y. Yamada,,-,-,1363.90,-,-,1363.90,0.08,Valor 2011 (anual),"","","","","",
 354,"",Refinaria de Manguinhos,,-,-,1361.80,-,-,1361.80,0.08,Valor 2011 (anual),"","","","","",

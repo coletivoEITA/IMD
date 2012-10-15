@@ -835,12 +835,12 @@ module ImportHelper
       cnpj = row.values_at(2).first
       legal_nature = row.values_at(3).first
 
-      owner = Owner.first_or_new nil, :name => name, :formal_name => formal_name
-      pp owner
-      owner.formal_name = formal_name unless formal_name.blank?
-      owner.add_cgc cnpj unless cgc.blank?
-      owner.legal_nature = legal_nature
-      owner.save!
+      company = Owner.first_or_new nil, :cgc => cnpj, :name => name, :formal_name => formal_name
+      company.formal_name = formal_name unless formal_name.blank?
+      company.add_cgc cnpj unless cnpj.blank?
+      company.legal_nature = legal_nature
+      company.save!
+      pp company
     end
   end
 
