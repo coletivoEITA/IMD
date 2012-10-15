@@ -7,7 +7,7 @@ module DateHelper
   end
 
   def self.time_from_ordered(date)
-    Date.strptime(date, '%Y-%m-%d').to_time
+    Date.strptime(date, '%Y-%m-%d').to_time.at_beginning_of_day
   end
 
 end

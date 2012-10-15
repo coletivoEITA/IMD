@@ -9,12 +9,14 @@ Anglo Gold Ashanti,Anglogold Ashanti,Valor
 Anhanguera Educacional,Anhanguera,Economatica
 Arcelor BR,ArcelorMittal Brasil,Valor
 Arezzo,Arezzo Co,Economatica
+BNDES - Banco Nac de Desenvol Economico e Social,Banco Nacional de Desenvolvimento Econômico E Social,Bovespa associado
 BR Malls Par,BR Malls Participações,Valor
 BRF Foods,BRF - Brasil Foods S.A.,Economatica associado
 BRF Foods,BRF Brasil Foods,Valor
 Banco BTG Pactual,Btgp Banco,Economatica
 Banespa,Banco do Estado de Sao Paulo S/A - Banespa .,Economatica associado
 Bhp Billiton,BHP Billiton Metais 1,Valor
+Bndespar - BNDES Participacoes SA,BNDES PARTICIPACOES S.A. - BNDESPAR,Bovespa
 Brasil Brokers,BR Brokers,Economatica
 Braskem,Braskem S.A.,Economatica associado
 Brasmotor,Brasmotor S/A,Economatica associado
@@ -169,8 +171,8 @@ Tarpon Inv,Tarpon Investimentos S.A.,Economatica associado
 Technicolor,Technicolor Brasil,Valor
 Telefônica Brasil,Telef Brasil,Economatica
 Telefônica S.A.,Telefonica,Economatica
-Telemar Norte Leste S/A,Telemar,Exame
 Telemar Norte Leste S/A,Telemar N L,Economatica
+Telemar Norte Leste S/A,Telemar,Exame
 Teleperformance Crm,Teleperformance,Valor
 Tenaris Confab,Confab Industrial S.A.,Economatica associado
 Tenaris Confab,Confab,Economatica
@@ -198,9 +200,7 @@ Usina São Manoel,Usina São Manoel 1 3,Valor
 Usina da Pedra,Usina da Pedra 1,Valor
 Utc,UTC Engenharia,Valor
 VBC Energia,VBC Energia SA,Economatica associado
-Vicunha Textil,Vicunha Text,Economatica
-Vicunha Textil,Vicunha,Valor
-Vicunha,Vicunha Têxtil,Valor
+Vicunha Têxtil,Vicunha Text,Economatica
 Villares Metals,Villares Metals 1,Valor
 Voith Hydro,Voith Hydro 1,Valor
 Vonpar Refrescos,Vonpar,Valor
@@ -212,5 +212,3 @@ Walmart,Walmart 2,Valor
 Wiest,Wiest Participacoes Ltda,Economatica associado
 Zaffari & Bourbon,Zaffari & Bourbon 2,Valor
 Zf,ZF do Brasil 2,Valor
-Bndespar - BNDES Participacoes SA,BNDESPAR,Bovespa
-BNDES - Banco Nac de Desenvol Economico e Social,Banco Nacional de Desenvolvimento Econômico E Social,Bovespa associado

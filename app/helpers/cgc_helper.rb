@@ -12,7 +12,7 @@ module CgcHelper
   end
 
   def self.format(cgc)
-    '%s/%s-%s' % [cgc[0..8], cgc[8..11], cgc[12..13]]
+    '%s/%s-%s' % [cgc[0..7], cgc[8..11], cgc[12..13]]
   end
 
   def self.extract_cnpj_root(cnpj)

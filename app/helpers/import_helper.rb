@@ -193,9 +193,9 @@ module ImportHelper
         elsif field == 'traded'
           company.traded = value == 'ativo'
         elsif field == 'shares_quantity'
-          company.shares_quantity[share_class] = value
+          company.shares_quantity[share_class] = value.to_i
         else
-          owner.set_value field, value
+          company.set_value field, value
         end
 
       end
@@ -248,16 +248,16 @@ module ImportHelper
         #'DATA DA SITUAÇÃO CADASTRAL' =>
       }
 
-      owner = Owner.first_or_new 'Receita', :cgc => cnpj
+      company = Owner.first_or_new 'Receita', :cgc => cnpj
       attr_map.each do |field_name, attr|
         field = page.parser.css("font:contains('#{field_name}')")[0]
         raise "Can't find field #{field_name}" if field.nil?
         value = field.parent.css('font')[1].text.squish
 
-        owner.set_value attr, value
+        company.set_value attr, value
       end
-      owner.save!
-      pp owner
+      company.save!
+      pp company
     end
 
     def self.process_cnpj(cnpj)
@@ -401,11 +401,22 @@ module ImportHelper
     }
 
     cvm_id = options[:cvm_id]
+    raise 'Please give a cvm code' if cvm_id.blank?
 
     page = m.get url % {:cvm_id => cvm_id}
     formal_name = page.parser.css('h1 span.label')[0].text.squish
 
     page = m.get frame_url % {:cvm_id => cvm_id}
+
+    company = Owner.first_or_new source, :cvm_id => cvm_id, :formal_name => formal_name
+    attr_map.each do |field_name, attr|
+      field = page.parser.css("td.IdentificacaoDado:contains('#{field_name}')")[0]
+      next if field.nil?
+      value = field.parent.css('td')[1].text.squish
+
+      company.set_value attr, value
+    end
+    company.save!
 
     reference_date = options[:reference_date]
     if reference_date.nil?
@@ -413,31 +424,30 @@ module ImportHelper
       raise 'give a reference date'
     end
 
-    company = Owner.first_or_new source, :cvm_id => cvm_id, :formal_name => formal_name
-    attr_map.each do |field_name, attr|
-      field = page.parser.css("td.IdentificacaoDado:contains('#{field_name}')")[0]
-      raise "Can't find field #{field_name}" if field.nil?
-      value = field.parent.css('td')[1].text.squish
-
-      company.set_value attr, value
-    end
-    company.save!
-
-    $page = page
-
     page.parser.css('#divPosicaoAcionaria .tabela tr').each do |tr|
       tds = tr.css('td')
       next if tds.size != 4
       name = tds[0].text.squish
+      next if name == 'Total'
       on_percentage = tds[1].text.squish.gsub(',', '.').to_f
       pn_percentage = tds[2].text.squish.gsub(',', '.').to_f
       total_shares = tds[3].text.squish.gsub(',', '.').to_f
 
-      Share.first_or_create(:company_id => company.id, :name => name, :source => source, :reference_date => reference_date,
-                            :sclass => 'ON', :percentage => on_percentage) unless on_percentage.zero?
-      Share.first_or_create(:company_id => company.id, :name => name, :source => source, :reference_date => reference_date,
-                            :sclass => 'PN', :percentage => pn_percentage) unless pn_percentage.zero?
+      unless on_percentage.zero?
+        s = Share.first_or_new(:company_id => company.id, :name => name, :source => source,
+                               :reference_date => reference_date, :sclass => 'ON')
+        s.percentage = on_percentage
+        s.save!
+      end
+      unless pn_percentage.zero?
+        s = Share.first_or_new(:company_id => company.id, :name => name, :source => source,
+                               :reference_date => reference_date, :sclass => 'PN')
+        s.percentage = pn_percentage
+        s.save!
+      end
     end
+
+    company
   end
 
   def self.import_companies(*files)
@@ -477,24 +487,24 @@ module ImportHelper
       formal_name = tds[2].text
       cnpj = spans ? spans[6].text : nil
 
-      owner = Owner.first_or_new 'Exame', :cgc => cnpj, :name => name, :formal_name => formal_name
-      owner.sector = tds[4].text
-      owner.capital_type = tds[5].text == 'Privada' ? 'private' : 'state'
+      company = Owner.first_or_new 'Exame', :cgc => cnpj, :name => name, :formal_name => formal_name
+      company.sector = tds[4].text
+      company.capital_type = tds[5].text == 'Privada' ? 'private' : 'state'
       if spans
-        owner.address = spans[2].text
-        owner.city = spans[3].text
-        owner.phone = spans[4].text
-        owner.website = spans[5].text
+        company.address = spans[2].text
+        company.city = spans[3].text
+        company.phone = spans[4].text
+        company.website = spans[5].text
         # FIXME: check if present
-        #owner.group = OwnerGroup.first_or_create(:name => spans[8].text)
+        #company.group = OwnerGroup.first_or_create(:name => spans[8].text)
       end
-      owner.save!
-      pp owner
+      company.save!
+      pp company
 
-      balance = Balance.first_or_new(:company_id => owner.id, :source => "Exame",
-                                     :currency => 'Real', :reference_date => reference_date)
+      balance = Balance.first_or_new(:company_id => company.id, :source => "Exame", :reference_date => reference_date)
       value = tds[7].text.gsub('.', '').gsub(',', '.').to_f * 1000000
       value *= dolar_value # convert from Dolar to Real
+      balance.currency = 'Real'
       balance.send "#{key}=", value
       balance.save!
       pp balance
@@ -511,7 +521,7 @@ module ImportHelper
     queue = Queue.new
 
     years.each do |year|
-      reference_date = Time.mktime(year).end_of_year.to_date.strftime('%Y-%m-%d')
+      reference_date = Time.mktime(year).end_of_year.at_beginning_of_day
 
       attributes.each_with_index do |(attr, key), i|
         (1..pages).each do |page|
@@ -544,7 +554,7 @@ module ImportHelper
     end
   end
 
-  def self.import_valor(file, reference_date)
+  def self.import_valor_csv(file, reference_date)
     csv = CSV.table file, :headers => true, :header_converters => nil, :converters => nil
     csv.each_with_index do |row, i|
       ranking_position = row.values_at(0).first
@@ -553,13 +563,13 @@ module ImportHelper
       sector = row.values_at(4).first
       revenue = row.values_at(5).first
 
-      owner = Owner.first_or_new 'Valor', :name => name
-      owner.state = state
-      owner.sector = sector
-      owner.valor_ranking_position = ranking_position
-      owner.save!
+      company = Owner.first_or_new 'Valor', :name => name
+      company.state = state
+      company.sector = sector
+      company.valor_ranking_position = ranking_position
+      company.save!
 
-      balance = Balance.first_or_new(:company_id => owner.id, :source => "Valor",
+      balance = Balance.first_or_new(:company_id => company.id, :source => "Valor",
                                      :currency => 'Real', :reference_date => reference_date)
       balance.revenue = revenue.to_f * 1000000
       balance.save!
@@ -568,27 +578,27 @@ module ImportHelper
 
   def self.import_asclaras_grantor_locally()
     empty_donator = []
-	file_path = '/home/caioformiga/workspace/EITA/IMD/db/wget/'	
+	file_path = '/home/caioformiga/workspace/EITA/IMD/db/wget/'
 	dir = Dir.new(file_path)
-	dir.each { |file_name| 
+	dir.each { |file_name|
 	  if file_name != "." && file_name != ".." && file_name != 'asclaras_grantor.pl' && file_name != 'teste.pl'
-	    html_file = file_path + file_name		    
+	    html_file = file_path + file_name
 	    html = Nokogiri::HTML File.open html_file
 		begin
 			year = html.xpath(".//input[@name='ano']").attr('value').value
 			donator_id = html.xpath(".//input[@name='doador']").attr('value').value
-			#import grantor using html locally		
+			#import grantor using html locally
 			import_asclaras_grantor(nil, html, donator_id, year)
 			pp "grantor: "+donator_id+" year: "+year
 		    pp '============================'
 		rescue NoMethodError
 			empty_donator << donator_id
 		end
-		#delete html file  
+		#delete html file
 		file_full_path = file_path + file_name
 		pp 'deleting file: ' + file_full_path
 		if !File.directory?(file_full_path)
-		  File.delete(file_full_path)		  
+		  File.delete(file_full_path)
 		end
 		pp 'deleted'
 	  end
@@ -611,12 +621,12 @@ module ImportHelper
 		  error_count = 0
 		  #range_end is imported (inclusive)
 		  finished = true if range_begin >= range_end
-		  pp '----------------------------'		
-		  begin	
+		  pp '----------------------------'
+		  begin
 		    page = m.get(url_grantor % {:grantor_id => range_begin, :year => year})
-		    queue << [page, range_begin, year]		
+		    queue << [page, range_begin, year]
             mutex.synchronize do
-		  	  range_begin = range_begin + 1	
+		  	  range_begin = range_begin + 1
 		    end
 		  rescue SystemCallError
 			#create log file for further calls
@@ -633,9 +643,9 @@ module ImportHelper
 	logged_donators.each do |logged_donator|
 	  begin
 		page = m.get(url_grantor % {:grantor_id => logged_donator, :year => year})
-	    queue << [page, nil, logged_donator, year]			
+	    queue << [page, nil, logged_donator, year]
 	  rescue SystemCallError
-	    pp '----------------------------'		
+	    pp '----------------------------'
 		pp 'error to import: ' + logged_donator.to_s
 	  end
 	end
@@ -655,15 +665,15 @@ module ImportHelper
   def self.import_asclaras_grantor(page = nil, html = nil, grantor_id = nil, year = nil)
 	#parsing page to html, a nokogiri node
 	if !page.nil?
-	  html = page.parser		
-	end	
+	  html = page.parser
+	end
     span = html.css('span.destaque')[0]
 	if !span.nil? && !span.children[0].nil?
 		grantor_name = span.children[0].text
 		#TODO:refactore - find a way to group cgc
 		grantor_cgc = []
 		html.css('tr#aba102 td.conteudo table tr').each do |tr|
-		  data = tr.search('td') 
+		  data = tr.search('td')
 		  next if data.count != 2
 		  name, cgc = data[0].text, data[1].text
 		  owner = Owner.first_or_new 'àsclaras', :cgc => cgc, :name => name
@@ -825,10 +835,10 @@ module ImportHelper
       cnpj = row.values_at(2).first
       legal_nature = row.values_at(3).first
 
-      owner = Owner.first_or_new nil, :name => name
+      owner = Owner.first_or_new nil, :name => name, :formal_name => formal_name
       pp owner
       owner.formal_name = formal_name unless formal_name.blank?
-      owner.add_cgc cnpj
+      owner.add_cgc cnpj unless cgc.blank?
       owner.legal_nature = legal_nature
       owner.save!
     end

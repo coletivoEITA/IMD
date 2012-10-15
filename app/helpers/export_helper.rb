@@ -61,7 +61,6 @@ module ExportHelper
       CalculationHelper.calculate_owners_value attr, balance_reference_date, share_reference_date
 
       puts 'loading data'
-      uniao = Owner.find_by_name 'Uniao Federal (Tesouro Nacional)'
       value_field = "total_#{attr}".to_sym
       owners = Owner.order(value_field.desc).where(:name.ne => 'Acoes em Tesouraria').all
 
@@ -87,8 +86,8 @@ module ExportHelper
           owners_shares = owner.owners_shares.on.greatest.with_reference_date(share_reference_date).all
           owned_shares = owner.owned_shares.on.greatest.with_reference_date(share_reference_date).all
 
-          controlled = owners_shares.first
-          is_controlled = controlled && controlled.owner != uniao && controlled.control?
+          controller = owner.controller
+          is_controlled = controller && controller != $uniao
           controlled = is_controlled ? 'sim' : ''
 
           # uncomment to skip controlled

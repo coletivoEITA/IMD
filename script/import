@@ -3,10 +3,12 @@ require File.dirname(__FILE__) + '/../config/boot'
 
 ImportHelper.clear_db
 ImportHelper.import_name_equivalences
-ImportHelper.import_valor 'db/ranking-valor-2011.csv', $balance_reference_date
+
+ImportHelper.import_valor_csv 'db/ranking-valor-2011.csv', $balance_reference_date
 #ImportHelper.import_companies 'db/mdic-importers.csv', 'db/mdic-exporters.csv'
-ImportHelper.import_economatica_csv "db/economatica-period-#{$balance_reference_date}.csv", $balance_reference_date
-ImportHelper.import_economatica_csv "db/economatica-period-#{$share_reference_date}.csv", $share_reference_date
+
+ImportHelper.import_economatica_csv "db/economatica-period-#{$balance_reference_date.to_date.to_s}.csv", $balance_reference_date
+ImportHelper.import_economatica_csv "db/economatica-period-#{$share_reference_date.to_date.to_s}.csv", $share_reference_date
 
 # add legal nature
 ImportHelper.import_legal_nature_csv 'db/legal-nature-and-cnpj-for-names.csv'
