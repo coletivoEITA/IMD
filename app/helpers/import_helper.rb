@@ -568,7 +568,7 @@ module ImportHelper
 
   def self.import_asclaras_grantor_locally()
     empty_donator = []
-	file_path = '/home/caioformiga/workspace/EITA/script/'	
+	file_path = '/home/caioformiga/workspace/EITA/IMD/db/wget/'	
 	dir = Dir.new(file_path)
 	dir.each { |file_name| 
 	  if file_name != "." && file_name != ".." && file_name != 'asclaras_grantor.pl' && file_name != 'teste.pl'
