@@ -417,6 +417,7 @@ module ImportHelper
       company.set_value attr, value
     end
     company.save!
+    pp company
 
     reference_date = options[:reference_date]
     if reference_date.nil?
@@ -438,12 +439,14 @@ module ImportHelper
                                :reference_date => reference_date, :sclass => 'ON')
         s.percentage = on_percentage
         s.save!
+        pp s
       end
       unless pn_percentage.zero?
         s = Share.first_or_new(:company_id => company.id, :name => name, :source => source,
                                :reference_date => reference_date, :sclass => 'PN')
         s.percentage = pn_percentage
         s.save!
+        pp s
       end
     end
 
@@ -835,7 +838,7 @@ module ImportHelper
       cnpj = row.values_at(2).first
       legal_nature = row.values_at(3).first
 
-      company = Owner.first_or_new nil, :cgc => cnpj, :name => name, :formal_name => formal_name
+      company = Owner.first_or_new 'Receita', :cgc => cnpj, :name => name, :formal_name => formal_name
       company.formal_name = formal_name unless formal_name.blank?
       company.add_cgc cnpj unless cnpj.blank?
       company.legal_nature = legal_nature

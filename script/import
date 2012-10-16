@@ -22,5 +22,6 @@ Owner.all(:source => 'Exame').each{ |o| o.destroy }
 ImportHelper.import_bovespa :cvm_id => 16772, :reference_date => $share_reference_date
 ImportHelper.import_bovespa :cvm_id => 18678, :reference_date => $share_reference_date
 ImportHelper.import_bovespa :cvm_id => 18902, :reference_date => $share_reference_date
+ImportHelper.import_bovespa :cvm_id => 21784, :reference_date => $share_reference_date
 
 
