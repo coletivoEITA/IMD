@@ -27,7 +27,7 @@ class Share
   #validate :quantity_xor_percentage
 
   before_validation :create_owner
-  before_save :calculate_percentage
+  before_validation :calculate_percentage
 
   scope :on, :sclass => 'ON'
   scope :pn, :sclass => 'PN'
@@ -47,7 +47,8 @@ class Share
   end
 
   def create_owner
-    self.owner ||= Owner.first_or_new "#{self.source} associado", :name => self.name, :formal_name => self.name
+    return if self.owner
+    self.owner = Owner.first_or_new "#{self.source} associado", :name => self.name, :formal_name => self.name
     self.owner.save!
   end
 
@@ -59,6 +60,9 @@ class Share
   end
 
   def calculate_percentage
+    # nil instead of zero
+    self.percentage = nil if percentage and percentage.zero?
+
     return if self.quantity.blank?
     return if self.total.blank? or self.total.to_i.zero?
 

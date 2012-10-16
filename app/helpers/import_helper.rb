@@ -836,7 +836,7 @@ module ImportHelper
       name = row.values_at(0).first
       formal_name = row.values_at(1).first
       cnpj = row.values_at(2).first
-      legal_nature = row.values_at(3).first
+      legal_nature = row.values_at(3).first.squish
 
       company = Owner.first_or_new 'Receita', :cgc => cnpj, :name => name, :formal_name => formal_name
       company.formal_name = formal_name unless formal_name.blank?
@@ -859,11 +859,6 @@ module ImportHelper
         raise "Blank name at '#{share}'" if formal_name.blank? and name.blank?
 
         percentage = $2.squish.gsub(',', '.').to_f
-        percentage = nil if percentage.zero?
-
-        pp formal_name
-        pp name
-        pp percentage
 
         [formal_name, name, percentage]
       end
@@ -885,22 +880,22 @@ module ImportHelper
       company.save!
 
       get_shares_pair(owners_shares).each do |formal_name, name, percentage|
-        owner_company = Owner.first_or_new source, :formal_name => formal_name, :name => name
+        owner_company = Owner.first_or_new "#{source} associado", :formal_name => formal_name, :name => name
         owner_company.save!
         share = Share.first_or_new(:owner_id => owner_company.id, :company_id => company.id,
                                    :reference_date => reference_date, :sclass => 'ON',
                                    :name => formal_name, :source => source)
         share.percentage = percentage
-        share.save!
+        share.save
       end
       get_shares_pair(owned_shares).each do |formal_name, name, percentage|
-        owned_company = Owner.first_or_new source, :formal_name => formal_name, :name => name
+        owned_company = Owner.first_or_new "#{source} associado", :formal_name => formal_name, :name => name
         owned_company.save!
         share = Share.first_or_new(:owner_id => company.id, :company_id => owned_company.id,
                                    :reference_date => reference_date, :sclass => 'ON',
                                    :name => formal_name, :source => source)
         share.percentage = percentage
-        share.save!
+        share.save
       end
     end
   end

@@ -57,8 +57,8 @@ module ExportHelper
     def self.export_raking(attr = :revenue, balance_reference_date = $balance_reference_date, share_reference_date = $share_reference_date)
 
       puts 'calculating values'
-      #Share.each{ |s| s.calculate_percentage; s.save }
-      #CalculationHelper.calculate_owners_value attr, balance_reference_date, share_reference_date
+      Share.each{ |s| s.calculate_percentage; s.save }
+      CalculationHelper.calculate_owners_value attr, balance_reference_date, share_reference_date
 
       puts 'loading data'
       value_field = "total_#{attr}".to_sym

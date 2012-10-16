@@ -12,6 +12,8 @@ db_timeout = (config[env]['timeout'] || '1').to_i
 MongoMapper.connection = Mongo::Connection.new db_host, db_port, :pool_size => db_pool, :pool_timeout => db_timeout
 MongoMapper.database = db_name
 
+raise 'Install mongo 1.6+' if MongoMapper.connection.server_version < '1.6.0'
+
 Owner.ensure_index :source
 Owner.ensure_index :cgc
 Owner.ensure_index :cnpj_root

@@ -68,11 +68,13 @@ class Owner
   many :donations_made, :class_name => 'Donation', :foreign_key => :grantor_id, :dependent => :destroy_all
   many :donations_received, :class_name => 'Donation', :foreign_key => :candidate_id, :dependent => :destroy_all
 
+  validates_uniqueness_of :cgc, :allow_nil => true
+  validates_uniqueness_of :cnpj_root, :allow_nil => true
   validates_uniqueness_of :name
   validates_uniqueness_of :formal_name, :allow_nil => true
   validates_uniqueness_of :stock_name, :allow_nil => true
-  validates_uniqueness_of :cgc, :allow_nil => true
-  validates_uniqueness_of :cnpj_root, :allow_nil => true
+  validates_uniqueness_of :name_n, :allow_nil => true
+  validates_uniqueness_of :formal_name_n, :allow_nil => true
   validates_inclusion_of :capital_type, :in => %w(private state), :allow_nil => true
   validate :validate_cgc
 
@@ -80,25 +82,25 @@ class Owner
   before_save :normalize_fields
 
   def self.first_or_new(source, attributes = {})
-    owner_by_cgc = owner_by_name = owner_by_formal_name = nil
-    cgc = attributes[:cgc]
-    name = attributes[:name]
-    formal_name = attributes[:formal_name]
+    by_cgc = by_name = by_formal_name = nil
+    cgc, name, formal_name = attributes[:cgc], attributes[:name], attributes[:formal_name]
+
+    name = NameEquivalence.replace(source, name)
+    formal_name = NameEquivalence.replace(source, formal_name)
+    name ||= formal_name
+    attributes[:name], attributes[:formal_name] = name, formal_name
 
     exact_match = self.first(attributes)
-    name = attributes[:name] = NameEquivalence.replace(source, name)
-    formal_name =attributes[:formal_name] = NameEquivalence.replace(source, formal_name)
-    # rematch with with names set
-    exact_match ||= self.first(attributes)
+    by_cgc = self.find_by_cgc(cgc) unless cgc.blank?
 
-    owner_by_cgc = self.find_by_cgc(cgc) unless cgc.blank?
+    name_n = name.name_normalization
+    formal_name_n = formal_name.name_normalization unless formal_name.blank?
+    by_name = self.first :$or => [{:name_n => name_n}, {:formal_name_n => name_n}]
+    by_formal_name = self.first :$or => [{:formal_name_n => formal_name_n}, {:name_n => formal_name_n}] unless formal_name_n.blank?
 
-    name_n = name.filter_normalization unless name.blank?
-    owner_by_name = self.find_by_name_n(name_n) unless name.blank?
-    formal_name_n = formal_name.filter_normalization unless formal_name.blank?
-    owner_by_formal_name = self.find_by_formal_name_n(formal_name_n) unless formal_name.blank?
+    owner = exact_match || by_cgc || by_name || by_formal_name || self.new
 
-    owner = exact_match || owner_by_cgc || owner_by_name || owner_by_formal_name || self.new
+    puts "--- New owner #{name} ---" if owner.new_record?
 
     owner.source ||= source
     owner.add_cgc(cgc) unless cgc.blank?
@@ -329,13 +331,11 @@ class Owner
     self.name ||= NameEquivalence.replace(self.source, self.formal_name || self.stock_name)
     self.cnpj_root ||= CgcHelper.extract_cnpj_root(self.cgc.first) if self.cnpj?
     self.stock_code_base = self.stock_code_base
-
-    puts "--- New owner #{self.name} ---" if self.new_record?
   end
 
   def normalize_fields
-    self.name_n = self.name.filter_normalization
-    self.formal_name_n = self.formal_name.filter_normalization if self.formal_name
+    self.name_n = self.name.name_normalization
+    self.formal_name_n = self.formal_name.name_normalization if self.formal_name
     self.stock_name = self.stock_name.upcase if self.stock_name
   end
 

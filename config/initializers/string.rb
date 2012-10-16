@@ -30,8 +30,12 @@ class String
     ActiveSupport::Inflector.transliterate(self)
   end
 
-  def filter_normalization
-    self.squish.gsub(/\b(s.a|s\/a|sa)\.?$/i, '').strip.transliterate.downcase
+  def remove_company_nature
+    self.gsub(/\b(s.a|s\/a|sa)\.?$/i, '')
+  end
+
+  def name_normalization
+    self.squish.remove_company_nature.strip.transliterate.downcase
   end
 
 end
