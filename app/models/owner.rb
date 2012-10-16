@@ -25,8 +25,9 @@ class Owner
   key :cvm_id, Integer
   key :classes, Array
   key :traded, Boolean
-  key :stock_market, String
+  key :stock_market, Array
   key :stock_code, Array
+  key :stock_code_base, String
   key :shares_quantity, Hash # {'class' => 'quantity'}
   # extra info
   key :open_date, Time
@@ -327,6 +328,9 @@ class Owner
   def assign_defaults
     self.name ||= NameEquivalence.replace(self.source, self.formal_name || self.stock_name)
     self.cnpj_root ||= CgcHelper.extract_cnpj_root(self.cgc.first) if self.cnpj?
+    self.stock_code_base = self.stock_code_base
+
+    puts "--- New owner #{self.name} ---" if self.new_record?
   end
 
   def normalize_fields

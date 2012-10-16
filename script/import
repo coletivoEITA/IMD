@@ -24,4 +24,6 @@ ImportHelper.import_bovespa :cvm_id => 18678, :reference_date => $share_referenc
 ImportHelper.import_bovespa :cvm_id => 18902, :reference_date => $share_reference_date
 ImportHelper.import_bovespa :cvm_id => 21784, :reference_date => $share_reference_date
 
+ImportHelper.import_stockholders_csv 'db/manually-collected-shareholders.csv'
+
 

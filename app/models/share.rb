@@ -7,7 +7,6 @@ class Share
 
   key :source, String, :required => :true
   key :reference_date, Time, :required => :true
-
   key :sclass, String, :required => :true
 
   key :company_id, ObjectId, :required => :true
@@ -25,7 +24,7 @@ class Share
   validates_uniqueness_of :name, :scope => [:source, :company_id, :sclass, :reference_date]
   validates_numericality_of :quantity, :greater_than => 0.0, :allow_nil => true
   validates_numericality_of :percentage, :greater_than => 0.0, :allow_nil => true
-  validate :quantity_xor_percentage
+  #validate :quantity_xor_percentage
 
   before_validation :create_owner
   before_save :calculate_percentage
