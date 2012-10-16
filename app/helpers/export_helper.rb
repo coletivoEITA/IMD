@@ -57,8 +57,8 @@ module ExportHelper
     def self.export_raking(attr = :revenue, balance_reference_date = $balance_reference_date, share_reference_date = $share_reference_date)
 
       puts 'calculating values'
-      Share.each{ |s| s.calculate_percentage; s.save }
-      CalculationHelper.calculate_owners_value attr, balance_reference_date, share_reference_date
+      #Share.each{ |s| s.calculate_percentage; s.save }
+      #CalculationHelper.calculate_owners_value attr, balance_reference_date, share_reference_date
 
       puts 'loading data'
       value_field = "total_#{attr}".to_sym
@@ -129,7 +129,8 @@ module ExportHelper
 
           #shares_percent_sum = owners_shares.sum{ |s| s.percentage.nil? ? 0 : s.percentage }
 
-          csv << [position, controlled, owner.name, owner.formal_name, cgc, legal_nature,
+          csv << [position, controlled, owner.name, owner.formal_name, cgc,
+                  legal_nature, stock_code,
                   valor_value, economatica_value,
                   indirect_value, total_value,
                   index_value, source,
