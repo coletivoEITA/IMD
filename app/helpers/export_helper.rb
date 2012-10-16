@@ -67,7 +67,8 @@ module ExportHelper
 
       puts 'exporting data'
       CSV.open("output/#{attr}-ranking.csv", "w") do |csv|
-        csv << ['Posição no Ranking', 'Controlada?', 'Nome', 'Razão Social', 'CNPJ', 'Natureza Jurídica',
+        csv << ['Posição no Ranking', 'Controlada?', 'Nome', 'Razão Social', 'CNPJ',
+                'Natureza Jurídica', 'Código BOVESPA',
                 'Receita líquida pela Valor (milhões de reias)', 'Receita líquida pela Economatica (milhões de reias)',
                 '“Poder” indireto (das empresas em que i tem participação)', '“Poder” total (receita da empresa i + valor indireto)',
                 'Indicador (por milhão de rendas médias)', 'Fonte',
@@ -81,6 +82,7 @@ module ExportHelper
           cgc = cgc ? CgcHelper.format(cgc) : '-'
 
           legal_nature = owner.legal_nature || '-'
+          stock_code = owner.stock_code_base
 
           owners_shares = owner.owners_shares.on.greatest.with_reference_date(share_reference_date).all
           owned_shares = owner.owned_shares.on.greatest.with_reference_date(share_reference_date).all

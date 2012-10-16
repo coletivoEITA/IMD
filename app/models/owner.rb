@@ -26,7 +26,7 @@ class Owner
   key :classes, Array
   key :traded, Boolean
   key :stock_market, String
-  key :stock_code, String
+  key :stock_code, Array
   key :shares_quantity, Hash # {'class' => 'quantity'}
   # extra info
   key :open_date, Time
@@ -123,6 +123,12 @@ class Owner
   end
   def cpf?
     CgcHelper.cpf?(self.cgc.first)
+  end
+
+  def stock_code_base
+    code = stock_code.first
+    code =~ /([a-z]+)/i
+    $1
   end
 
   def balance_with_value(attr, reference_date = $balance_reference_date)
