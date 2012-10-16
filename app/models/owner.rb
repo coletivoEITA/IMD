@@ -86,8 +86,8 @@ class Owner
     formal_name = attributes[:formal_name]
 
     exact_match = self.first(attributes)
-    name = attributes[:name] = NameEquivalence.replace source, name
-    formal_name =attributes[:formal_name] = NameEquivalence.replace source, formal_name
+    name = attributes[:name] = NameEquivalence.replace(source, name)
+    formal_name =attributes[:formal_name] = NameEquivalence.replace(source, formal_name)
     # rematch with with names set
     exact_match ||= self.first(attributes)
 

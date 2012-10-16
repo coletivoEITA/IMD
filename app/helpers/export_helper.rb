@@ -3,7 +3,7 @@
 module ExportHelper
 
   def self.export_companies_donations_by_party(options = {})
-    FasterCSV.open("output/companeis-donation-by-party.csv", "w") do |csv|
+    CSV.open("output/companeis-donation-by-party.csv", "w") do |csv|
 	  #set header
       csv << ['nome', 'razão social', 'cnpj', 'total doado', '% por partido']
 	  #TODO:refactore - filter donation by option arguments
@@ -32,7 +32,7 @@ module ExportHelper
   end
 
   def self.export_grantor_donations_by_candidacy
-    FasterCSV.open("output/grantor-donation-by-candidacy.csv", "w") do |csv|
+    CSV.open("output/grantor-donation-by-candidacy.csv", "w") do |csv|
 	  #set header
       csv << ['nome', 'razão social', 'cnpj',
               'total doado', '% por candidatura']
