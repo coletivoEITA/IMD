@@ -15,6 +15,9 @@ MongoMapper.database = db_name
 Owner.ensure_index :source
 Owner.ensure_index :cgc
 Owner.ensure_index :cnpj_root
+Owner.ensure_index :stock_code
+Owner.ensure_index :stock_code_base
+Owner.ensure_index :stock_market
 Owner.ensure_index :classes
 Owner.ensure_index :naics
 Owner.ensure_index :name

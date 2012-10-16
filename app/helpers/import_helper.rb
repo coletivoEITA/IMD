@@ -847,4 +847,62 @@ module ImportHelper
     end
   end
 
+  def self.import_stockholders_csv(file)
+
+    def self.get_shares_pair(string)
+      string.to_s.split("\n").map do |share|
+        raise "Invalid format of '#{share}'" unless share =~ /(.+)\((.+)%?\)/
+
+        formal_name, name = $1.split(' - ')
+        formal_name.squish!
+        name.squish! if name
+        raise "Blank name at '#{share}'" if formal_name.blank? and name.blank?
+
+        percentage = $2.squish.gsub(',', '.').to_f
+        percentage = nil if percentage.zero?
+
+        pp formal_name
+        pp name
+        pp percentage
+
+        [formal_name, name, percentage]
+      end
+    end
+
+    csv = CSV.table file, :headers => true, :header_converters => nil, :converters => nil
+    csv.each_with_index do |row, i|
+      name = row.values_at(0).first
+      formal_name = row.values_at(1).first
+      cnpj = row.values_at(2).first
+      legal_nature = row.values_at(3).first
+      owners_shares = row.values_at(4).first
+      owned_shares = row.values_at(5).first
+      source = row.values_at(6).first
+      reference_date = $share_reference_date
+
+      company = Owner.first_or_new source, :cgc => cnpj, :name => name, :formal_name => formal_name
+      company.legal_nature = legal_nature
+      company.save!
+
+      get_shares_pair(owners_shares).each do |formal_name, name, percentage|
+        owner_company = Owner.first_or_new source, :formal_name => formal_name, :name => name
+        owner_company.save!
+        share = Share.first_or_new(:owner_id => owner_company.id, :company_id => company.id,
+                                   :reference_date => reference_date, :sclass => 'ON',
+                                   :name => formal_name, :source => source)
+        share.percentage = percentage
+        share.save!
+      end
+      get_shares_pair(owned_shares).each do |formal_name, name, percentage|
+        owned_company = Owner.first_or_new source, :formal_name => formal_name, :name => name
+        owned_company.save!
+        share = Share.first_or_new(:owner_id => company.id, :company_id => owned_company.id,
+                                   :reference_date => reference_date, :sclass => 'ON',
+                                   :name => formal_name, :source => source)
+        share.percentage = percentage
+        share.save!
+      end
+    end
+  end
+
 end
