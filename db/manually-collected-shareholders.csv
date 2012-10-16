@@ -1,11 +1,11 @@
-Empresa,Empresa (Razão Social),CNPJ,Natureza jurídica,"Composição acionária – Formato:
+Nome,Razão Social,CNPJ,Natureza jurídica,"Composição acionária – Formato:
 Empresa 1 (xx%)
 Empresa 2 (yy%)
 Empresa 3 (zz%)","Controle sobre outras empresas – Formato:
 Empresa 1 (xx%)
 Empresa 2 (yy%)
 Empresa 3 (zz%)",Fonte,Observações
-1. Valepar,,,,"Litel Participações S.A. (49%)
+Valepar,,,,"Litel Participações S.A. (49%)
 Bradespar S.A. (21,1%)
 Mitsui & Co., Ltd (18,25%)
 BNDES Participações S.A. (11,51%)
@@ -82,22 +82,6 @@ ZMF Fundo de Investimento em Participações (6,28%)
 José Bastista Sobrinho (0%)
 Joesley Mendonça Batista (0%)
 José Batista Júnior (0%)",,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=JBSS,
-Bertin Fundo de Investimento em Participações,,,,"Blessed Holdings (65,79%)
-Bracol Holding Ltda. (34,21%)",,,
-Bracol Holding Ltda.,,,,"Heber Participações S.A. (100%)
-Silmar Roberto Bertin (0%)",,,
-Heber Participações S.A.,,,,"REIVO Participações S.A. (16,67%)
-SRB Participações S.A. (16,67%)
-BERF Participações S.A. (16,67%)
-JBF Particapações S.A. (16,67%)
-JUFERB Participações (16,67%)
-VIAMAR Particapações S.A. (16,67%)
-Natalino Bertin (0%)
-João Bertin Filho (0%)
-Fernando Antônio Bertin (0%)
-Reinaldo Bertin (0%)
-Silmar Roberto Bertin (0%)
-Mario Henrique Frare Bertin  (0%)",,,
 Ultra S/A Participacoes,,,,"Paulo Guilherme Aguiar Cunha (16,86%)
 Ana Maria Levy Villela Igel (15,45%)
 Fábio Igel (11,9%)
@@ -110,39 +94,11 @@ Christy Participações Ltda.,,,,"Maria da Conceição Coutinho Beltrão (34,9%)
 Hélio Marcos Coutinho Beltrão (21,7%)
 Cristiana Coutinho Beltrão (21,7%)
 Maria Coutinho Beltrão (21,7%)",,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=UGPA,
-Telemar Participacoes S.A.,,,,"LF TEL S.A. (19,36)  
-AG Telecom Participações S.A. (19,36) 
-BNDES PARTICIPAÇÕES S.A. (13,05) 
-Bratel Brasil S.A. (12,07)
-FUNDAÇÃO ATLÂNTICO DE SEGURIDADE SOCIAL (11,51)
-Caixa de Previdência dos Funcionários do Banco do Brasil - PREVI (9,69) 
-Fundação dos Economiários Federais (7,48) 
-FUNDAÇÃO PETROBRAS DE SEGURIDADE SOCIAL (7,48)
-",,,
-Bratel Brasil S.A.,,,,,,,
 AG Telecom Participações S.A.,,,,PASA PARTICIPAÇÕES S.A. (100%),,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=OIBR,
 PASA PARTICIPAÇÕES S.A.,,,,"ANDRADE GUTIERREZ TELECOMUNICAÇÕES LTDA. (65%)
 Bratel Brasil S.A. (35%)",,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=OIBR,
 ANDRADE GUTIERREZ TELECOMUNICAÇÕES LTDA.,,,,"ANDRADE GUTIERREZ S.A. (100%)
 ADPAR - ADMINISTRAÇÃO E PARTICIPAÇÕES LTDA. (0%)",,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=OIBR,
-LA FONTE TELECOM S.A.,,,,"JEREISSATI PARTICIPAÇÕES S.A. (80,10%) 
-Caixa de Previdência dos Funcionários do Banco do Brasil - PREVI (19,85%)
-",,,
-JEREISSATI PARTICIPAÇÕES S.A.,,,,"SOCIEDADE FIDUCIÁRIA BRASILEIRA SERVIÇOS, NEGÓCIOS E PARTICIPAÇÕES LTDA. (30,64%)",,,
-"SOCIEDADE FIDUCIÁRIA BRASILEIRA SERVIÇOS, NEGÓCIOS E PARTICIPAÇÕES LTDA",,,,"Carlos Francisco Ribeiro Jereissati (57,70%)",,,
-Anwold Investments Inc,,,,"Ilhas Virgens Britânicas (42,28%)",,,
-LF TEL S.A.,,,,EDSP75 PARTICIPAÇÕES S.A. (100%),,,
-EDSP75 PARTICIPAÇÕES S.A.,,,,LA FONTE TELECOM S.A. (65%),,,
-ANDRADE GUTIERREZ S.A.,,,,"ADMINISTRADORA SÃO MIGUEL S.A. (33,33%) 
-ADMINISTRADORA SANT’ANA LTDA.(33,33%) 
-ADMINISTRADORA SANTO ESTEVÃO S.A. (33,33%)",,,
-ADMINISTRADORA SÃO MIGUEL S.A.,,,,"GUVIDALA PARTICIPAÇÕES LTDA. (7,88%)",,,
-GUVIDALA PARTICIPAÇÕES LTDA.,,,,ÁLVARO FURTADO DE ANDRADE (100%),,,
-ADMINISTRADORA SANT’ANA LTDA.,,,,"ÂNGELA GUTIERREZ (33,33%) 
-CRISTIANA GUTIERREZ (33,33%)
-Espólio de Roberto Gutierrez (33,32%)",,,
-ADMINISTRADORA SANTO ESTEVÃO S.A.,,,,"SÉRGIO LINS ANDRADE (99,77%)
-",,,
 Bradespar,BRADESPAR S.A.,03.847.461/0001-92,SOCIEDADE ANÔNIMA ABERTA,,,http://www.bradespar.com.br/Bradespar/?vgnextoid=d07ee700c3427210VgnVCM100000242810acRCRD&vgnextchannel=d07ee700c3427210VgnVCM100000242810acRCRD,Existe VALEPAR no ranking!
 Antares,ANTARES HOLDINGS LTDA. ,07.341.926/0001-90,SOCIEDADE EMPRESARIA LIMITADA ,Bradespar (100%),"Millennium (100%)
 Brumado (100%)
