@@ -186,7 +186,7 @@ class Owner
           "#{owned_company.name} (#{owned_share.percentage.c}%, final=#{p.c}%)"
         else
           end_sep = owned.count > 1 ? "}\n" : '}'
-          sep = "\n#{'•• '*level}"
+          sep = "\n#{'•• '*(route.size+1)}"
           owned = owned.join(sep)
           "#{owned_company.name} => {#{sep}#{owned}#{end_sep}"
         end
@@ -206,7 +206,7 @@ class Owner
         next if route.include? pair
 
         list = []
-        list << "#{owned_company.name} (controlada por #{company.name})" if level != 1
+        list << "#{owned_company.name} (controlada por #{company.name})" unless route.size.zero?
         list += __recursion owned_company, share_reference_date, route+[pair]
 
         list
