@@ -216,6 +216,8 @@ class Owner
     __recursion self, share_reference_date
   end
 
+  UseCaching = false
+
   def calculate_own_value(attr = :revenue, balance_reference_date = $balance_reference_date)
     own_value = self.value attr, balance_reference_date
     self.send "own_#{attr}=", own_value
@@ -245,17 +247,17 @@ class Owner
         next sum if route.include? pair
 
         # uncomment to print route
-        # puts (route.map{ |p| p.first.name } << company.name << owned_company.name).join('->')
+        #puts (route.map{ |p| p.first.name } << company.name << owned_company.name).join('->')
 
         # get from cache
         total_value = owned_company.send "total_#{attr}"
         # calculate if needed
-        if total_value.nil?
+        if UseCaching == false or total_value.nil?
           own_value = owned_company.send "own_#{attr}"
-          own_value = owned_company.value attr, balance_reference_date if own_value.nil?
+          own_value = owned_company.value attr, balance_reference_date if UseCaching == false or own_value.nil?
 
           indirect_value = owned_company.send "indirect_#{attr}"
-          indirect_value = __recursion owned_company, attr, balance_reference_date, share_reference_date, route+[pair] if indirect_value.nil?
+          indirect_value = __recursion owned_company, attr, balance_reference_date, share_reference_date, route+[pair] if UseCaching == false or indirect_value.nil?
 
           total_value = own_value + indirect_value
 
@@ -280,12 +282,12 @@ class Owner
   end
   def calculate_value(attr = :revenue, balance_reference_date = $balance_reference_date, share_reference_date = $share_reference_date)
     total_value = self.send "total_#{attr}"
-    if total_value.nil?
+    if UseCaching == false or total_value.nil?
       own_value = self.send "own_#{attr}"
-      own_value = self.calculate_own_value attr, balance_reference_date if own_value.nil?
+      own_value = self.calculate_own_value attr, balance_reference_date if UseCaching == false or own_value.nil?
 
       indirect_value = self.send "indirect_#{attr}"
-      indirect_value = self.calculate_indirect_value attr, balance_reference_date, share_reference_date if indirect_value.nil?
+      indirect_value = self.calculate_indirect_value attr, balance_reference_date, share_reference_date if UseCaching == false or indirect_value.nil?
 
       total_value = own_value + indirect_value
       self.send "total_#{attr}=", total_value
