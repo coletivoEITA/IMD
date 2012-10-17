@@ -6,7 +6,7 @@ class Balance
   timestamps!
 
   key :source, String, :required => :true
-  key :reference_date, Time, :required => :true
+  key :reference_date, Time, :required => :true, :default => $balance_reference_date
 
   key :company_id, ObjectId, :required => :true
   belongs_to :company, :class_name => 'Owner'
@@ -14,7 +14,7 @@ class Balance
   MonthsReference = 12
 
   key :months, Integer, :default => MonthsReference
-  key :currency, String
+  key :currency, String, :default => 'Real'
 
   key :total_active, Float, :default => 0
   key :patrimony, Float, :default => 0
@@ -36,7 +36,7 @@ class Balance
   }
   scope :lastest, :order => :reference_date.desc
 
-  def value(attr)
+  def value(attr = :revenue)
     (MonthsReference / self.months) * self.send(attr)
   end
 

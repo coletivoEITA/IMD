@@ -31,11 +31,17 @@ class String
   end
 
   def remove_company_nature
-    self.gsub(/\b(s.a|s\/a|sa)\.?$/i, '')
+    ['s.a|s/a|sa', 'ltda', 'ltd', 'inc'].inject(self) do |string, nature|
+      string.gsub(/\b(#{nature})\.?$/i, '')
+    end
+  end
+
+  def remove_symbols
+    self.gsub(/[^a-z0-9\s]/i, '')
   end
 
   def name_normalization
-    self.squish.remove_company_nature.strip.transliterate.downcase
+    self.squish.remove_company_nature.strip.transliterate.remove_symbols.downcase
   end
 
 end

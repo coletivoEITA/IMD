@@ -6,7 +6,7 @@ class Share
   timestamps!
 
   key :source, String, :required => :true
-  key :reference_date, Time, :required => :true
+  key :reference_date, Time, :required => :true, :default => $balance_reference_date
   key :sclass, String, :required => :true
 
   key :company_id, ObjectId, :required => :true

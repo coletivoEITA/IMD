@@ -900,4 +900,17 @@ module ImportHelper
     end
   end
 
+  def self.import_econoinfo options = {}
+    Cache.enable
+    m = Mechanize.new
+    url = "http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=%{stock_code}"
+
+    stock_code = 'VALE'
+
+    $url = url % {:stock_code => stock_code}
+
+    $page = m.get url % {:stock_code => stock_code}
+    m.get url % {:stock_code => stock_code}
+  end
+
 end
