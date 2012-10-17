@@ -90,7 +90,7 @@ class Owner
     cgc, name, formal_name = attributes[:cgc], attributes[:name], attributes[:formal_name]
 
     name = NameEquivalence.replace source, name
-    name ||= Owner.process_name name, formal_name
+    name ||= Owner.process_name name, source, formal_name
     attributes[:name], attributes[:formal_name] = name, formal_name
 
     exact_match = self.first(attributes)
@@ -317,8 +317,9 @@ class Owner
   end
 
   def self.process_name name, source, alternative
+    name = name.remove_company_nature unless name.blank?
     return name unless name.blank?
-    NameEquivalence.replace source, alternative
+    name = NameEquivalence.replace source, alternative
   end
 
   protected

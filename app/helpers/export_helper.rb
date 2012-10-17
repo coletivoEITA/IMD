@@ -62,7 +62,7 @@ module ExportHelper
 
       puts 'loading data'
       value_field = "total_#{attr}".to_sym
-      owners = Owner.order(value_field.desc).where(:name.ne => 'Acoes em Tesouraria').all
+      owners = Owner.order(value_field.desc).where(:name_n.ne => 'acoes em tesouraria').all
       #total = owners.sum(&value_field)
 
       puts 'exporting data'
