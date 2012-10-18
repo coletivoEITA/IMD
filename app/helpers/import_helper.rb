@@ -905,8 +905,14 @@ module ImportHelper
   def self.import_econoinfo options = {}
 
     def self.get_page(mech, stock_code)
-      url = "http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=%{stock_code}"
-      mech.get url % {:stock_code => stock_code}
+      shareholders_url = "http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=%{stock_code}"
+      balance_url = "http://www.econoinfo.com.br/sumario/a-empresa?ce=%{stock_code}"
+      info_url = "http://www.econoinfo.com.br/demonstracoes-financeiras/demonstracao-do-resultado?ce=%{stock_code}"
+      members_url = "http://www.econoinfo.com.br/governanca/alta-administracao?ce=%{stock_code}"
+      mech.get shareholders_url % {:stock_code => stock_code}
+      mech.get balance_url % {:stock_code => stock_code}
+      mech.get info_url % {:stock_code => stock_code}
+      mech.get members_url % {:stock_code => stock_code}
     rescue
     end
 

@@ -38,18 +38,25 @@ class String
     ActiveSupport::Inflector.transliterate(self)
   end
 
+  CompanyNatureSuffixes = ['s.a|s/a|sa', 's.c|s/c|sc', 'ltda', 'ltd', 'inc']
+
   def remove_company_nature
-    ['s.a|s/a|sa', 'ltda', 'ltd', 'inc'].inject(self) do |string, nature|
-      string.gsub(/\b(#{nature})\.?$/i, '')
+    p = Proc.new do |string|
+      CompanyNatureSuffixes.inject(string) do |string, nature|
+        string.gsub /\b(#{nature})\.?$/i, ''
+      end.strip
     end
+    string = p.call self
+    # there are cases where two natures appears
+    string = p.call string
   end
 
   def remove_symbols
-    self.gsub(/[^a-z0-9\s]/i, '')
+    self.gsub /[^a-z0-9\s]/i, ''
   end
 
   def name_normalization
-    self.squish.remove_company_nature.strip.transliterate.remove_symbols.downcase
+    self.squish.remove_company_nature.transliterate.remove_symbols.downcase
   end
 
 end
