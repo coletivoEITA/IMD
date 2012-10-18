@@ -501,16 +501,16 @@ module ImportHelper
         # FIXME: check if present
         #company.group = OwnerGroup.first_or_create(:name => spans[8].text)
       end
-      company.save!
       pp company
+      company.save!
 
       balance = Balance.first_or_new(:company_id => company.id, :source => "Exame", :reference_date => reference_date)
       value = tds[7].text.gsub('.', '').gsub(',', '.').to_f * 1000000
       value *= dolar_value # convert from Dolar to Real
       balance.currency = 'Real'
       balance.send "#{key}=", value
-      balance.save!
       pp balance
+      balance.save!
     end
 
     url = "http://exame.abril.com.br/negocios/melhores-e-maiores/empresas/maiores/%{page}/%{year}/%{attr}"
@@ -520,6 +520,7 @@ module ImportHelper
       'vendas' => :revenue,
     }
 
+    Cache.enable
     m = Mechanize.new
     queue = Queue.new
 

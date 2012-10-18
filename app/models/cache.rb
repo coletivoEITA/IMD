@@ -18,7 +18,7 @@ class Cache
       puts "Cache hit for #{uri}"
     else
       page = mech.send("#{method}_without_cache", *args)
-      Cache.create! :identifier => identifier, :content => page.body
+      cache = self.create! :identifier => identifier, :content => page.body
     end
 
     page
@@ -29,8 +29,9 @@ class Cache
   def self.enable
     Cache.disable
     Methods.each do |method|
+      next if Mechanize.respond_to?("#{method}_with_cache")
       Mechanize.send(:define_method, "#{method}_with_cache") do |*args|
-        Cache.request_page(self, method, *args)
+        Cache.request_page self, method, *args
       end
       Mechanize.alias_method_chain method, :cache
     end
@@ -38,7 +39,7 @@ class Cache
 
   def self.disable
     Methods.each do |method|
-      next unless Mechanize.respond_to?("#{method}_with_cache")
+      next unless Mechanize.respond_to?("#{method}_without_cache")
       Mechanize.send :alias_method, "#{method}_without_cache", method
     end
   end

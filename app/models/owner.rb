@@ -77,8 +77,6 @@ class Owner
   validates_uniqueness_of :name
   validates_uniqueness_of :formal_name, :allow_nil => true
   validates_uniqueness_of :stock_name, :allow_nil => true
-  validates_uniqueness_of :name_n, :allow_nil => true
-  validates_uniqueness_of :formal_name_n, :allow_nil => true
   validates_inclusion_of :capital_type, :in => %w(private state), :allow_nil => true
   validate :validate_cgc
 
