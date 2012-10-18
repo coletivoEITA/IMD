@@ -903,16 +903,28 @@ module ImportHelper
   end
 
   def self.import_econoinfo options = {}
+
+    def self.get_page(mech, stock_code)
+      url = "http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=%{stock_code}"
+      mech.get url % {:stock_code => stock_code}
+    rescue
+    end
+
+    def process_page(page)
+    end
+
     Cache.enable
     m = Mechanize.new
-    url = "http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=%{stock_code}"
 
-    stock_code = 'VALE'
+    if stock_code = options[:stock_code]
+      get_page m, stock_code
+      return
+    end
 
-    $url = url % {:stock_code => stock_code}
+    Owner.all(:stock_code_base.ne => nil).each do |owner|
+      get_page m, owner.stock_code_base
+    end
 
-    $page = m.get url % {:stock_code => stock_code}
-    m.get url % {:stock_code => stock_code}
   end
 
 end
