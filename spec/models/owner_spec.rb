@@ -4,6 +4,17 @@ require 'spec_helper'
 
 describe Owner do
 
+  it 'calculate total value case 4' do
+    owners = create_owners_and_shares 'B' => [['A', 51], ['C', 10]], 'C' => [['A', 10], ['B', 10]]
+
+    create_balances owners.values.map{ |o| [o, 100] }
+    owners.values.each{ |o| o.calculate_value }
+
+    expect(owners['A'].total_revenue).to eq(220)
+    expect(owners['B'].total_revenue).to eq(110)
+    expect(owners['C'].total_revenue).to eq(100)
+  end
+
   it 'calculate total value case 3' do
     owners = create_owners_and_shares 'B' => [['A', 10]], 'C' => [['B', 10]],
       'D' => [['C', 10], ['E', 10], ['F', 10]],
