@@ -876,11 +876,7 @@ module ImportHelper
       reference_date = $share_reference_date
 
       company = Owner.first_or_new source, :cgc => cnpj, :name => name, :formal_name => formal_name
-      pp cnpj
-      pp name
-      pp formal_name
       company.legal_nature = legal_nature unless legal_nature.blank?
-      pp company
       company.save!
 
       get_shares_pair(owners_shares).each do |formal_name, name, percentage|
