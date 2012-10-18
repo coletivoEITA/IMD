@@ -90,8 +90,8 @@ class Owner
     cgc, name, formal_name = attributes[:cgc], attributes[:name], attributes[:formal_name]
 
     name = NameEquivalence.replace source, name
-    name ||= Owner.process_name name, source, formal_name
-    attributes[:name], attributes[:formal_name] = name, formal_name
+    name = Owner.process_name name, source, formal_name
+    attributes[:name] = name
 
     exact_match = self.first(attributes)
     by_cgc = self.find_by_cgc(cgc) unless cgc.blank?
@@ -317,7 +317,7 @@ class Owner
   end
 
   def self.process_name name, source, alternative
-    name = name.remove_company_nature unless name.blank?
+    name = name.remove_company_nature.squish unless name.blank?
     return name unless name.blank?
     name = NameEquivalence.replace source, alternative
   end
