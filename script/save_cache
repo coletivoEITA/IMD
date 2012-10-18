@@ -1,10 +1,8 @@
 #!/usr/bin/env ruby
 require File.dirname(__FILE__) + '/../config/environment'
 
-CacheFile = "caches.bson"
-CachePath = "#{Rails.root}/db/dump-cache/#{CacheFile}"
+CacheFile = "caches.json"
+CachePath = "#{Rails.root}/db/#{CacheFile}"
 
-system "mongodump -d #{MongoMapper.database.name} -c caches"
-
-system "mv #{Rails.root}/dump/#{MongoMapper.database.name}/#{CacheFile} #{CachePath}"
-system "rm -fr #{Rails.root}/dump"
+data = `mongoexport -d #{MongoMapper.database.name} -c caches`
+File.open(CachePath, 'w'){ |f| f.write(data) }

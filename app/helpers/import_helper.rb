@@ -389,6 +389,7 @@ module ImportHelper
   end
 
   def self.import_bovespa(options = {})
+    Cache.enable
     m = Mechanize.new
     url = "http://www.bmfbovespa.com.br/cias-listadas/empresas-listadas/ResumoEmpresaPrincipal.aspx?codigoCvm=%{cvm_id}&idioma=pt-br"
     frame_url = "http://www.bmfbovespa.com.br/pt-br/mercados/acoes/empresas/ExecutaAcaoConsultaInfoEmp.asp?CodCVM=%{cvm_id}"

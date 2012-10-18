@@ -95,9 +95,14 @@ class Owner
     by_cgc = self.find_by_cgc(cgc) unless cgc.blank?
 
     name_n = name.name_normalization
-    formal_name_n = formal_name.name_normalization unless formal_name.blank?
-    by_name = self.first :$or => [{:name_n => name_n}, {:formal_name_n => name_n}]
-    by_formal_name = self.first :$or => [{:formal_name_n => formal_name_n}, {:name_n => formal_name_n}] unless formal_name_n.blank?
+    by_name = self.first :name => name
+    by_name ||= self.first :$or => [{:name_n => name_n}, {:formal_name_n => name_n}]
+
+    unless formal_name.blank?
+      formal_name_n = formal_name.name_normalization
+      by_formal_name = self.first :formal_name => formal_name
+      by_formal_name ||= self.first :$or => [{:formal_name_n => formal_name_n}, {:name_n => formal_name_n}]
+    end
 
     owner = exact_match || by_cgc || by_name || by_formal_name || self.new
 

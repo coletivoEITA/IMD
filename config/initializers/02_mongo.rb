@@ -69,6 +69,8 @@ Grantor.ensure_index :asclaras_id
 Grantor.ensure_index [[:owner_id, 1], [:year, 1], [:asclaras_id, 1]]
 
 Cache.ensure_index :identifier
+Cache.ensure_index :url
+Cache.ensure_index :url_host
 
 # for sorting
 Owner.ensure_index :own_revenue

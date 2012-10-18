@@ -8,17 +8,23 @@ class Cache
   key :identifier, Hash, :required => :true
   key :content, String, :required => :true
 
+  key :url, String
+  key :url_host, String
+
+  before_save :set_url_host
+  before_save :assign_defaults
+
   def self.request_page(mech, method, *args)
     identifier = {:method => method, :args => args}
-    cache = self.first :identifier => identifier
+    cache = Cache.first :identifier => identifier
 
+    uri = URI.parse args.first
     if cache
-      uri = URI.parse args.first
       page = Mechanize::Page.new uri, nil, cache.content, nil, mech
       puts "Cache hit for #{uri}"
     else
       page = mech.send("#{method}_without_cache", *args)
-      cache = self.create! :identifier => identifier, :content => page.body
+      cache = Cache.create! :identifier => identifier, :url => uri.to_s, :content => page.body.to_utf8
     end
 
     page
@@ -27,7 +33,7 @@ class Cache
   Methods = [:get, :post]
 
   def self.enable
-    Cache.disable
+    #Cache.disable
     Methods.each do |method|
       next if Mechanize.respond_to?("#{method}_with_cache")
       Mechanize.send(:define_method, "#{method}_with_cache") do |*args|
@@ -53,5 +59,12 @@ class Cache
   end
 
   protected
+
+  def set_url_host
+    self.url_host = URI.parse(self.url).host unless self.url.blank?
+  end
+
+  def assign_defaults
+  end
 
 end

@@ -26,6 +26,14 @@ class String
     end
   end
 
+  def to_utf8(encoding = 'iso8859-1')
+    if RUBY_VERSION >= "1.9"
+      self.force_encoding(encoding).encode 'UTF-8'
+    else
+      Iconv.conv "UTF8", encoding, self
+    end
+  end
+
   def transliterate
     ActiveSupport::Inflector.transliterate(self)
   end

@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 require File.dirname(__FILE__) + '/../config/environment'
 
-CacheFile = "caches.bson"
-CachePath = "#{Rails.root}/db/dump-cache/#{CacheFile}"
+CacheFile = "caches.json"
+CachePath = "#{Rails.root}/db/#{CacheFile}"
 
-system "mongorestore --drop -d #{MongoMapper.database.name} -c caches #{CachePath}"
+system "mongoimport --drop -d #{MongoMapper.database.name} -c caches --file #{CachePath}"
 
