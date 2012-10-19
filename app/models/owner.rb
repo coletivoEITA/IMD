@@ -87,20 +87,22 @@ class Owner
 
   def self.first_or_new(source, attributes = {})
     by_cgc = by_name = by_formal_name = nil
-    cgc, name, formal_name = attributes[:cgc], attributes[:name], attributes[:formal_name]
+    cgc, name = attributes[:cgc], attributes[:name]
+    formal_name, stock_name = attributes[:formal_name], attributes[:stock_name]
 
     name = NameEquivalence.replace source, name
     # no name filled, get and replace from formal_name
-    name = Owner.process_name name, source, formal_name
+    name = Owner.process_name name, source, formal_name || stock_name
     attributes[:name] = name
 
     exact_match = self.first(attributes)
     by_cgc = self.find_by_cgc(cgc) unless cgc.blank?
 
-    name_n = name.name_normalization
-    by_name = self.first :name => name
-    by_name ||= self.first :$or => [{:name_n => name_n}, {:formal_name_n => name_n}]
-
+    unless name.blank?
+      name_n = name.name_normalization
+      by_name = self.first :name => name
+      by_name ||= self.first :$or => [{:name_n => name_n}, {:formal_name_n => name_n}]
+    end
     unless formal_name.blank?
       formal_name_n = formal_name.name_normalization
       by_formal_name = self.first :formal_name => formal_name
@@ -254,20 +256,19 @@ class Owner
         pair = [company, owned_company]
         next sum if route.include? pair
 
-        # uncomment to print route
-        #puts (route.map{ |p| p.first.name } << company.name << owned_company.name).join('->')
-        # uncomment to print formula
-        #print " + W#{company.name.downcase}#{owned_company.name.downcase} * (V#{owned_company.name.downcase}"
-
         own_value = owned_company.value attr, balance_reference_date
         indirect_value = __recursion owned_company, attr, balance_reference_date, share_reference_date, route+[pair]
         total_value = own_value + indirect_value
 
-        # uncomment to print formula
-        #print ')'
-
         w = is_controller ? 1 : owned_share.percentage/100
         x = w * total_value
+
+        # uncomment to print route
+        #puts (route.map{ |p| p.first.name } << company.name << owned_company.name).join('->')
+        # uncomment to print formula
+        #print " + W#{company.name.downcase}#{owned_company.name.downcase} * (V#{owned_company.name.downcase}"
+        # uncomment to print formula
+        #print ')'
 
         sum + x
       end
@@ -316,7 +317,6 @@ class Owner
   protected
 
   def assign_defaults
-    self.name = Owner.process_name self.name, self.source, self.formal_name || self.stock_code
     self.cnpj_root ||= CgcHelper.extract_cnpj_root(self.cgc.first) if self.cnpj?
     self.stock_code_base = self.stock_code_base
   end

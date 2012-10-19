@@ -141,7 +141,7 @@ module ImportHelper
   def self.import_economatica_csv(file, reference_date)
     csv = CSV.table file, :headers => true, :header_converters => nil, :converters => nil
     csv.each_with_index do |row, i|
-      name = row.values_at(0).first
+      stock_name = row.values_at(0).first
       share_class = row.values_at(1).first
       cnpj = row.values_at(2).first
       country = row.values_at(3).first
@@ -154,7 +154,7 @@ module ImportHelper
       cnpj = cnpj.to_i
       cnpj = cnpj.zero? ? nil : ('%014d' % cnpj) # fix CNPJ format
 
-      company = Owner.first_or_new 'Economatica', :cgc => cnpj, :name => name
+      company = Owner.first_or_new 'Economatica', :cgc => cnpj, :stock_name => stock_name
       company.source = 'Economatica' # preferential
       balance = nil
       share = nil
@@ -406,6 +406,7 @@ module ImportHelper
 
     page = m.get url % {:cvm_id => cvm_id}
     formal_name = page.parser.css('h1 span.label')[0].text.squish
+    pp formal_name
 
     page = m.get frame_url % {:cvm_id => cvm_id}
 

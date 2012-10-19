@@ -3,6 +3,7 @@
 module CgcHelper
 
   def self.parse(cgc)
+    return nil if cgc.blank?
     cgc = self.remove_non_numbers cgc
     return nil if cgc.blank?
     if cgc.size > 11

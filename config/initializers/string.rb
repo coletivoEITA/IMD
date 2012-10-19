@@ -26,11 +26,11 @@ class String
     end
   end
 
-  def to_utf8(encoding = 'iso8859-1')
+  def encodef to = 'UTF-8', from = 'iso8859-1'
     if RUBY_VERSION >= "1.9"
-      self.force_encoding(encoding).encode 'UTF-8'
+      self.force_encoding(from).encode to
     else
-      Iconv.conv "UTF8", encoding, self
+      Iconv.conv to, from, self
     end
   end
 

@@ -7,6 +7,7 @@ class Cache
 
   key :identifier, Hash, :required => :true
   key :content, String, :required => :true
+  key :encoding, String
 
   key :url, String
   key :url_host, String
@@ -20,11 +21,15 @@ class Cache
 
     uri = URI.parse args.first
     if cache
-      page = Mechanize::Page.new uri, nil, cache.content, nil, mech
+      content = cache.encoding ? cache.content.encodef(cache.encoding, 'UTF-8') : cache.content
+      page = Mechanize::Page.new uri, nil, content, nil, mech
       puts "Cache hit for #{uri}"
     else
       page = mech.send("#{method}_without_cache", *args)
-      cache = Cache.create! :identifier => identifier, :url => uri.to_s, :content => page.body.to_utf8
+      encoding = page.encoding
+      content = page.content.encodef('UTF-8', encoding)
+      cache = Cache.create! :identifier => identifier, :url => uri.to_s,
+        :content => content, :encoding => encoding
     end
 
     page
