@@ -1,12 +1,11 @@
-R,Quem busca,"Status
-",Empresa,CNPJ,Fonte,Link,"Composição acionária – Formato:
+Empresa,CNPJ,Fonte,Link,"Composição acionária – Formato:
 Empresa 1 (xx%)
 Empresa 2 (yy%)
 Empresa 3 (zz%)","Controle sobre outras empresas – Formato:
 Empresa 1 (xx%)
 Empresa 2 (yy%)
 Empresa 3 (zz%)",Observações,Código BOVESPA
-,Daniel e André,ok,Valepar,01.772.413/0001-57,Vale (site),"http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=VALE
+Valepar,01.772.413/0001-57,Vale (site),"http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=VALE
 http://www.vale.com.br/pt-br/investidores/resultados-e-informacoes-financeiras/relatorios-sec/Documents/2010/form20f/20F_2010_p.pdf","Litel Participações S.A. (49%)
 Bradespar S.A. (21,1%)
 Mitsui & Co., Ltd (18,25%)
@@ -24,43 +23,43 @@ Samarco Mineração S.A. (50,00001%)
 Hispanobrás (50,9%)
 FCA (99,9%)
 Pará Pigmentos S.A. - PPSA (indefinido)",,
-,Daniel,ok,FIA - BB Carteira Ativa,01.578.476/0001-77,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=LTEL,Caixa de Previdência dos Funcionários do Banco do Brasil - PREVI (100%),,,
-,Daniel,ok,Carteira Ativa II FIA,04.194.710/0001-50,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=LTEL,"Fundação Dos Economiários Federais - Funcef (62,37%)
+FIA - BB Carteira Ativa,01.578.476/0001-77,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=LTEL,Caixa de Previdência dos Funcionários do Banco do Brasil - PREVI (100%),,,
+Carteira Ativa II FIA,04.194.710/0001-50,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=LTEL,"Fundação Dos Economiários Federais - Funcef (62,37%)
 Fundação Petrobrás de Seguridade Social - Petros (37,63%)",,,
-,Daniel,ok,Cidade de Deus Cia. Cial. de Participações,61.529.343/0001-32,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=BRAP,"Nova Cidade de Deus Participações S.A. (44,9%)
+Cidade de Deus Cia. Cial. de Participações,61.529.343/0001-32,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=BRAP,"Nova Cidade de Deus Participações S.A. (44,9%)
 Fundação Bradesco (33,2%)
 Lina Maria Aguiar (8,51%)
 Lia Maria Aguiar (7,01%)
 Maria Angela Aguiar (4,72%)",,,
-,Daniel,ok,NCF Participações S.A., 04.233.319/0001-18,Econoinfo,,"Cidade de Deus Cia. Cial. de Participações (74,72%)
+NCF Participações S.A., 04.233.319/0001-18,Econoinfo,,"Cidade de Deus Cia. Cial. de Participações (74,72%)
 Fundação Bradesco (25,13%)
 Nova Cidade de Deus Participações S.A. (0,15%)",,,
-,Daniel,ok,Nova Cidade de Deus Participações S.A., 04.866.462/0001-47,Econoinfo,,"BBD Participações S.A. (53,7%)
+Nova Cidade de Deus Participações S.A., 04.866.462/0001-47,Econoinfo,,"BBD Participações S.A. (53,7%)
 Fundação Bradesco (46,3%)",,,
-,Daniel,ok,BBD Participações S.A.,07.838.611/0001-52,Econoinfo,,"Lázaro de Mello Brandão (6,24%)",,,
-,Daniel,ok,Antares,07.341.926/0001-90,Bradespar (site),"http://www.bradespar.com.br/Bradespar/?vgnextoid=d07ee700c3427210VgnVCM100000242810acRCRD&vgnextchannel=d07ee700c3427210VgnVCM100000242810acRCRD
+BBD Participações S.A.,07.838.611/0001-52,Econoinfo,,"Lázaro de Mello Brandão (6,24%)",,,
+Antares,07.341.926/0001-90,Bradespar (site),"http://www.bradespar.com.br/Bradespar/?vgnextoid=d07ee700c3427210VgnVCM100000242810acRCRD&vgnextchannel=d07ee700c3427210VgnVCM100000242810acRCRD
 http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=BRAP",Bradespar (100%),"Millennium (100%)
 CPFL Energia (1,7%)",Existe CPFL no ranking!,
-,Daniel ,ok,Brumado,08.397.763/0001-20,Bradespar (site),"http://www.bradespar.com.br/Bradespar/?vgnextoid=d07ee700c3427210VgnVCM100000242810acRCRD&vgnextchannel=d07ee700c3427210VgnVCM100000242810acRCRD
+Brumado,08.397.763/0001-20,Bradespar (site),"http://www.bradespar.com.br/Bradespar/?vgnextoid=d07ee700c3427210VgnVCM100000242810acRCRD&vgnextchannel=d07ee700c3427210VgnVCM100000242810acRCRD
 http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=BRAP",Antares (100%),"CPFL Energia (3,6%)",Existe CPFL no ranking!,
-,Daniel,ok,Eletron S.A.,00.514.998/0001-42,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=VALE,"Opportunity Anafi Participações S.A. (99,98%)",,,
-,Daniel,ok,Opportunity Anafi Participações S.A.,02.992.366/0001-10,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=VALE,"Opportunity Holding FIP (36,8%)
+Eletron S.A.,00.514.998/0001-42,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=VALE,"Opportunity Anafi Participações S.A. (99,98%)",,,
+Opportunity Anafi Participações S.A.,02.992.366/0001-10,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=VALE,"Opportunity Holding FIP (36,8%)
 Belapart S.A. (31,6%)
 Valetron S.A. (31,6%)",,,
-,Daniel,ok,Belapart S.A.,01.608.571/0001-76,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=VALE,"Verônica Valente Dantas (50,7%)",,,
-,Daniel,ok,Valetron S.A.,01.772.313/0001-20,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=VALE,"Verônica Valente Dantas (50,7%)",,,
-,Fernanda,ok,"Indac - Indústria, Administração e Comércio S.A.",92.690.817/0001-57,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=GOAU,Cindac Empreendimentos e Participações S.A. (100%),,,
-,Daniel e Fernanda,ok,Cindac Empreendimentos e Participações S.A., 89.550.883/0001-17,Gerdau (site),http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=GOAU,Stichting Gerdau Johannpeter (100%),,,
-,Fernanda e Daniel,ok,Stichting Gerdau Johannpeter,,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=GOAU,"Germano Hugo Gerdau Johannpeter (25%)
+Belapart S.A.,01.608.571/0001-76,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=VALE,"Verônica Valente Dantas (50,7%)",,,
+Valetron S.A.,01.772.313/0001-20,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=VALE,"Verônica Valente Dantas (50,7%)",,,
+"Indac - Indústria, Administração e Comércio S.A.",92.690.817/0001-57,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=GOAU,Cindac Empreendimentos e Participações S.A. (100%),,,
+Cindac Empreendimentos e Participações S.A., 89.550.883/0001-17,Gerdau (site),http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=GOAU,Stichting Gerdau Johannpeter (100%),,,
+Stichting Gerdau Johannpeter,,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=GOAU,"Germano Hugo Gerdau Johannpeter (25%)
 Klaus Gerdau Johannpeter (25%)
 Frederico Carlos Gerdau Johannpeter (25%)",,,
-,Fernanda e Daniel,ok,Grupo Gerdau Empreendimentos Ltda,87.153.730/0001-00,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=GOAU,"Açoter Participações Ltda (43,3%)
+Grupo Gerdau Empreendimentos Ltda,87.153.730/0001-00,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=GOAU,"Açoter Participações Ltda (43,3%)
 Cindac Empreendimentos e Participações S.A. (32,1%)
 Indac - Indústria, Administração e Comércio S.A. (22,4%)",,,
-,Fernanda e Daniel,ok,Açoter Participações Ltda, 02.290.525/0001-34,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=GOAU,Cindac Empreendimentos e Participações S.A. (100%),,,
-,André,ok,Wilkes,04.745.350/0001-38,Diário Oficial,http://diariooficial.imprensaoficial.com.br/doflash/prototipo/2012/Abril/28/empresarial/pdf/pg_0311.pdf,"Peninsula (31,15%)
+Açoter Participações Ltda, 02.290.525/0001-34,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=GOAU,Cindac Empreendimentos e Participações S.A. (100%),,,
+Wilkes,04.745.350/0001-38,Diário Oficial,http://diariooficial.imprensaoficial.com.br/doflash/prototipo/2012/Abril/28/empresarial/pdf/pg_0311.pdf,"Peninsula (31,15%)
 Sudaco (68,85%)",,,
-,André,ok,Peninsula,58.292.210/0001-80,Diário Oficial,http://diariooficial.imprensaoficial.com.br/doflash/prototipo/2012/Abril/28/empresarial/pdf/pg_0311.pdf,"Rafaela Marchesi Diniz (14,79%)
+Peninsula,58.292.210/0001-80,Diário Oficial,http://diariooficial.imprensaoficial.com.br/doflash/prototipo/2012/Abril/28/empresarial/pdf/pg_0311.pdf,"Rafaela Marchesi Diniz (14,79%)
 João Paulo Falleiros dos Santos Diniz (14,79%)
 Pedro Paulo Falleiros dos Santos Diniz (14,79%)
 Adriana Falleiros dos Santos Diniz (14,79%)
@@ -70,15 +69,15 @@ Abilio dos Santos Diniz (11,26%)","Pão de Açúcar (1,011921%)
 Zabaleta      (49,928%)
 Paic          (99,9999%)
 Rio Plate     (99,9999%)",,
-,André,ok,Sudaco,07.821.866/0001-02,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=PCAR,Casino Guichard Perrachon (100%),,,
-,Daniel,ok,Fb Participacoes S.A.,11.309.502/0001-15,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=JBSS,"Bertin Fundo de Investimento em Participações (48,52%)
+Sudaco,07.821.866/0001-02,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=PCAR,Casino Guichard Perrachon (100%),,,
+Fb Participacoes S.A.,11.309.502/0001-15,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=JBSS,"Bertin Fundo de Investimento em Participações (48,52%)
 J&F Participações S.A. (45,2%)
 ZMF Fundo de Investimento em Participações (6,28%)
 ",,,
-,Daniel,ok,Bertin Fundo de Investimento em Participações,11.369.979/0001-96,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=JBSS,"Blessed Holdings (65,79%)
+Bertin Fundo de Investimento em Participações,11.369.979/0001-96,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=JBSS,"Blessed Holdings (65,79%)
 Bracol Holding Ltda. (34,21%)",,,
-,Daniel,ok,Bracol Holding Ltda.,01.597.168/0001-99,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=JBSS,Heber Participações S.A. (100%),,,
-,Daniel,ok,Heber Participações S.A.,01.523.814/0001-73,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=JBSS,"REIVO Participações S.A. (16,67%)
+Bracol Holding Ltda.,01.597.168/0001-99,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=JBSS,Heber Participações S.A. (100%),,,
+Heber Participações S.A.,01.523.814/0001-73,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=JBSS,"REIVO Participações S.A. (16,67%)
 SRB Participações S.A. (16,67%)
 BERF Participações S.A. (16,67%)
 JBF Particapações S.A. (16,67%)
@@ -90,26 +89,26 @@ Fernando Antônio Bertin (0%)
 Reinaldo Bertin (0%)
 Silmar Roberto Bertin (0%)
 Mario Henrique Frare Bertin  (0%)",,,
-,André,ok,REIVO Participações S.A.,03.370.190/0001-27,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=JBSS,"Giovanni Prado Bertin (21,82%)
+REIVO Participações S.A.,03.370.190/0001-27,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=JBSS,"Giovanni Prado Bertin (21,82%)
 Renato Prado Bertin (21,82%)
 Roberta Bertin Barros (21,82%)
 Rubia Bertin Diniz Junqueira (21,82%)",,,
-,André,ok,SRB Participações S.A.,09.352.093/0001-98,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=JBSS,"Silmar Roberto Bertin (100%)
+SRB Participações S.A.,09.352.093/0001-98,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=JBSS,"Silmar Roberto Bertin (100%)
 José Henrique Santana Bertin (0%)",,,
-,André,ok,BERF Participações S.A.,07.463.851/0001-10,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=JBSS,"Juracy Frare Bertin (75,28%)
+BERF Participações S.A.,07.463.851/0001-10,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=JBSS,"Juracy Frare Bertin (75,28%)
 Cláudia Maria Frare Bertin Paiva (8,24%)
 Fernando Henrique Frare Bertin (8,24%)
 Mario Henrique Frare Bertin (8,24%)",,,
-,André,ok,JBF Particapações S.A.,09.420.237/0001-04,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=JBSS,"João Bertin Filho (100%)
+JBF Particapações S.A.,09.420.237/0001-04,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=JBSS,"João Bertin Filho (100%)
 Cleonice Espelho Verona Bertin (0%)",,,
-,André,ok,JUFERB Participações,09.352.199/0001-91,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=JBSS,"Natalino Bertin (100%)
+JUFERB Participações,09.352.199/0001-91,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=JBSS,"Natalino Bertin (100%)
 Fernanda Pereira Bertin (0%)
 Natalino Bertin Junior (0%)",,,
-,André,ok,VIAMAR Particapações S.A.,09.352.086/0001-96,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=JBSS,"Fernando Antônio Bertin (100%)
+VIAMAR Particapações S.A.,09.352.086/0001-96,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=JBSS,"Fernando Antônio Bertin (100%)
 Mariana Granado Bertin (0%)
 Vitor Granado Bertin (0%)
 Aline Granado Bertin (0%)",,,
-,André,ok,J&F Participações S.A,00.350.763/0001-62,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=JBSS,"ZMF Fundo de Investimento em Participações (43,66%)
+J&F Participações S.A,00.350.763/0001-62,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=JBSS,"ZMF Fundo de Investimento em Participações (43,66%)
 WWMB Participações Ltda. (12,68%)
 JJMB Participações Ltda. (12,68%)
 ZMF Participações Ltda. (6,20%)
@@ -117,24 +116,24 @@ JJBJ Participações Ltda. (6,20%)
 VNMB Participações Ltda. (6,20%)
 VVMB Participações Ltda. (6,20%)
 VLBM Participações Ltda. (6,20%)",,,
-,André,ok,ZMF Fundo de Investimento em Participações,08.661.352/0001-08,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=JBSS,"Joesley Mendonça Batista (16,67%)
+ZMF Fundo de Investimento em Participações,08.661.352/0001-08,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=JBSS,"Joesley Mendonça Batista (16,67%)
 Wesley Mendonça Batista (16,67%)
 Vanessa Mendonça Batista (16,67%)
 Vivianne Mendonça Batista (16,67%)
 José Batista Júnior (16,67%)
 Valére Batista Mendonça Ramos (16,67%)",,,
-,André,ok,WWMB Participações Ltda.,07.704.137/0001-76,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=JBSS,Wesley Mendonça Batista (100%),,,
-,André,ok,JJMB Participações Ltda.,07.704.144/0001-78,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=JBSS,Joesley Mendonça Batista (100%),,,
-,André,ok,ZMF Participações Ltda.,08.706.916/0001-73,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=JBSS,José Batista Sobrinho (100%),,,
-,André,ok,JJBJ Participações Ltda.,07.704.148/0001-56,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=JBSS,José Batista Júnior (100%),,,
-,André,ok,VNMB Participações Ltda.,07.704.046/0001-30,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=JBSS,Vanessa Mendonça Batista (100%),,,
-,André,ok,VVMB Participações Ltda.,07.704.039/0001-39,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=JBSS,Vivianne Mendonça Batista (100%),,,
-,André,ok,VLBM Participações Ltda.,07.704.052/0001-98,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=JBSS,Valére Batista Mendonça Ramos (100%),,,
-,André,ok,Prot - Fundo de Invest. em Participacoes,09.412.863/0001-40,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=JBSS,"Bndespar - BNDES Participacoes SA (89,84%)",,,
-,André,ok,Banco Original SA,92.894.922/0001-08,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=JBSS,J&F Participações Financeiras ltda (100%),,,
-,Daniel,ok,J&F Participações Financeiras ltda,07.570.673/0001-26,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=JBSS,"J&F Participações S.A. (99%)
+WWMB Participações Ltda.,07.704.137/0001-76,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=JBSS,Wesley Mendonça Batista (100%),,,
+JJMB Participações Ltda.,07.704.144/0001-78,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=JBSS,Joesley Mendonça Batista (100%),,,
+ZMF Participações Ltda.,08.706.916/0001-73,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=JBSS,José Batista Sobrinho (100%),,,
+JJBJ Participações Ltda.,07.704.148/0001-56,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=JBSS,José Batista Júnior (100%),,,
+VNMB Participações Ltda.,07.704.046/0001-30,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=JBSS,Vanessa Mendonça Batista (100%),,,
+VVMB Participações Ltda.,07.704.039/0001-39,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=JBSS,Vivianne Mendonça Batista (100%),,,
+VLBM Participações Ltda.,07.704.052/0001-98,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=JBSS,Valére Batista Mendonça Ramos (100%),,,
+Prot - Fundo de Invest. em Participacoes,09.412.863/0001-40,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=JBSS,"Bndespar - BNDES Participacoes SA (89,84%)",,,
+Banco Original SA,92.894.922/0001-08,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=JBSS,J&F Participações Financeiras ltda (100%),,,
+J&F Participações Financeiras ltda,07.570.673/0001-26,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=JBSS,"J&F Participações S.A. (99%)
 José Batista Sobrinho (1%)",,,
-,Daniel,ok,Ultra S/A Participacoes,54.041.439/0001-91,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=UGPA,"Paulo Guilherme Aguiar Cunha (16,86%)
+Ultra S/A Participacoes,54.041.439/0001-91,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=UGPA,"Paulo Guilherme Aguiar Cunha (16,86%)
 Ana Maria Levy Villela Igel (15,45%)
 Fábio Igel (11,9%)
 Christy Participações Ltda. (10,17%)
@@ -142,11 +141,11 @@ Márcia Igel Joppert (9,81%)
 Joyce Igel de Castro Andrade (8,73%)
 Rogério Igel (7,33%)
 Lucio de Castro Andrade Filho (5,97%)",,,
-,Daniel,ok,Christy Participações Ltda.,33.363.896/0001-22,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=UGPA,"Maria da Conceição Coutinho Beltrão (34,9%)
+Christy Participações Ltda.,33.363.896/0001-22,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=UGPA,"Maria da Conceição Coutinho Beltrão (34,9%)
 Hélio Marcos Coutinho Beltrão (21,7%)
 Cristiana Coutinho Beltrão (21,7%)
 Maria Coutinho Beltrão (21,7%)",,,
-,Daniel,ok,TELEMAR PARTICIPAÇÕES S.A.,02.107.946/0001-87,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=OIBR,"LF TEL S.A. (19,36%)
+TELEMAR PARTICIPAÇÕES S.A.,02.107.946/0001-87,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=OIBR,"LF TEL S.A. (19,36%)
 AG Telecom Participações S.A. (19,36%)
 Bndespar - BNDES Participacoes SA (13,05%)
 Bratel Brasil S.A. (12,07%)
@@ -154,32 +153,32 @@ FUNDAÇÃO ATLÂNTICO DE SEGURIDADE SOCIAL (11,51%)
 Caixa de Previdência dos Funcionários do Banco do Brasil - PREVI (9,69%)
 Fundação Dos Economiários Federais - Funcef (7,48%)
 Fundação Petrobrás de Seguridade Social - Petros (7,48%)",,,
-,Fernanda,ok,BRATEL B.V.,12.776.550/0001-86,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=OIBR,"PT MÓVEIS - SERVIÇOS DE TELECOMUNICAÇÕES, SGPS, S.A. (100%)",,,
-,Fernanda,ok,"PT MÓVEIS - SERVIÇOS DE TELECOMUNICAÇÕES, SGPS, S.A.", 05.498.721/0001-97,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=OIBR,"TMN - TELECOMUNICAÇÕES MÓVEIS NACIONAIS, S.A. (100%)",,,
-,Fernanda,ok,"TMN - TELECOMUNICAÇÕES MÓVEIS NACIONAIS, S.A.",,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=OIBR,PT COMUNICAÇÕES S.A. (100%),,,
-,Daniel,ok,AG Telecom Participações S.A.,03.260.334/0001-92,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=OIBR,PASA PARTICIPAÇÕES S.A. (100%),,,
-,Daniel,ok,PASA PARTICIPAÇÕES S.A.,11.221.565/0001-15,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=OIBR,"ANDRADE GUTIERREZ TELECOMUNICAÇÕES LTDA. (65%)
+BRATEL B.V.,12.776.550/0001-86,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=OIBR,"PT MÓVEIS - SERVIÇOS DE TELECOMUNICAÇÕES, SGPS, S.A. (100%)",,,
+"PT MÓVEIS - SERVIÇOS DE TELECOMUNICAÇÕES, SGPS, S.A.", 05.498.721/0001-97,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=OIBR,"TMN - TELECOMUNICAÇÕES MÓVEIS NACIONAIS, S.A. (100%)",,,
+"TMN - TELECOMUNICAÇÕES MÓVEIS NACIONAIS, S.A.",,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=OIBR,PT COMUNICAÇÕES S.A. (100%),,,
+AG Telecom Participações S.A.,03.260.334/0001-92,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=OIBR,PASA PARTICIPAÇÕES S.A. (100%),,,
+PASA PARTICIPAÇÕES S.A.,11.221.565/0001-15,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=OIBR,"ANDRADE GUTIERREZ TELECOMUNICAÇÕES LTDA. (65%)
 Bratel Brasil S.A. (35%)",,,
-,Daniel,ok,ANDRADE GUTIERREZ TELECOMUNICAÇÕES LTDA.,71.057.921/0001-39,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=OIBR,"ANDRADE GUTIERREZ S.A. (100%)
+ANDRADE GUTIERREZ TELECOMUNICAÇÕES LTDA.,71.057.921/0001-39,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=OIBR,"ANDRADE GUTIERREZ S.A. (100%)
 ADPAR - ADMINISTRAÇÃO E PARTICIPAÇÕES LTDA. (0%)",,,
-,Fernanda,ok,"SOCIEDADE FIDUCIÁRIA BRASILEIRA SERVIÇOS, NEGÓCIOS E PARTICIPAÇÕES LTDA",00.257.427/0001-70,Econoinfo,,"Carlos Francisco Ribeiro Jereissati (57,70%)",,,
-,Fernanda,ok,Anwold Investments Inc,05.560.090/0001-99,Econoinfo,,"Ilhas Virgens Britânicas (42,28%)",,,
-,Fernanda,ok,EDSP75 PARTICIPAÇÕES S.A.,09.626.007/0001-98,Econoinfo,,LA FONTE TELECOM S.A. (65%),,,
-,Fernanda,ok,ANDRADE GUTIERREZ S.A.,17.262.197/0001-30,Econoinfo,,"ADMINISTRADORA SÃO MIGUEL S.A. (33,33%) 
+"SOCIEDADE FIDUCIÁRIA BRASILEIRA SERVIÇOS, NEGÓCIOS E PARTICIPAÇÕES LTDA",00.257.427/0001-70,Econoinfo,,"Carlos Francisco Ribeiro Jereissati (57,70%)",,,
+Anwold Investments Inc,05.560.090/0001-99,Econoinfo,,"Ilhas Virgens Britânicas (42,28%)",,,
+EDSP75 PARTICIPAÇÕES S.A.,09.626.007/0001-98,Econoinfo,,LA FONTE TELECOM S.A. (65%),,,
+ANDRADE GUTIERREZ S.A.,17.262.197/0001-30,Econoinfo,,"ADMINISTRADORA SÃO MIGUEL S.A. (33,33%) 
 ADMINISTRADORA SANT’ANA LTDA.(33,33%) 
 ADMINISTRADORA SANTO ESTEVÃO S.A. (33,33%)",,,
-,Fernanda,ok,ADMINISTRADORA SÃO MIGUEL S.A., 19.135.623/0001-08,Econoinfo,,"GUVIDALA PARTICIPAÇÕES LTDA. (7,88%)",,,
-,Fernanda,ok,GUVIDALA PARTICIPAÇÕES LTDA.,07.154.488/0001-50,Econoinfo,,ÁLVARO FURTADO DE ANDRADE (100%),,,
-,Fernanda,ok,ADMINISTRADORA SANT’ANA LTDA.,16.741.134/0001-01,Econoinfo,,"ÂNGELA GUTIERREZ (33,33%) 
+ADMINISTRADORA SÃO MIGUEL S.A., 19.135.623/0001-08,Econoinfo,,"GUVIDALA PARTICIPAÇÕES LTDA. (7,88%)",,,
+GUVIDALA PARTICIPAÇÕES LTDA.,07.154.488/0001-50,Econoinfo,,ÁLVARO FURTADO DE ANDRADE (100%),,,
+ADMINISTRADORA SANT’ANA LTDA.,16.741.134/0001-01,Econoinfo,,"ÂNGELA GUTIERREZ (33,33%) 
 CRISTIANA GUTIERREZ (33,33%)
 Espólio de Roberto Gutierrez (33,32%)",,,
-,Fernanda,ok,ADMINISTRADORA SANTO ESTEVÃO S.A., 27.157.783/0001-78,Econoinfo,,"SÉRGIO LINS ANDRADE (99,77%)
+ADMINISTRADORA SANTO ESTEVÃO S.A., 27.157.783/0001-78,Econoinfo,,"SÉRGIO LINS ANDRADE (99,77%)
 ",,,
-,Júlia,Ok,BRATEL BRASIL S.A.,12.956.126/0001-13,Econoinfo,,"BRATEL B.V. (98,77%)
+BRATEL BRASIL S.A.,12.956.126/0001-13,Econoinfo,,"BRATEL B.V. (98,77%)
 PORTUGAL TELECOM BRASIL S.A. (1,23%)",,,
-,Júlia,Ok,PORTUGAL TELECOM BRASIL S.A.,65.627.184/0001-60,Econoinfo,,"PORTUGAL TELECOM, SGPS, S.A. (99,99%)
+PORTUGAL TELECOM BRASIL S.A.,65.627.184/0001-60,Econoinfo,,"PORTUGAL TELECOM, SGPS, S.A. (99,99%)
 PT COMUNICAÇÕES S.A. (0,01%)",,,
-,Júlia,Ok,"PORTUGAL TELECOM, SGPS, S.A.",05.453.409/0001-87,Econoinfo,,"GRUPO ESPÍRITO SANTO (11,78%)
+"PORTUGAL TELECOM, SGPS, S.A.",05.453.409/0001-87,Econoinfo,,"GRUPO ESPÍRITO SANTO (11,78%)
 RS HOLDING (10,04%)
 CAPITAL RESEARCH AND MANAGEMENT (9,96%)
 Telemar Norte Leste S.A. (7,19%)
@@ -193,165 +192,165 @@ Grupo Visabeira (2,63%)
 Barclays Plc (2,52%)
 BlackRock Inc.(2,34%)
 Controlinveste Internacional Finance (2,28%)",,,
-,Júlia,Ok,PT COMUNICAÇÕES S.A.,05.603.341/0001-75,Econoinfo,,"PT PORTUGAL, SGPS, S.A. (100,00%)",,,
-,Júlia,Ok,"PT PORTUGAL, SGPS, S.A.",portuguesa,Econoinfo,,"PORTUGAL TELECOM, SGPS, S.A. (100,00%)",,,
-,Daniel,ok,Odebrecht Serviços e Part.,10.904.193/0001-69,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=BRKM,"ODEBRECHT S.A (71,76%)
+PT COMUNICAÇÕES S.A.,05.603.341/0001-75,Econoinfo,,"PT PORTUGAL, SGPS, S.A. (100,00%)",,,
+"PT PORTUGAL, SGPS, S.A.",portuguesa,Econoinfo,,"PORTUGAL TELECOM, SGPS, S.A. (100,00%)",,,
+Odebrecht Serviços e Part.,10.904.193/0001-69,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=BRKM,"ODEBRECHT S.A (71,76%)
 NORDESTE QUIMICA S.A - NORQUISA (28,24%)",,"Odebrecht tem no Ranking, mas está equivocadamente juntado á ODBINV, que é controladora da Odebrecht. Por isso, coloquei a Odebrecht aqui embaixo",
-,Daniel,ok,Odebrecht S.A,05.144.757/0001-72,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=BRKM,ODBINV S.A (100%),,,
-,Daniel,ok,ODBINV S.A,15.105.588/0001-15,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=BRKM,"KIEPPE PARTICIPAÇÕES E ADMINISTRAÇÕES LTDA (55,13%)",,,
-,Daniel,ok,KIEPPE PARTICIPAÇÕES E ADMINISTRAÇÕES LTDA,04.215.837/0001-09,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=BRKM,"KIEPPE PATRIMONIAL LTDA S/C (99,95%)
+Odebrecht S.A,05.144.757/0001-72,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=BRKM,ODBINV S.A (100%),,,
+ODBINV S.A,15.105.588/0001-15,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=BRKM,"KIEPPE PARTICIPAÇÕES E ADMINISTRAÇÕES LTDA (55,13%)",,,
+KIEPPE PARTICIPAÇÕES E ADMINISTRAÇÕES LTDA,04.215.837/0001-09,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=BRKM,"KIEPPE PATRIMONIAL LTDA S/C (99,95%)
 NORBERTO ODEBRECHT (0,01%)
 NORBERTO ODEBRECHT JUNIOR (0,01%)
 FRANCISCO PELTIER QUEIROZ (0,01%)
 EDUARDO ODEBRECHT (0,01%)
 EMILIO ALVES ODEBRECHT (0,01%)",,,
-,Daniel,ok,KIEPPE PATRIMONIAL LTDA S/C,14.407.316/0001-07,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=BRKM,"RIOCON PATRIMONIAL LTDA (21,36%)
+KIEPPE PATRIMONIAL LTDA S/C,14.407.316/0001-07,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=BRKM,"RIOCON PATRIMONIAL LTDA (21,36%)
 N.O.JR PATRIMONIAL LTDA (21,36%)
 IPQ PATRIMONIAL S/C LTDA (21,36%)
 EAO PATRIMONIAL LTDA (20,65%)
 CAPE PATRIMONIAL LTDA (15,27%)
 ",,,
-,Daniel,ok,RIOCON PATRIMONIAL LTDA,02.853.248/0001-20,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=BRKM,"JULIANA NOVIS ODEBRECHT (25%)
+RIOCON PATRIMONIAL LTDA,02.853.248/0001-20,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=BRKM,"JULIANA NOVIS ODEBRECHT (25%)
 LEVITA NORBERTO ODEBRECHT NETO (25%)
 SOLANGE NOVIS ODEBRECHT (25%)
 VERONICA NOVIS ODEBRECHT (25%)",,,
-,Daniel,ok,N.O.JR PATRIMONIAL LTDA,02.878.630/0001-99,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=BRKM,"NORBERTO ODEBRECHT JUNIOR (99,98%)
+N.O.JR PATRIMONIAL LTDA,02.878.630/0001-99,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=BRKM,"NORBERTO ODEBRECHT JUNIOR (99,98%)
 NORBERTO ODEBRECHT (0,01%)
 YOLANDA ALVES ODEBRECHT (0,01%)",,,
-,Daniel,ok,IPQ PATRIMONIAL S/C LTDA,02.878.774/0001-45,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=BRKM,"FRANCISCO PELTIER QUEIROZ (51,02%)
+IPQ PATRIMONIAL S/C LTDA,02.878.774/0001-45,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=BRKM,"FRANCISCO PELTIER QUEIROZ (51,02%)
 ILKA ODEBRECHT PELTIER QUEIROZ (48,95%)
 FRANCISCO PELTIER DE QUEIROZ FILHO (0,01%)
 IOLANDA PELTIER DE QUEIROZ NEVES DA ROCHA (0,01%)",,,
-,Daniel,ok,EAO PATRIMONIAL LTDA,02.853.218/0001-14,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=BRKM,"MARCELO BAHIA ODEBRECHT (25%)
+EAO PATRIMONIAL LTDA,02.853.218/0001-14,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=BRKM,"MARCELO BAHIA ODEBRECHT (25%)
 MONICA BAHIA ODEBRECHT (25%)
 MARCIA BAHIA ODEBRECHT OLIVEIRA (25%)
 MAURICIO BAHIA ODEBRECHT (25%)",,,
-,Daniel,ok,CAPE PATRIMONIAL LTDA,02.853.234/0001-07,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=BRKM,"EDUARDO ODEBRECHT DE QUEIROZ (25%)
+CAPE PATRIMONIAL LTDA,02.853.234/0001-07,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=BRKM,"EDUARDO ODEBRECHT DE QUEIROZ (25%)
 PAULO ODEBRECHT DE QUEIROZ (25%)
 ALEXANDRE ODEBRECHT DE QUEIROZ (25%)
 CRISTINA ODEBRECHT DE QUEIROZ CIDREIRA (25%)",,,
-,Daniel,ok,NORDESTE QUIMICA S.A - NORQUISA,15.659.535/0001-46,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=BRKM,"ODEBRECHT S.A (99,99%)
+NORDESTE QUIMICA S.A - NORQUISA,15.659.535/0001-46,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=BRKM,"ODEBRECHT S.A (99,99%)
 ODBINV S.A (0,01%)",,,
-,Daniel,ok,BELGRAVIA EMPREENDIMENTOS IMOBILIARIOS SA,71.884.431/0001-06,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=BRKM,"CONSTRUTORA NORBERTO ODEBRECHT S.A (99,99%)
+BELGRAVIA EMPREENDIMENTOS IMOBILIARIOS SA,71.884.431/0001-06,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=BRKM,"CONSTRUTORA NORBERTO ODEBRECHT S.A (99,99%)
 ODEBRECHT ENGENHARIA E CONSTRUÇÃO S.A (0,01%)",,,
-,Daniel,ok,CONSTRUTORA NORBERTO ODEBRECHT S.A,15.102.288/0001-82,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=BRKM,"ODEBRECHT S.A (99,99%)
+CONSTRUTORA NORBERTO ODEBRECHT S.A,15.102.288/0001-82,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=BRKM,"ODEBRECHT S.A (99,99%)
 ODBINV S.A (0,01%)",,,
-,Daniel,ok,ODEBRECHT ENGENHARIA E CONSTRUÇÃO S.A,07.221.396/0001-46,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=BRKM,"CONSTRUTORA NORBERTO ODEBRECHT S.A (99,99%)
+ODEBRECHT ENGENHARIA E CONSTRUÇÃO S.A,07.221.396/0001-46,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=BRKM,"CONSTRUTORA NORBERTO ODEBRECHT S.A (99,99%)
 BELGRAVIA EMPREENDIMENTOS IMOBILIARIOS SA (0,01%)",,,
-,,ok,SP Telecomunicações Participações Ltda,01.900.954/0001-13,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=VIVT,"Telefónica Internacional S.A. (55,28%)
+SP Telecomunicações Participações Ltda,01.900.954/0001-13,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=VIVT,"Telefónica Internacional S.A. (55,28%)
 Telefónica S.A (44,72%)",,,
-,,ok,Telefónica Internacional S.A.,05.639.177/0001-56,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=VIVT,"Telefónica S.A. (100,00%)",,,
-,,ok,Telefónica S.A,05.721.582/0001-19,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=VIVT,"Banco Bilbao Viscaya Argentaria, S.A. (5,66%) 
+Telefónica Internacional S.A.,05.639.177/0001-56,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=VIVT,"Telefónica S.A. (100,00%)",,,
+Telefónica S.A,05.721.582/0001-19,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=VIVT,"Banco Bilbao Viscaya Argentaria, S.A. (5,66%) 
 Caja de Ahorros y Pensiones de Barcelona (5,41%) 
 Blackrock, Inc (3,88%)",,,
-,,ok,Telefonica Chile S.A.,chilena,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=VIVT,"Telefónica S.A (100,00%)",,,
-,,Ok,Interbrew International BV,06.614.548/0001-08,Econoinfo,,Anheuser-Busch InBev Nederland Holding BV (100%),,,
-,,Ok,Anheuser-Busch InBev Nederland Holding BV,holandesa,Econoinfo,,"InBev Belgium S.A. (57,30%)
+Telefonica Chile S.A.,chilena,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=VIVT,"Telefónica S.A (100,00%)",,,
+Interbrew International BV,06.614.548/0001-08,Econoinfo,,Anheuser-Busch InBev Nederland Holding BV (100%),,,
+Anheuser-Busch InBev Nederland Holding BV,holandesa,Econoinfo,,"InBev Belgium S.A. (57,30%)
 Anheuser-Busch InBev N.V/S.A (42,70%)",,,
-,,Ok,InBev Belgium S.A.,belga,Econoinfo,," Anheuser-Busch InBev N.V/S.A (100,00%)",,,
-,,Ok,Anheuser-Busch InBev N.V/S.A,belga,Econoinfo,,"Stichting InBev (41,31%)
+InBev Belgium S.A.,belga,Econoinfo,," Anheuser-Busch InBev N.V/S.A (100,00%)",,,
+Anheuser-Busch InBev N.V/S.A,belga,Econoinfo,,"Stichting InBev (41,31%)
 Eugenie Patri Sebastian (EPS) SA (8,31%)
 BRC Sarl (2,05%)
 InBev Foundations (0,79%)",,,
-,,Ok,Stichting InBev,holandesa,Econoinfo,,"Eugenie Patri Sebastian (EPS) SA (50,00%)
+Stichting InBev,holandesa,Econoinfo,,"Eugenie Patri Sebastian (EPS) SA (50,00%)
 BRC Sarl (50,00%)",,,
-,,Ok,BRC Sarl,luxemburguesa,Econoinfo,,"BR Global Investiments Limited (100,00%)",,,
-,,Ok,BR Global Investiments Limited,bahamense,Econoinfo,,"S-BR Global Investments Limited (91,10%)",,,
-,,Ok,S-BR Global Investments Limited,bahamense,Econoinfo,,"Santa Roseli Ltd. (25,00%)
+BRC Sarl,luxemburguesa,Econoinfo,,"BR Global Investiments Limited (100,00%)",,,
+BR Global Investiments Limited,bahamense,Econoinfo,,"S-BR Global Investments Limited (91,10%)",,,
+S-BR Global Investments Limited,bahamense,Econoinfo,,"Santa Roseli Ltd. (25,00%)
 Santa Heloisa Ltd. (25,00%)
 Santa Paciência Ltd. (25,00%)
 Santa Erika Ltd. (25,00%)",,,
-,,Ok,Santa Roseli Ltd.,bahamense,Econoinfo,,"Santa Vitoria CV (99,99%)",,,
-,,Ok,Santa Vitoria CV,holandesa,Econoinfo,,"Inpar VOF (99,99%)",,,
-,,Ok,Inpar VOF,holandesa,Econoinfo,,"Jorge Paulo Lemann (99,50%)",,,
-,,Ok,Santa Heloisa Ltd.,bahamense,Econoinfo,," Santa Carolina CV (99,99%)",,,
-,,Ok,Santa Carolina CV,holandesa,Econoinfo,,"Carlos Alberto da Veiga Sicupira (99,98%)",,,
-,,Ok,Santa Paciência Ltd.,bahamense,Econoinfo,,"MCMT Holding Limited (99,99%)",,,
-,,Ok,MCMT Holding Limited,Ilhas de Jersey,Econoinfo,,"Alfa T Holding Limited (100,00%)",,,
-,,Ok,Alfa T Holding Limited,Ilhas de Jersey,Econoinfo,,"Santa Maria Isabel CV (100,00%)",,,
-,,Ok,Santa Maria Isabel CV,holandesa,Econoinfo,,"Marcel Herrmann Telles (99,86%)",,,
-,,Ok,Santa Erika Ltd.,bahamense,Econoinfo,,"Santa Ana CV. (99,99%)",,,
-,,Ok,Santa Ana CV.,holandesa,Econoinfo,,"Inpar VOF (99,99%)",,,
-,,ok,FUNDO MÚTUO DE INVESTIMENTOS EM AÇÕES - BB CARTEIRA LIVRE I,73.899.742/0001-74,Econoinfo,,Caixa de Previdência dos Funcionários do Banco do Brasil - PREVI (100%),,,
-,,ok, Átila Holdings S/A,07.305.671/0001-00,Econoinfo,,"Camargo Corrêa S.A (53,67%)
+Santa Roseli Ltd.,bahamense,Econoinfo,,"Santa Vitoria CV (99,99%)",,,
+Santa Vitoria CV,holandesa,Econoinfo,,"Inpar VOF (99,99%)",,,
+Inpar VOF,holandesa,Econoinfo,,"Jorge Paulo Lemann (99,50%)",,,
+Santa Heloisa Ltd.,bahamense,Econoinfo,," Santa Carolina CV (99,99%)",,,
+Santa Carolina CV,holandesa,Econoinfo,,"Carlos Alberto da Veiga Sicupira (99,98%)",,,
+Santa Paciência Ltd.,bahamense,Econoinfo,,"MCMT Holding Limited (99,99%)",,,
+MCMT Holding Limited,Ilhas de Jersey,Econoinfo,,"Alfa T Holding Limited (100,00%)",,,
+Alfa T Holding Limited,Ilhas de Jersey,Econoinfo,,"Santa Maria Isabel CV (100,00%)",,,
+Santa Maria Isabel CV,holandesa,Econoinfo,,"Marcel Herrmann Telles (99,86%)",,,
+Santa Erika Ltd.,bahamense,Econoinfo,,"Santa Ana CV. (99,99%)",,,
+Santa Ana CV.,holandesa,Econoinfo,,"Inpar VOF (99,99%)",,,
+FUNDO MÚTUO DE INVESTIMENTOS EM AÇÕES - BB CARTEIRA LIVRE I,73.899.742/0001-74,Econoinfo,,Caixa de Previdência dos Funcionários do Banco do Brasil - PREVI (100%),,,
+ Átila Holdings S/A,07.305.671/0001-00,Econoinfo,,"Camargo Corrêa S.A (53,67%)
 CONSTRUÇÕES E COMÉRCIO CAMARGO CORRÊA S.A. (46,33%)
 ",,,
-,,ok, CONSTRUÇÕES E COMÉRCIO CAMARGO CORRÊA S.A., 61.522.512/0001-02,Econoinfo,,Camargo Corrêa Construções e Participações S.A. (100%),,,
-,,ok,Camargo Corrêa Construções e Participações S.A.,11.196.609/0001-02,Econoinfo,,CAMARGO CORRÊA S.A. (100%),,,
-,,ok,CAMARGO CORRÊA ENERGIA S.A.,04.922.357/0001-88,Econoinfo,, CAMARGO CORRÊA INVESTIMENTO EM INFRA-ESTRUTURA S.A.,,,
-,,ok, CAMARGO CORRÊA INVESTIMENTO EM INFRA-ESTRUTURA S.A.,02.372.232/0001-04,Econoinfo,,CAMARGO CORRÊA S.A. (100%),,,
-,,ok,CAMARGO CORRÊA S.A.,01.098.905/0001-09,Econoinfo,," PARTICIPAÇÕES MORRO VERMELHO S.A. (99,9%)",,,
-,,ok, PARTICIPAÇÕES MORRO VERMELHO S.A., 03.987.192/0001-60,Econoinfo,,"RCABON EMPREENDIMENTOS E PARTICIPAÇÕES S.A (33,33%)
+ CONSTRUÇÕES E COMÉRCIO CAMARGO CORRÊA S.A., 61.522.512/0001-02,Econoinfo,,Camargo Corrêa Construções e Participações S.A. (100%),,,
+Camargo Corrêa Construções e Participações S.A.,11.196.609/0001-02,Econoinfo,,CAMARGO CORRÊA S.A. (100%),,,
+CAMARGO CORRÊA ENERGIA S.A.,04.922.357/0001-88,Econoinfo,, CAMARGO CORRÊA INVESTIMENTO EM INFRA-ESTRUTURA S.A.,,,
+ CAMARGO CORRÊA INVESTIMENTO EM INFRA-ESTRUTURA S.A.,02.372.232/0001-04,Econoinfo,,CAMARGO CORRÊA S.A. (100%),,,
+CAMARGO CORRÊA S.A.,01.098.905/0001-09,Econoinfo,," PARTICIPAÇÕES MORRO VERMELHO S.A. (99,9%)",,,
+ PARTICIPAÇÕES MORRO VERMELHO S.A., 03.987.192/0001-60,Econoinfo,,"RCABON EMPREENDIMENTOS E PARTICIPAÇÕES S.A (33,33%)
 RCNON EMPREENDIMENTOS E PARTICIPAÇÕES S.A (33,33%)
 RCPODON EMPREENDIMENTOS E PARTICIPAÇÕES S.A (33,33%)",,,
-,,ok,RCABON EMPREENDIMENTOS E PARTICIPAÇÕES S.A,09.594.448/0001-55,Econoinfo,,Rosana Camargo de Arruda Botelho (100%),,,
-,,ok,RCNON EMPREENDIMENTOS E PARTICIPAÇÕES S.A,09.594.570/0001-21,Econoinfo,,Renata De Camargo Nascimento (100%),,,
-,,ok,RCPODON EMPREENDIMENTOS E PARTICIPAÇÕES S.A,09.594.541/0001-60,Econoinfo,,Regina de Camargo Pires Oliveira Dias (100%),,,
-,,ok,ENERGIA SÃO PAULO FUNDO DE INVESTIMENTO EM PARTICIPAÇÕES,02.178.371/0001-93,Econoinfo,,"FUNDO DE INVESTIMENTO EM COTAS DE FUNDO DE INVESTIMENTO EM PARTICIPAÇÕES 114 (44,38%)
+RCABON EMPREENDIMENTOS E PARTICIPAÇÕES S.A,09.594.448/0001-55,Econoinfo,,Rosana Camargo de Arruda Botelho (100%),,,
+RCNON EMPREENDIMENTOS E PARTICIPAÇÕES S.A,09.594.570/0001-21,Econoinfo,,Renata De Camargo Nascimento (100%),,,
+RCPODON EMPREENDIMENTOS E PARTICIPAÇÕES S.A,09.594.541/0001-60,Econoinfo,,Regina de Camargo Pires Oliveira Dias (100%),,,
+ENERGIA SÃO PAULO FUNDO DE INVESTIMENTO EM PARTICIPAÇÕES,02.178.371/0001-93,Econoinfo,,"FUNDO DE INVESTIMENTO EM COTAS DE FUNDO DE INVESTIMENTO EM PARTICIPAÇÕES 114 (44,38%)
 FUNDAÇÃO SISTEL DE SEGURIDADE SOCIAL (32,23%)
 FUNDAÇÃO PETROBRÁS DE SEGURIDADE SOCIAL - PETROS (22,78%)
 FUNDAÇÃO SABESP DE SEGURIDADE SOCIAL - SABESPREV (0,61%)",,,
-,,ok,FUNDO DE INVESTIMENTO EM COTAS DE FUNDO DE INVESTIMENTO EM PARTICIPAÇÕES 114, 07.792.436/0001-00,Econoinfo,,Fundação CESP (100%),,,
-,,ok,BONAIRE PARTICIPAÇÕES S.A.,02.117.801/0001-67,Econoinfo,,ENERGIA SÃO PAULO FUNDO DE INVESTIMENTO EM PARTICIPAÇÕES (100%),,,
-,,ok,MMS Participações S.A.,08.542.030/0001-31,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=MRFG," Márcia Aparecida Pascoal Marçal dos Santos (50%)
+FUNDO DE INVESTIMENTO EM COTAS DE FUNDO DE INVESTIMENTO EM PARTICIPAÇÕES 114, 07.792.436/0001-00,Econoinfo,,Fundação CESP (100%),,,
+BONAIRE PARTICIPAÇÕES S.A.,02.117.801/0001-67,Econoinfo,,ENERGIA SÃO PAULO FUNDO DE INVESTIMENTO EM PARTICIPAÇÕES (100%),,,
+MMS Participações S.A.,08.542.030/0001-31,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=MRFG," Márcia Aparecida Pascoal Marçal dos Santos (50%)
 Marcos Antonio Molina dos Santos (50%)",,,
-,Júlia,OK,Companhia Brasiliana de Energia ,04.128.563/0001-10,Econoinfo,,"Bndespar - BNDES Participacoes SA (50,00%)
+Companhia Brasiliana de Energia ,04.128.563/0001-10,Econoinfo,,"Bndespar - BNDES Participacoes SA (50,00%)
 AES Holdings Brasil Ltda. (50,00%)",,,
-,Júlia,OK,AES Holdings Brasil Ltda.,05.692.190/0001-79,Econoinfo,,"AES Brazilian Holdings Ltd. (95,71%)
+AES Holdings Brasil Ltda.,05.692.190/0001-79,Econoinfo,,"AES Brazilian Holdings Ltd. (95,71%)
 Cemig II, CV (4,29%)",,,
-,júlia,OK,AES Brazilian Holdings Ltd.,ILHAS CAIMA,Econoinfo,,"Cemig II, CV (94,14%)
+AES Brazilian Holdings Ltd.,ILHAS CAIMA,Econoinfo,,"Cemig II, CV (94,14%)
 AES Cayman I (5,86%)",,,
-,júlia,OK,"Cemig II, CV",ILHAS CAIMA,Econoinfo,,"La Plata III, CV (99,90%)
+"Cemig II, CV",ILHAS CAIMA,Econoinfo,,"La Plata III, CV (99,90%)
 The AES Corporation (0,10%)",,,
-,júlia,OK,"La Plata III, CV",ILHAS CAIMA,Econoinfo,,"Global Energy Investment CV (99,90%)
+"La Plata III, CV",ILHAS CAIMA,Econoinfo,,"Global Energy Investment CV (99,90%)
 The AES Corporation (0,10%)",,,
-,júlia,OK,Global Energy Investment CV,HOLANDA,Econoinfo,,"The AES Corporation (95,27%)
+Global Energy Investment CV,HOLANDA,Econoinfo,,"The AES Corporation (95,27%)
 AES Rio Diamante, Inc (3,18%)
 AES EDC HOLDING, LLC (0,81%)
 AES GEH Holdings, LLC (0,74%)",,,
-,júlia,OK,The AES Corporation ,EUA,Econoinfo,,"China Investment Corporation (16,83)
+The AES Corporation ,EUA,Econoinfo,,"China Investment Corporation (16,83)
 Fidelity Management & Research (8,55%)
 T. Rowe Price Associates (5,85%)",,,
-,júlia,OK,Cosan Limited,08.887.330/0001-52,Econoinfo,,"Queluz Holdings Limited (27,68%)
+Cosan Limited,08.887.330/0001-52,Econoinfo,,"Queluz Holdings Limited (27,68%)
 Fundos Gávea (14,57%)
 Usina Costa Pinto S.A. Açúcar e Álcool (11,09)
 JANUS CAPITAL GROUP (6,33%)",,,
-,júlia,OK,Queluz Holdings Limited,Ilhas Virgens Britânicas,Econoinfo,,"Queluz Holdings II GmbH (100,00%)",,,
-,júlia,OK,Queluz Holdings II GmbH,alemã,Econoinfo,,"Queluz S.A. Administração e Participações (100,00%)",,,
-,júlia,OK,Queluz S.A. Administração e Participações,08.176.351/0001-60,Econoinfo,,"Aguassanta Participações S.A. (68,80%)
+Queluz Holdings Limited,Ilhas Virgens Britânicas,Econoinfo,,"Queluz Holdings II GmbH (100,00%)",,,
+Queluz Holdings II GmbH,alemã,Econoinfo,,"Queluz S.A. Administração e Participações (100,00%)",,,
+Queluz S.A. Administração e Participações,08.176.351/0001-60,Econoinfo,,"Aguassanta Participações S.A. (68,80%)
 Amaralina Agrícola Ltda (31,20%)",,,
-,júlia,OK,Amaralina Agrícola Ltda,04.016.922/0001-48,Econoinfo,,"Santa Bárbara Agrícola S.A. (23,92%)
+Amaralina Agrícola Ltda,04.016.922/0001-48,Econoinfo,,"Santa Bárbara Agrícola S.A. (23,92%)
 Pedro Ometto S.A. Administração e Participações (21,15%)
 Aguassanta Participações S.A. (18,72%)
 Usina Bom Jesus S.A. Açúcar e Álcool (15,40%)
 Usina Costa Pinto S.A. Açúcar e Álcool (13,78%)",,,
-,júlia,OK,Santa Bárbara Agrícola S.A.,55.364.616/0001-33,Econoinfo,,"Usina Costa Pinto S.A. Açúcar e Álcool (99,68%)",,,
-,júlia,OK,Pedro Ometto S.A. Administração e Participações,61.960.050/0001-05,Econoinfo,,"Nova Aguassanta Administração de Participações Ltda (99,99%)",,,
-,júlia,OK,Nova Aguassanta Administração de Participações Ltda,07.198.897/0001-59,Econoinfo,,"Aguassanta Participações S.A. (91,5%)
+Santa Bárbara Agrícola S.A.,55.364.616/0001-33,Econoinfo,,"Usina Costa Pinto S.A. Açúcar e Álcool (99,68%)",,,
+Pedro Ometto S.A. Administração e Participações,61.960.050/0001-05,Econoinfo,,"Nova Aguassanta Administração de Participações Ltda (99,99%)",,,
+Nova Aguassanta Administração de Participações Ltda,07.198.897/0001-59,Econoinfo,,"Aguassanta Participações S.A. (91,5%)
 OMETTO MORENO COMERCIO E EMPREENDIMENTOS LTDA. (6,25%)",,,
-,júlia,OK, Aguassanta Participações S.A.,07.198.897/0001-59,Econoinfo,,"Usina Bom Jesus S.A. Açúcar e Álcool (80,55%)
+ Aguassanta Participações S.A.,07.198.897/0001-59,Econoinfo,,"Usina Bom Jesus S.A. Açúcar e Álcool (80,55%)
 Flama Empreendimentos e Participações S/A (5,25%)",,,
-,júlia,OK,Usina Bom Jesus S.A. Açúcar e Álcool,47.756.754/0001-30,Econoinfo,,"RUBENS OMETTO SILVEIRA MELLO (73,92%)
+Usina Bom Jesus S.A. Açúcar e Álcool,47.756.754/0001-30,Econoinfo,,"RUBENS OMETTO SILVEIRA MELLO (73,92%)
 Isa Participações Ltda (16,90%)",,,
-,júlia,OK,Isa Participações Ltda,,Econoinfo,,"Isaltina Ometto Silveira Mello (99,90%)",,,
-,júlia,OK,Flama Empreendimentos e Participações S/A,51.770.188/0001-98,Econoinfo,,"Fernando Luiz Altério (50,01%)
+Isa Participações Ltda,,Econoinfo,,"Isaltina Ometto Silveira Mello (99,90%)",,,
+Flama Empreendimentos e Participações S/A,51.770.188/0001-98,Econoinfo,,"Fernando Luiz Altério (50,01%)
 Ana Maria Ometto Altério (49,99%)",,,
-,júlia,OK,OMETTO MORENO COMERCIO E EMPREENDIMENTOS LTDA.,53.353.801/0001-05,Econoinfo,,"Fernando Manoel Ometto Moreno (100,00%)",,,
-,júlia,OK,Rezende Barbosa S.A. Administração e Participações,44.358.034/0001-28,Econoinfo,,"ROBERTO DE REZENDE BARBOSA (33,34%)
+OMETTO MORENO COMERCIO E EMPREENDIMENTOS LTDA.,53.353.801/0001-05,Econoinfo,,"Fernando Manoel Ometto Moreno (100,00%)",,,
+Rezende Barbosa S.A. Administração e Participações,44.358.034/0001-28,Econoinfo,,"ROBERTO DE REZENDE BARBOSA (33,34%)
 Renato Eugenio de Rezende Barbosa (33,33%
 José Eugenio de Rezende Barbosa Sobrinho (33,33%)",,,
-,,OK,Vicunha Siderurgia S/A,02.871.007/0001-04,Econoinfo,,"VICUNHA AÇOS S.A. (99,99%)
+Vicunha Siderurgia S/A,02.871.007/0001-04,Econoinfo,,"VICUNHA AÇOS S.A. (99,99%)
 ",,,
-,,OK,VICUNHA AÇOS S.A.,04.213.131/0001-08,Econoinfo,,"Vicunha Steel S.A, (99,99%)",,,
-,,OK,"Vicunha Steel S.A,",04.169.992/0001-36,Econoinfo,,"Rio Purus Participações S.A. (59,99%)
+VICUNHA AÇOS S.A.,04.213.131/0001-08,Econoinfo,,"Vicunha Steel S.A, (99,99%)",,,
+"Vicunha Steel S.A,",04.169.992/0001-36,Econoinfo,,"Rio Purus Participações S.A. (59,99%)
 CFL Participações S.A. (39,99%)",,,
-,,OK,Rio Purus Participações S.A., 60.078.060/0001-59,Econoinfo,,"Dorothéa Steinbruch (100,00%)",,,
-,,OK,CFL Participações S.A. ,60.078.045/0001-00,Econoinfo,,"Fabio Steinbruch (33,33%)
+Rio Purus Participações S.A., 60.078.060/0001-59,Econoinfo,,"Dorothéa Steinbruch (100,00%)",,,
+CFL Participações S.A. ,60.078.045/0001-00,Econoinfo,,"Fabio Steinbruch (33,33%)
 Leo Steinbruch (33,33%)
 Clarice Steinbruch (33,33%)",,,
-,,OK,Rio Iaco Participacoes S.A.,06.990.482/0001-50,Econoinfo,,"RIO PURUS PARTICIPAÇÕES S.A (99,80%)",,,
-,Júlia,OK,Iberdrola Energia S.A.,05.470.823/0001-02,Econoinfo,,"Iberdrola S.A. (100,00%)",,,
-,Júlia,OK,Iberdrola S.A.,ESPANHA,Econoinfo,,"QATAR HOLDING LUXEMBURGO II, S.A.R.L. (6,26%)
+Rio Iaco Participacoes S.A.,06.990.482/0001-50,Econoinfo,,"RIO PURUS PARTICIPAÇÕES S.A (99,80%)",,,
+Iberdrola Energia S.A.,05.470.823/0001-02,Econoinfo,,"Iberdrola S.A. (100,00%)",,,
+Iberdrola S.A.,ESPANHA,Econoinfo,,"QATAR HOLDING LUXEMBURGO II, S.A.R.L. (6,26%)
 RESIDENC. MONTE-CARMELO (6,13%)
 BANCAJA INVERSIONES S.L. (5,35%)
 KARTERA 1 S.L. (5,31%)
@@ -360,59 +359,59 @@ CORPORATE FUNDING S.L. (4,48%)
 ACS - Actividades de Construcción y Servicios (2,30%)
 QUATAR HOLDING LLC. (2,19%)
 ROPERFELI S.L. (1,20%)",,,
-,Júlia,OK,"QATAR HOLDING LUXEMBURGO II, S.A.R.L.",QATAR,Econoinfo,,"QATAR INVESTMENT AUTHORITY (100,00%)",,,
-,Júlia,OK,RESIDENC. MONTE-CARMELO,ESPANHA,Econoinfo,,"ACS - Actividades de Construcción y Servicios (100,00%)",,,
-,Júlia,OK,BANCAJA INVERSIONES S.L.,ESPANHA,Econoinfo,,"Banco Financeiro Y de Ahorros, S.A. (100,00%)",,,
-,Júlia,OK,KARTERA 1 S.L. ,ESPANHA,Econoinfo,,"BBK – Bilbao Bizcaia Kutxa,Aurrezki Kutxa Eta Bahitetxea (100,00%)",,,
-,Júlia,OK,NEXGEN CAPITAL LIMITED,IRLANDA,Econoinfo,,"NEXGEN FINANCIAL HOLDINGS (100,00%)",,,
-,Júlia,OK,NEXGEN FINANCIAL HOLDINGS,IRLANDA,Econoinfo,,"NATIXIS S.A (100,00%)",,,
-,Júlia,OK,NATIXIS S.A,FRANÇA,Econoinfo,,"BPCE (71,50%)",,,
-,Júlia,OK,CORPORATE FUNDING S.L. ,ESPANHA,Econoinfo,,"ACS - Actividades de Construcción y Servicios (100,00%)",,,
-,Júlia,OK,ACS - Actividades de Construcción y Servicios,ESPANHA,Econoinfo,,"Corporación Financiera Alba, S.A. (18,31%)
+"QATAR HOLDING LUXEMBURGO II, S.A.R.L.",QATAR,Econoinfo,,"QATAR INVESTMENT AUTHORITY (100,00%)",,,
+RESIDENC. MONTE-CARMELO,ESPANHA,Econoinfo,,"ACS - Actividades de Construcción y Servicios (100,00%)",,,
+BANCAJA INVERSIONES S.L.,ESPANHA,Econoinfo,,"Banco Financeiro Y de Ahorros, S.A. (100,00%)",,,
+KARTERA 1 S.L. ,ESPANHA,Econoinfo,,"BBK – Bilbao Bizcaia Kutxa,Aurrezki Kutxa Eta Bahitetxea (100,00%)",,,
+NEXGEN CAPITAL LIMITED,IRLANDA,Econoinfo,,"NEXGEN FINANCIAL HOLDINGS (100,00%)",,,
+NEXGEN FINANCIAL HOLDINGS,IRLANDA,Econoinfo,,"NATIXIS S.A (100,00%)",,,
+NATIXIS S.A,FRANÇA,Econoinfo,,"BPCE (71,50%)",,,
+CORPORATE FUNDING S.L. ,ESPANHA,Econoinfo,,"ACS - Actividades de Construcción y Servicios (100,00%)",,,
+ACS - Actividades de Construcción y Servicios,ESPANHA,Econoinfo,,"Corporación Financiera Alba, S.A. (18,31%)
 Inversiones Vesán, S.A. (12,52%)
 Southeastern Asset Management, Inc (7,48%)
 Mr. Alberto Cortina Alcocer (6,55%)
 Mr. Alberto Alcocer Torra (6,40%)
 Sayglo Holding, S.L. (5,64%)",,,
-,Júlia,OK,QUATAR HOLDING LLC.,QATAR,Econoinfo,,"QATAR INVESTMENT AUTHORITY (100,00%)",,,
-,Júlia,OK,ROPERFELI S.L.,ESPANHA,Econoinfo,,"ACS - Actividades de Construcción y Servicios (100,00%)",,,
-,Júlia,OK,Fundo Mutuo Inv. Acoes BB Cart. Livre I,73.899.742/0001-74,Econoinfo,,"Caixa de Previdência dos Funcionários do Banco do Brasil - PREVI (100,00%)",,,
-,Júlia,OK,BB Banco de Investimento S/A,24.933.830/0001-30,Econoinfo,,"Banco do Brasil S.A (100,00%)",,,
-,Júlia,OK,Banco do Brasil S.A,00.000.000/0001-91,Econoinfo,,"Secretaria do Tesouro Nacional (51,87%)
+QUATAR HOLDING LLC.,QATAR,Econoinfo,,"QATAR INVESTMENT AUTHORITY (100,00%)",,,
+ROPERFELI S.L.,ESPANHA,Econoinfo,,"ACS - Actividades de Construcción y Servicios (100,00%)",,,
+Fundo Mutuo Inv. Acoes BB Cart. Livre I,73.899.742/0001-74,Econoinfo,,"Caixa de Previdência dos Funcionários do Banco do Brasil - PREVI (100,00%)",,,
+BB Banco de Investimento S/A,24.933.830/0001-30,Econoinfo,,"Banco do Brasil S.A (100,00%)",,,
+Banco do Brasil S.A,00.000.000/0001-91,Econoinfo,,"Secretaria do Tesouro Nacional (51,87%)
 Caixa de Previdência dos Funcionários do Banco do Brasil - PREVI (10,38%)
 Fundo Garantidor à Exportação (4,87%)
 Fundo Fiscal de Inv. e Estabilização (2,18%)
 Fundo Garantidor para Investimentos (0,26%)
 Bndespar - BNDES Participacoes SA (0,01%)",,,
-,Júlia,OK,Tim Brasil Servicos e Participacoes S.A.,02.600.854/0001-34,Econoinfo,,"Telecom Italia International N.V. (100,00%)",,,
-,Júlia,OK,Telecom Italia International N.V.,,Econoinfo,,"Telecom Italia S.p.A. (100,00%)",,,
-,Júlia,OK,Telecom Italia S.p.A.,,Econoinfo,,"Telco S.p.A. (22,40%)
+Tim Brasil Servicos e Participacoes S.A.,02.600.854/0001-34,Econoinfo,,"Telecom Italia International N.V. (100,00%)",,,
+Telecom Italia International N.V.,,Econoinfo,,"Telecom Italia S.p.A. (100,00%)",,,
+Telecom Italia S.p.A.,,Econoinfo,,"Telco S.p.A. (22,40%)
 Findim Group S.A (4,99%)",,,
-,,ok,Telmex Solutions Telecom. Ltda,02.570.352/0001-08,Econoinfo,,"Consertel - Controladora de Servicios de Telecomunicaciones S.A., de CV (100,00%)
+Telmex Solutions Telecom. Ltda,02.570.352/0001-08,Econoinfo,,"Consertel - Controladora de Servicios de Telecomunicaciones S.A., de CV (100,00%)
 JOSÉ FORMOSO MARTÍNEZ (00,00%)",,,
-,,ok,Consertel - Controladora de Servicios de Telecomunicaciones S.A. de CV,07.164.586/0001-79,Econoinfo,,"Telmex Internacional, S.A.B. de C.V. (100,00%)
+Consertel - Controladora de Servicios de Telecomunicaciones S.A. de CV,07.164.586/0001-79,Econoinfo,,"Telmex Internacional, S.A.B. de C.V. (100,00%)
 Compañia de Teléfonos y Bienes Raices, S.A. de CV (00,00%)",,,
-,júlia,ok,S-Velame Adm. de Rec. e Part. S/A ,07.048.386/0001-50,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=LAME,"SANTA MÔNICA PARTICIPAÇÕES SA (25,00%)
+S-Velame Adm. de Rec. e Part. S/A ,07.048.386/0001-50,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=LAME,"SANTA MÔNICA PARTICIPAÇÕES SA (25,00%)
 SANTA LUZIA PARTICIPAÇÕES SA (25,00%)
 SANTA PERPÉTUA PARTICIPAÇÕES SA (25,00%)
 SANTA APARECIDA PARTICIPAÇÕES SA (25,00%)",,,
-,júlia,ok,SANTA MÔNICA PARTICIPAÇÕES SA,07.232.203/0001-52,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=,"CEDAR TRADE LLC - CREDIT SUISSE (BRASIL) S/A CTVM (100,00%)
+SANTA MÔNICA PARTICIPAÇÕES SA,07.232.203/0001-52,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=,"CEDAR TRADE LLC - CREDIT SUISSE (BRASIL) S/A CTVM (100,00%)
 Carlos Alberto da Veiga Sicupira (0,00%)
 MARCEL HERRMANN TELLES (0,00%)",,,
-,júlia,ok,SANTA LUZIA PARTICIPAÇÕES SA,07.235.256/0001-27,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=,"Carlos Alberto da Veiga Sicupira (100,00%)
+SANTA LUZIA PARTICIPAÇÕES SA,07.235.256/0001-27,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=,"Carlos Alberto da Veiga Sicupira (100,00%)
 MARCEL HERRMANN TELLES (0,00%)
 JORGE PAULO LEMANN (0,00%)",,,
-,júlia,ok,SANTA PERPÉTUA PARTICIPAÇÕES SA,07.232.236/0001-00,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=,"CEDAR TRADE LLC - CREDIT SUISSE (BRASIL) S/A CTVM (100,00%)
+SANTA PERPÉTUA PARTICIPAÇÕES SA,07.232.236/0001-00,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=,"CEDAR TRADE LLC - CREDIT SUISSE (BRASIL) S/A CTVM (100,00%)
 Carlos Alberto da Veiga Sicupira (0,00%)
 MARCEL HERRMANN TELLES (0,00%)",,,
-,júlia,ok,CEDAR TRADE LLC - CREDIT SUISSE (BRASIL) S/A CTVM,09.651.581/0001-04,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=,"MANIRO LIMITED (100,00%)",,,
-,júlia,ok,SANTA APARECIDA PARTICIPAÇÕES SA,07.234.772/0001-37,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=,"MARCEL HERRMANN TELLES (100,00%)
+CEDAR TRADE LLC - CREDIT SUISSE (BRASIL) S/A CTVM,09.651.581/0001-04,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=,"MANIRO LIMITED (100,00%)",,,
+SANTA APARECIDA PARTICIPAÇÕES SA,07.234.772/0001-37,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=,"MARCEL HERRMANN TELLES (100,00%)
 JORGE PAULO LEMANN (0,00%)
 Carlos Alberto da Veiga Sicupira (0,00%)",,,
-,júlia,ok,"Companhia Global de Varejo, Llc - Credit Suisse (Brasil) S/A Ctvm",12.525.582/0001-09,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=,"MANIRO LIMITED (33,34%)
+"Companhia Global de Varejo, Llc - Credit Suisse (Brasil) S/A Ctvm",12.525.582/0001-09,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=,"MANIRO LIMITED (33,34%)
 Santa Venerina Investments & Arbitrage Inc (33,33%)
 Santa Marcelina Investiments & Arbitrage Inc (33,33%)",,,
-,júlia,ok,Santa Venerina Investments & Arbitrage Inc,BAHAMAS,Econoinfo,,"MCMT Holding Limited (100,00%)",,,
-,júlia,ok,Santa Marcelina Investiments & Arbitrage Inc,BAHAMAS,Econoinfo,,"Carlos Alberto da Veiga Sicupira (100,00%)",,,
-,joão,ok,Holdco I S.A.,15.125.401/0001-45,Econoinfo,,"TEP Chile S.A. (0%)
+Santa Venerina Investments & Arbitrage Inc,BAHAMAS,Econoinfo,,"MCMT Holding Limited (100,00%)",,,
+Santa Marcelina Investiments & Arbitrage Inc,BAHAMAS,Econoinfo,,"Carlos Alberto da Veiga Sicupira (100,00%)",,,
+Holdco I S.A.,15.125.401/0001-45,Econoinfo,,"TEP Chile S.A. (0%)
 LATAM Airlines S.A. (0%)",,,
