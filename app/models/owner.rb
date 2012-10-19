@@ -256,6 +256,12 @@ class Owner
         pair = [company, owned_company]
         next sum if route.include? pair
 
+        # uncomment to print route
+        #puts (route.map{ |p| p.first.name } << company.name << owned_company.name).join('->')
+        # uncomment to print formula
+        #print " + W#{company.name.downcase}#{owned_company.name.downcase} * (V#{owned_company.name.downcase}"
+        # uncomment to print formula
+
         own_value = owned_company.value attr, balance_reference_date
         indirect_value = __recursion owned_company, attr, balance_reference_date, share_reference_date, route+[pair]
         total_value = own_value + indirect_value
@@ -263,11 +269,6 @@ class Owner
         w = is_controller ? 1 : owned_share.percentage/100
         x = w * total_value
 
-        # uncomment to print route
-        #puts (route.map{ |p| p.first.name } << company.name << owned_company.name).join('->')
-        # uncomment to print formula
-        #print " + W#{company.name.downcase}#{owned_company.name.downcase} * (V#{owned_company.name.downcase}"
-        # uncomment to print formula
         #print ')'
 
         sum + x
