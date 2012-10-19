@@ -193,7 +193,7 @@ class Owner
           next if control == true
           "#{owned_company.name} (#{owned_share.percentage.c}%, final=#{p.c}%)"
         else
-          sep = "#{'•• '*(route.size+1)}"
+          sep = owned.count > 1 ? "#{'•• '*(route.size+1)}" : ''
           end_sep = owned.count > 1 ? "\n#{sep}}" : "}"
           begin_sep = owned.count > 1 ? "\n" : ""
           owned = sep + owned.join(sep)
@@ -231,15 +231,21 @@ class Owner
     self.save
     own_value
   end
-  def calculate_indirect_value(attr = :revenue, balance_reference_date = $balance_reference_date, share_reference_date = $share_reference_date)
 
-    def __recursion(company, attr, balance_reference_date, share_reference_date,
-                    route = Set.new)
+  def calculate_power attr = :revenue, balance_reference_date = $balance_reference_date, share_reference_date = $share_reference_date
 
-      # uncomment to print formula
-      #print "\nP#{company.name.downcase} = V#{company.name.downcase}" if route.size.zero?
+    # uncomment to print formula
+    print "\nP#{self.name.downcase} = "
 
-      company.owned_shares.on.with_reference_date(share_reference_date).inject(0) do |sum, owned_share|
+    def __recursion(company, attr, balance_reference_date, share_reference_date, route = Set.new)
+      own_value = company.value attr, balance_reference_date
+
+      # uncomment to print letter formula
+      #print "V#{company.name.downcase}"
+      # uncomment to print number formula
+      print own_value.to_s
+
+      company.owned_shares.on.with_reference_date(share_reference_date).inject(own_value) do |sum, owned_share|
         owned_company = owned_share.company
 
         next sum if owned_share.percentage.nil?
@@ -256,35 +262,36 @@ class Owner
         pair = [company, owned_company]
         next sum if route.include? pair
 
-        # uncomment to print route
-        #puts (route.map{ |p| p.first.name } << company.name << owned_company.name).join('->')
-        # uncomment to print formula
-        #print " + W#{company.name.downcase}#{owned_company.name.downcase} * (V#{owned_company.name.downcase}"
-        # uncomment to print formula
-
-        own_value = owned_company.value attr, balance_reference_date
-        indirect_value = __recursion owned_company, attr, balance_reference_date, share_reference_date, route+[pair]
-        total_value = own_value + indirect_value
-
         w = is_controller ? 1 : owned_share.percentage/100
-        x = w * total_value
 
-        #print ')'
+        # uncomment to print route
+        #puts (route.map{ |p| p.first.name } << company.name << owned_company.name).join(',')
+        # uncomment to print letter formula
+        #print " + W#{company.name.downcase}#{owned_company.name.downcase} * ( "
+        # uncomment to print number formula
+        print " + #{w} * ( "
+
+        power = __recursion owned_company, attr, balance_reference_date, share_reference_date, route+[pair]
+        x = w * power
+
+        # uncomment to print formula
+        print " )"
 
         sum + x
       end
     end
 
-    indirect_value = __recursion self, attr, balance_reference_date, share_reference_date
-    self.send "indirect_#{attr}=", indirect_value
-    self.save
-    indirect_value
-  end
-  def calculate_value(attr = :revenue, balance_reference_date = $balance_reference_date, share_reference_date = $share_reference_date)
-    own_value = self.calculate_own_value attr, balance_reference_date
-    indirect_value = self.calculate_indirect_value attr, balance_reference_date, share_reference_date
-    total_value = own_value + indirect_value
+    total_value = __recursion self, attr, balance_reference_date, share_reference_date
     self.send "total_#{attr}=", total_value
+    self.save
+    total_value
+  end
+
+  def calculate_values(attr = :revenue, balance_reference_date = $balance_reference_date, share_reference_date = $share_reference_date)
+    own_value = self.calculate_own_value attr, balance_reference_date
+    total_value = self.calculate_power attr, balance_reference_date, share_reference_date
+    indirect_value = total_value - own_value
+    self.send "indirect_#{attr}=", total_value
     self.save
     total_value
   end
@@ -293,8 +300,8 @@ class Owner
     self['cgc'] = CgcHelper.parse value
   end
   def add_cgc(cgc)
-    return if cgc.blank?
     cgc = CgcHelper.parse cgc
+    return if cgc.blank?
     self.cgc << cgc unless self.cgc.include?(cgc)
   end
 

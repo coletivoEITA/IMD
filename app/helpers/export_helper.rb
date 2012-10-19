@@ -98,19 +98,15 @@ module ExportHelper
           i += 1 unless is_controlled
 
           valor_value = owner.balances.valor.with_reference_date(balance_reference_date).first
-          valor_value = valor_value.nil? ? '0.00' : (valor_value.value(attr)/1000000).c
-          valor_value = '-' if valor_value == '0.00'
+          valor_value = valor_value.nil? ? valor_value.c : (valor_value.value(attr)/1000000).c
           economatica_value = owner.balances.economatica.with_reference_date(balance_reference_date).first
-          economatica_value = economatica_value.nil? ? '0.00' : (economatica_value.value(attr)/1000000).c
-          economatica_value = '-' if economatica_value == '0.00'
+          economatica_value = economatica_value.nil? ? economatica_value.c : (economatica_value.value(attr)/1000000).c
 
           balance = owner.balance_with_value(attr, balance_reference_date)
           source = balance.nil? ? owner.source : balance.source_with_months
 
           indirect_value = (owner.send("indirect_#{attr}")/1000000).c
-          indirect_value = '-' if indirect_value == '0.00'
           total_value = (owner.send("total_#{attr}")/1000000).c
-          total_value = '-' if total_value == '0.00'
           index_value = total_value == '-' ? '-' : (total_value.to_f / (1345 * 12)).c
 
           power_direct_control = owned_shares.select{ |s| s.control? }.map do |s|
@@ -123,7 +119,7 @@ module ExportHelper
           power_indirect_control = owner.indirect_total_controlled_companies(share_reference_date).join("\n")
           power_indirect_parcial = owner.indirect_parcial_controlled_companies(share_reference_date).join("\n")
 
-          shareholders = owners_shares.select{ |s| s.percentage }.map do |s|
+          shareholders = owners_shares.map do |s|
             "#{s.owner.name} (#{s.percentage.c}%)"
           end.join("\n")
 

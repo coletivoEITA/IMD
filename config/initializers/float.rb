@@ -3,7 +3,7 @@
 class Float
 
   def c
-    '%.2f' % self
+    self.zero? ? '-' : '%.2f' % self
   end
 
 end

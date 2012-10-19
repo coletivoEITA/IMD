@@ -58,7 +58,7 @@ class Share
     self.percentage && self.percentage > 50
   end
   def parcial?
-    self.percentage && self.percentage <= 50
+    self.percentage.nil? || self.percentage <= 50
   end
 
   def calculate_percentage
