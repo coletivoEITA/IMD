@@ -568,7 +568,7 @@ module ImportHelper
 
   def self.import_asclaras_grantor_locally()
     empty_donator = []
-	file_path = '/home/caioformiga/workspace/EITA/IMD/db/wget/'	
+	file_path = '/home/caioformiga/workspace/EITA/IMD/db/wget/wget-imported-bhakta/'	
 	dir = Dir.new(file_path)
 	dir.each { |file_name| 
 	  if file_name != "." && file_name != ".." && file_name != 'asclaras_grantor.pl' && file_name != 'teste.pl'
@@ -582,7 +582,7 @@ module ImportHelper
 			pp "grantor: "+donator_id+" year: "+year
 		    pp '============================'
 		rescue NoMethodError
-			empty_donator << donator_id
+			empty_donator << file_name
 		end
 		#delete html file  
 		file_full_path = file_path + file_name
@@ -592,6 +592,12 @@ module ImportHelper
 		end
 		pp 'deleted'
 	  end
+	}
+    #create log file with donators		
+	File.new("empty_donator.log", "w+") {|f| 
+	  empty_donator.each { |d|
+		f.puts d
+	  }
 	}
   end
 
@@ -666,8 +672,10 @@ module ImportHelper
 		  data = tr.search('td') 
 		  next if data.count != 2
 		  name, cgc = data[0].text, data[1].text
+		  #TODO: add grantor to return in case asclaras_id exist
 		  owner = Owner.first_or_new 'àsclaras', :cgc => cgc, :name => name
 		  owner.save!
+		  #TODO: add grantor to return in case asclaras_id exist
 		  grantor = Grantor.first_or_new :asclaras_id => grantor_id, :owner_id => owner.id, :year => year
 		  grantor.save!
 		end
