@@ -18,6 +18,8 @@ class Share
   key :owner_id, ObjectId
   belongs_to :owner
 
+  key :source_detail, String
+
   validates_presence_of :company
   validates_presence_of :name
   validates_presence_of :owner

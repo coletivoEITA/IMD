@@ -38,7 +38,7 @@ class String
     ActiveSupport::Inflector.transliterate(self)
   end
 
-  CompanyNatureSuffixes = ['s.a|s/a|sa', 's.c|s/c|sc', 'ltda', 'ltd', 'inc']
+  CompanyNatureSuffixes = ['s.a|s/a|sa', 's.c|s/c|sc', 'ltda', 'ltd', 'inc', 'gmbh']
 
   def remove_company_nature
     p = Proc.new do |string|

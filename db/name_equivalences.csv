@@ -1,4 +1,5 @@
 nome,sinonimo,fonte
+"Indac - Indústria, Administração e Comércio S.A.",Indac Ind. Adm. e Comercio S.A.,Economatica associado
 3M,3 M,Exame
 Abril Educação,Abril Educa,Economatica
 Alesat,Ale,Exame
@@ -16,8 +17,6 @@ BRF Foods,BRF Brasil Foods,Valor
 Banco BTG Pactual,Btgp Banco,Economatica
 Banespa,Banco do Estado de Sao Paulo S/A - Banespa .,Economatica associado
 Bhp Billiton,BHP Billiton Metais 1,Valor
-Litel,Litel Participações S.A.,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=VALE
-http://www.vale.com.br/pt-br/investidores/resultados-e-informacoes-financeiras/relatorios-sec/Documents/2010/form20f/20F_2010_p.pdf associado
 Bndespar - BNDES Participacoes SA,BNDES PARTICIPACOES S.A. - BNDESPAR,Bovespa
 Brasil Brokers,BR Brokers,Economatica
 Braskem,Braskem S.A.,Economatica associado
@@ -30,6 +29,7 @@ C. Vale,C.Vale,Valor
 CAF Brasil,Caf,Exame
 CPFL Energia,CPFL Energia S.A.,Economatica associado
 Café Iguaçu,Iguacu Cafe,Economatica
+Caixa de Previdência Dos Funcionários Do Banco Do Brasil - Previ,Previ Cx Prev Funcs Bco Brasil,Economatica associado
 Camargo Corrêa Desenvolvimento Imobiliário,CC Des Imob,Economatica
 Camargo Corrêa Desenvolvimento Imobiliário,CCDI,Valor
 Camil,Camil 1,Valor
@@ -78,6 +78,8 @@ Faber-Castell,Faber Castell 1,Valor
 Fiat,Fiat Automóveis,Valor
 Fibria,Fibria Celulose S.A,Economatica associado
 Fleury Medicina e Saúde,Fleury,Economatica
+Fundação Dos Economiários Federais - Funcef,Funcef-Fundacao Economiarios Federais,Economatica associado
+Fundação Petrobrás de Seguridade Social - Petros,Petros - Fund. Petrobras de Seg. Social,Economatica associado
 GPC Participações,GPC Part,Economatica
 Gerdau Met,Metalurgica Gerdau S/A,Economatica associado
 Get Net,Getnet,Valor
@@ -104,6 +106,7 @@ Lanxess,Lanxess Elastômeros,Valor
 Le Lis Blanc,Le Lis Blanc Deux,Valor
 Leader,Leader Magazine,Valor
 Light,Light Energia SA,Economatica associado
+Litel Participações S.A.,Litel,Economatica
 Locamérica Frotas,Locamerica,Economatica
 Locamérica Frotas,Locamerica,Economatica
 Lojas Americanas,Lojas Americ,Economatica
@@ -130,6 +133,7 @@ Neoenergia,Neoenergia S/A,Economatica associado
 Nestlé,Nestlé 2,Valor
 Net,NET Serviços,Valor
 Net,Net Servicos de Comunicacoes S.A,Economatica associado
+Odebrecht Realizações Imobiliárias,Odebrecht Real. Imob.,Valor
 Odebrecht Serviços e Part.,Odebrecht Servicos e Participacoes SA,Economatica associado
 Odebrecht,Odebrecht S.A.,Economatica associado
 Oderich,Conservas Oderich,Valor

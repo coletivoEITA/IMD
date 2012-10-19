@@ -52,6 +52,8 @@ class Owner
 
   key :valor_ranking_position, Integer
 
+  key :source_detail, String
+
   # normalized versions
   key :name_n, String
   key :formal_name_n, String
@@ -88,6 +90,7 @@ class Owner
     cgc, name, formal_name = attributes[:cgc], attributes[:name], attributes[:formal_name]
 
     name = NameEquivalence.replace source, name
+    # no name filled, get and replace from formal_name
     name = Owner.process_name name, source, formal_name
     attributes[:name] = name
 
@@ -107,7 +110,7 @@ class Owner
     owner = exact_match || by_cgc || by_name || by_formal_name || self.new
 
     # uncomment to print when new owners are created
-    puts "--- New owner #{name} ---" if owner.new_record?
+    #puts "--- New owner #{name} ---" if owner.new_record?
 
     owner.source ||= source
     owner.add_cgc(cgc) unless cgc.blank?
@@ -220,8 +223,6 @@ class Owner
     __recursion self, share_reference_date
   end
 
-  UseCaching = false
-
   def calculate_own_value(attr = :revenue, balance_reference_date = $balance_reference_date)
     own_value = self.value attr, balance_reference_date
     self.send "own_#{attr}=", own_value
@@ -232,6 +233,9 @@ class Owner
 
     def __recursion(company, attr, balance_reference_date, share_reference_date,
                     route = Set.new)
+
+      # uncomment to print formula
+      #print "\nP#{company.name.downcase} = V#{company.name.downcase}" if route.size.zero?
 
       company.owned_shares.on.with_reference_date(share_reference_date).inject(0) do |sum, owned_share|
         owned_company = owned_share.company
@@ -252,25 +256,15 @@ class Owner
 
         # uncomment to print route
         #puts (route.map{ |p| p.first.name } << company.name << owned_company.name).join('->')
+        # uncomment to print formula
+        #print " + W#{company.name.downcase}#{owned_company.name.downcase} * (V#{owned_company.name.downcase}"
 
-        # get from cache
-        total_value = owned_company.send "total_#{attr}"
-        # calculate if needed
-        if UseCaching == false or total_value.nil?
-          own_value = owned_company.send "own_#{attr}"
-          own_value = owned_company.value attr, balance_reference_date if UseCaching == false or own_value.nil?
+        own_value = owned_company.value attr, balance_reference_date
+        indirect_value = __recursion owned_company, attr, balance_reference_date, share_reference_date, route+[pair]
+        total_value = own_value + indirect_value
 
-          indirect_value = owned_company.send "indirect_#{attr}"
-          indirect_value = __recursion owned_company, attr, balance_reference_date, share_reference_date, route+[pair] if UseCaching == false or indirect_value.nil?
-
-          total_value = own_value + indirect_value
-
-          # cache values
-          owned_company.send "own_#{attr}=", own_value
-          owned_company.send "indirect_#{attr}=", indirect_value
-          owned_company.send "total_#{attr}=", total_value
-          owned_company.save
-        end
+        # uncomment to print formula
+        #print ')'
 
         w = is_controller ? 1 : owned_share.percentage/100
         x = w * total_value
@@ -285,18 +279,11 @@ class Owner
     indirect_value
   end
   def calculate_value(attr = :revenue, balance_reference_date = $balance_reference_date, share_reference_date = $share_reference_date)
-    total_value = self.send "total_#{attr}"
-    if UseCaching == false or total_value.nil?
-      own_value = self.send "own_#{attr}"
-      own_value = self.calculate_own_value attr, balance_reference_date if UseCaching == false or own_value.nil?
-
-      indirect_value = self.send "indirect_#{attr}"
-      indirect_value = self.calculate_indirect_value attr, balance_reference_date, share_reference_date if UseCaching == false or indirect_value.nil?
-
-      total_value = own_value + indirect_value
-      self.send "total_#{attr}=", total_value
-      self.save
-    end
+    own_value = self.calculate_own_value attr, balance_reference_date
+    indirect_value = self.calculate_indirect_value attr, balance_reference_date, share_reference_date
+    total_value = own_value + indirect_value
+    self.send "total_#{attr}=", total_value
+    self.save
     total_value
   end
 
