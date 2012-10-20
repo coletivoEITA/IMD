@@ -182,6 +182,7 @@ class Owner
         owned_company = owned_share.company
         next if owned_share.percentage.nil?
 
+        direct = route.size.zero?
         pair = [company, owned_company]
         next if route.include? pair
 
@@ -189,14 +190,16 @@ class Owner
         control = control.nil? ? owned_share.control? : (control && owned_share.control?)
         owned = __recursion owned_company, p, control, share_reference_date, route+[pair]
 
+        participation = "#{owned_share.percentage.c}%, final=#{p.c}%"
         if owned.empty?
-          next if control == true
-          "#{owned_company.name} (#{owned_share.percentage.c}%, final=#{p.c}%)"
+          next if control == true or direct
+          "#{owned_company.name} (#{participation})"
         else
           sep = owned.count > 1 ? "\n#{'•• '*(route.size+1)}" : ''
           end_sep = owned.count > 1 ? "\n#{'•• '*(route.size)}}" : "}"
           owned = sep + owned.join(sep)
-          "#{owned_company.name} => {#{owned}#{end_sep}"
+          partipation = direct ? '' : " (#{partipation})"
+          "#{owned_company.name}#{participation} => {#{owned}#{end_sep}"
         end
       end.flatten.compact
     end
@@ -210,11 +213,12 @@ class Owner
         next unless owned_share.control?
         owned_company = owned_share.company
 
+        direct = route.size.zero?
         pair = [company, owned_company]
         next if route.include? pair
 
         list = []
-        list << "#{owned_company.name} (controlada por #{company.name})" unless route.size.zero?
+        list << "#{owned_company.name} (controlada por #{company.name})" unless direct
         list += __recursion owned_company, share_reference_date, route+[pair]
 
         list
