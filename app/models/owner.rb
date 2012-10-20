@@ -193,7 +193,7 @@ class Owner
           next if control == true
           "#{owned_company.name} (#{owned_share.percentage.c}%, final=#{p.c}%)"
         else
-          sep = owned.count > 1 ? "#{'•• '*(route.size+1)}" : ''
+          sep = owned.count > 1 ? "\n#{'•• '*(route.size+1)}" : ''
           end_sep = owned.count > 1 ? "\n#{sep}}" : "}"
           begin_sep = owned.count > 1 ? "\n" : ""
           owned = sep + owned.join(sep)
@@ -291,7 +291,7 @@ class Owner
     own_value = self.calculate_own_value attr, balance_reference_date
     total_value = self.calculate_power attr, balance_reference_date, share_reference_date
     indirect_value = total_value - own_value
-    self.send "indirect_#{attr}=", total_value
+    self.send "indirect_#{attr}=", indirect_value
     self.save
     total_value
   end

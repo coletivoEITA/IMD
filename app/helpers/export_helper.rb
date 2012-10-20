@@ -110,17 +110,17 @@ module ExportHelper
           index_value = total_value == '-' ? '-' : (total_value.to_f / (1345 * 12)).c
 
           power_direct_control = owned_shares.select{ |s| s.control? }.map do |s|
-            "#{s.company.name} (#{s.percentage.c}%)"
+            "#{s.company.name} (#{s.percentage.c}#{'%' if s.percentage})"
           end.join("\n")
           power_direct_parcial = owned_shares.select{ |s| s.parcial? }.map do |s|
-            "#{s.company.name} (#{s.percentage.c}%)"
+            "#{s.company.name} (#{s.percentage.c}#{'%' if s.percentage})"
           end.join("\n")
 
           power_indirect_control = owner.indirect_total_controlled_companies(share_reference_date).join("\n")
           power_indirect_parcial = owner.indirect_parcial_controlled_companies(share_reference_date).join("\n")
 
           shareholders = owners_shares.map do |s|
-            "#{s.owner.name} (#{s.percentage.c}%)"
+            "#{s.owner.name} (#{s.percentage.c}#{'%' if s.percentage})"
           end.join("\n")
 
           #shares_percent_sum = owners_shares.sum{ |s| s.percentage.nil? ? 0 : s.percentage }

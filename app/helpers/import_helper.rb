@@ -166,7 +166,7 @@ module ImportHelper
         next if field.blank?
 
         value = 'ON' if field == :classes and value == 'Ord'
-
+        value.squish!
         # jump preprocessed
         next if ['cgc', 'name'].include?(field)
 
@@ -184,12 +184,13 @@ module ImportHelper
                                      :name => value, :reference_date => reference_date, :sclass => $1)
         end
 
+        # jump nil
         next if value.blank? or value == '-' or value == '0' or value == '0.0'
 
         if field.starts_with?('balance_')
-          balance.send "#{$1}=", value if field =~ /balance_(.+)/
+          balance.send "#{$1}=", value if balance and field =~ /balance_(.+)/
         elsif field.starts_with?('share_')
-          share.send "#{$3}=", value if field =~ /share_(.+)_(.+)_(.+)/
+          share.send "#{$3}=", value if share and field =~ /share_(.+)_(.+)_(.+)/
         elsif field == 'traded'
           company.traded = value == 'ativo'
         elsif field == 'shares_quantity'
@@ -202,8 +203,8 @@ module ImportHelper
 
       pp company
       company.save!
-      balance.save! if balance
-      share.save! if share and !share.name.blank? and !share.quantity.nil?
+      balance.save
+      share.save
     end
   end
 
