@@ -17,23 +17,17 @@ describe Owner do
 
   it 'calculate total value case 3' do
     owners = create_owners_and_shares 'B' => [['A', 27.09]], 'C' => [['B', 45.01]],
-      'D' => [['C', 33.03], ['E', 14.3], ['F', 49.87]],
-      'E' => [['D', 3.75]], 'F' => [['D', 11.27]]
+      'D' => [['C', 33.03], ['E', 3.75], ['F', 11.27]],
+      'E' => [['D', 14.3]], 'F' => [['D', 49.87]]
 
     create_balances [[owners['A'], 1596.33], [owners['B'], 828.99], [owners['C'], 5679.12],
                      [owners['D'], 333.33], [owners['E'], 668.71], [owners['F'], 2546.7]]
     owners.values.each{ |o| o.calculate_values }
 
-    pp owners['A'].total_revenue
-    pp owners['B'].total_revenue
-    pp owners['C'].total_revenue
-    pp owners['D'].total_revenue
-    pp owners['E'].total_revenue
-    pp owners['F'].total_revenue
-    expect(owners['A'].total_revenue).to eq(2583.03964940368)
-    expect(owners['B'].total_revenue).to eq(3642.33905280057)
-    expect(owners['C'].total_revenue).to eq(6250.49778449361)
-    expect(owners['D'].total_revenue).to eq(1729.8752179643)
+    expect(owners['A'].total_revenue).to eq(2583.12130097916)
+    expect(owners['B'].total_revenue).to eq(3642.64046134794)
+    expect(owners['C'].total_revenue).to eq(6251.16743245488)
+    expect(owners['D'].total_revenue).to eq(1731.9026111259)
     expect(owners['E'].total_revenue).to eq(733.32638566903)
     expect(owners['F'].total_revenue).to eq(2739.14571845705)
   end

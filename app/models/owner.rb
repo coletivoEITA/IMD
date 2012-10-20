@@ -235,7 +235,7 @@ class Owner
   def calculate_power attr = :revenue, balance_reference_date = $balance_reference_date, share_reference_date = $share_reference_date
 
     # uncomment to print formula
-    print "\nP#{self.name.downcase} = "
+    #print "\nP#{self.name.downcase} = "
 
     def __recursion(company, attr, balance_reference_date, share_reference_date, route = Set.new)
       own_value = company.value attr, balance_reference_date
@@ -243,7 +243,7 @@ class Owner
       # uncomment to print letter formula
       #print "V#{company.name.downcase}"
       # uncomment to print number formula
-      print own_value.to_s
+      #print own_value.to_s
 
       company.owned_shares.on.with_reference_date(share_reference_date).inject(own_value) do |sum, owned_share|
         owned_company = owned_share.company
@@ -269,13 +269,13 @@ class Owner
         # uncomment to print letter formula
         #print " + W#{company.name.downcase}#{owned_company.name.downcase} * ( "
         # uncomment to print number formula
-        print " + #{w} * ( "
+        #print " + #{w} * ( "
 
         power = __recursion owned_company, attr, balance_reference_date, share_reference_date, route+[pair]
         x = w * power
 
         # uncomment to print formula
-        print " )"
+        #print " )"
 
         sum + x
       end
