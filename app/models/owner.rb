@@ -194,10 +194,9 @@ class Owner
           "#{owned_company.name} (#{owned_share.percentage.c}%, final=#{p.c}%)"
         else
           sep = owned.count > 1 ? "\n#{'•• '*(route.size+1)}" : ''
-          end_sep = owned.count > 1 ? "\n#{sep}}" : "}"
-          begin_sep = owned.count > 1 ? "\n" : ""
+          end_sep = owned.count > 1 ? "\n#{'•• '*(route.size)}}" : "}"
           owned = sep + owned.join(sep)
-          "#{owned_company.name} => {#{begin_sep}#{owned}#{end_sep}"
+          "#{owned_company.name} => {#{owned}#{end_sep}"
         end
       end.flatten.compact
     end

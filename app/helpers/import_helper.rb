@@ -164,9 +164,10 @@ module ImportHelper
         field = column_index_to_field(column_index).to_s
         column_index += 1
         next if field.blank?
+        next if value.blank?
+        value.squish!
 
         value = 'ON' if field == :classes and value == 'Ord'
-        value.squish!
         # jump preprocessed
         next if ['cgc', 'name'].include?(field)
 
@@ -185,7 +186,7 @@ module ImportHelper
         end
 
         # jump nil
-        next if value.blank? or value == '-' or value == '0' or value == '0.0'
+        next if value == '-' or value == '0' or value == '0.0'
 
         if field.starts_with?('balance_')
           balance.send "#{$1}=", value if balance and field =~ /balance_(.+)/
