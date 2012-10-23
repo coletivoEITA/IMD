@@ -118,7 +118,7 @@ module ExportHelper
           is_controlled = shares_percent_sum > 50
           controlled = is_controlled ? 'sim' : ''
 
-          if !is_controlled and has_participation and value == total_value
+          if !is_controlled and has_participation and own_value == total_value
             position = 'g'
           elsif !is_controlled and not has_participation
             position = 'f'
