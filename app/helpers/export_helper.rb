@@ -63,7 +63,6 @@ module ExportHelper
       puts 'loading data'
       value_field = "total_#{attr}".to_sym
       owners = Owner.order(value_field.desc).where(:name_n.ne => 'acoes em tesouraria').all
-      #total = owners.sum(&value_field)
 
       puts 'exporting data'
       CSV.open("output/#{attr}-ranking.csv", "w") do |csv|
@@ -81,7 +80,6 @@ module ExportHelper
           #legal_nature = owner.legal_nature || '-'
           stock_code = owner.stock_code_base
 
-          own_value = owner.value attr, balance_reference_date
           valor_value = owner.balances.valor.with_reference_date(balance_reference_date).first
           valor_value = valor_value.nil? ? valor_value.c : (valor_value.value(attr)/1000000).c
           economatica_value = owner.balances.economatica.with_reference_date(balance_reference_date).first
@@ -90,6 +88,7 @@ module ExportHelper
           balance = owner.balance_with_value(attr, balance_reference_date)
           source = balance.nil? ? owner.source : balance.source_with_months
 
+          own_value = (owner.send("own_#{attr}")/1000000).c
           indirect_value = (owner.send("indirect_#{attr}")/1000000).c
           total_value = (owner.send("total_#{attr}")/1000000).c
           #index_value = total_value == '-' ? '-' : (total_value.to_f / (1345 * 12)).c(4)
@@ -111,8 +110,8 @@ module ExportHelper
           power_indirect_control = owner.indirect_total_controlled_companies(share_reference_date).join("\n")
           power_indirect_parcial = owner.indirect_parcial_controlled_companies(share_reference_date).join("\n")
 
-          has_participation = !power_direct_control.blank? || !power_direct_parcial.blank? ||
-                              !power_indirect_parcial.blank? || !power_indirect_parcial.blank?
+          has_participation = !(power_direct_control.blank? && power_direct_parcial.blank? &&
+                              power_indirect_parcial.blank? && power_indirect_parcial.blank?)
 
           shares_percent_sum = owners_shares.sum{ |s| s.percentage.nil? ? 0 : s.percentage }
           is_controlled = shares_percent_sum > 50
