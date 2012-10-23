@@ -8,14 +8,6 @@ class String
     true if Float(self) rescue false
   end
 
-  def downcase
-    Unicode::downcase(self)
-  end
-
-  def upcase
-    Unicode::upcase(self)
-  end
-
   def remove_non_ascii(replacement="")
     if RUBY_VERSION >= "1.9"
       encoding_options = {

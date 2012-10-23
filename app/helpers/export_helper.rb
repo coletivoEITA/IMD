@@ -127,7 +127,7 @@ module ExportHelper
           else
             position = i.to_s
           end
-          i += 1 unless position.number?
+          i += 1 if position.number?
 
           csv << [position, total_value, owner.name, shareholders,
                   power_direct_control, power_direct_parcial, power_indirect_control, power_indirect_parcial,

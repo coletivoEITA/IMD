@@ -35,12 +35,8 @@ gem 'jquery-rails'
 # Deploy with Capistrano
 # gem 'capistrano'
 
-# To use debugger
-if RUBY_VERSION >= "1.9"
-  gem 'ruby-debug19', :group => [:test, :development]
-else
-  gem 'ruby-debug', :group => [:test, :development]
-end
+gem 'ruby-debug',   :platform => :mri_18
+gem 'ruby-debug19', :platform => :mri_19, :require => 'ruby-debug'
 
 gem "nifty-generators", :group => :development
 
@@ -50,11 +46,9 @@ gem 'bson_ext'
 gem 'mongo_mapper'
 
 gem 'execjs'
-gem 'therubyracer'
+gem 'therubyracer', :platform => :mri
 
 gem 'mechanize'
-
-gem 'unicode'
 
 gem 'rspec-rails', '~> 2.0', :group => [:test, :development]
 gem 'database_cleaner', :group => [:test]
