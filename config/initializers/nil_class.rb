@@ -2,7 +2,7 @@
 
 class NilClass
 
-  def c
+  def c(digits = 2)
     '-'
   end
 

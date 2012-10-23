@@ -408,7 +408,6 @@ module ImportHelper
 
     page = m.get url % {:cvm_id => cvm_id}
     formal_name = page.parser.css('h1 span.label')[0].text.squish
-    pp formal_name
 
     page = m.get frame_url % {:cvm_id => cvm_id}
 

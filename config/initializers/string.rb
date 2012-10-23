@@ -4,6 +4,10 @@ require 'iconv' unless RUBY_VERSION >= "1.9"
 
 class String
 
+  def number?
+    true if Float(self) rescue false
+  end
+
   def downcase
     Unicode::downcase(self)
   end

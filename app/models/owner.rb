@@ -198,7 +198,7 @@ class Owner
           sep = owned.count > 1 ? "\n#{'•• '*(route.size+1)}" : ''
           end_sep = owned.count > 1 ? "\n#{'•• '*(route.size)}}" : "}"
           owned = sep + owned.join(sep)
-          partipation = direct ? '' : " (#{partipation})"
+          participation = direct ? '' : " (#{participation})"
           "#{owned_company.name}#{participation} => {#{owned}#{end_sep}"
         end
       end.flatten.compact
