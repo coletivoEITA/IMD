@@ -26,12 +26,37 @@ class String
     end
   end
 
+  def encodef to = 'UTF-8', from = 'iso8859-1'
+    if RUBY_VERSION >= "1.9"
+      self.force_encoding(from).encode to
+    else
+      Iconv.conv to, from, self
+    end
+  end
+
   def transliterate
     ActiveSupport::Inflector.transliterate(self)
   end
 
-  def filter_normalization
-    self.squish.gsub(/\b(s.a|s\/a|sa)\.?$/i, '').strip.transliterate.downcase
+  CompanyNatureSuffixes = ['s.a|s/a|sa', 's.c|s/c|sc', 'ltda', 'ltd', 'inc', 'gmbh']
+
+  def remove_company_nature
+    p = Proc.new do |string|
+      CompanyNatureSuffixes.inject(string) do |string, nature|
+        string.gsub /\b(#{nature})\.?$/i, ''
+      end.strip
+    end
+    string = p.call self
+    # there are cases where two natures appears
+    string = p.call string
+  end
+
+  def remove_symbols
+    self.gsub /[^a-z0-9\s]/i, ''
+  end
+
+  def name_normalization
+    self.squish.remove_company_nature.transliterate.remove_symbols.downcase
   end
 
 end

@@ -62,7 +62,25 @@ module CheckHelper
 
         csv << [a, b, c_words.join(', ')]
       end
+    end
+  end
 
+  def self.check_starting_with
+    attr = :name_n
+    CSV.open("output/starting-with-#{attr}.csv", "w") do |csv|
+      csv << ['nome 1', 'fonte de 1', 'nome 2', 'fonte de 2']
+
+      owners = Owner.order(attr.asc).all
+      owners.each_with_index do |owner, i|
+        next_owner = owners[i+1]
+        break if next_owner.nil?
+
+        next unless owner.send(attr) =~ /^(.+)\b/
+        first_word = $1
+        if next_owner.send(attr).starts_with?(first_word)
+          csv << [owner.send(attr), owner.source, next_owner.send(attr), next_owner.source]
+        end
+      end
     end
   end
 

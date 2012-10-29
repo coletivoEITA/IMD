@@ -1,12 +1,14 @@
 #!/usr/bin/env ruby
-require File.dirname(__FILE__) + '/../config/boot'
+require File.dirname(__FILE__) + '/../config/environment'
 
 ImportHelper.clear_db
 ImportHelper.import_name_equivalences
-ImportHelper.import_valor 'db/ranking-valor-2011.csv', $balance_reference_date
+
+ImportHelper.import_valor_csv 'db/ranking-valor-2011.csv', $balance_reference_date
 #ImportHelper.import_companies 'db/mdic-importers.csv', 'db/mdic-exporters.csv'
-ImportHelper.import_economatica_csv "db/economatica-period-#{$balance_reference_date}.csv", $balance_reference_date
-ImportHelper.import_economatica_csv "db/economatica-period-#{$share_reference_date}.csv", $share_reference_date
+
+ImportHelper.import_economatica_csv "db/economatica-period-#{$balance_reference_date.to_date.to_s}.csv", $balance_reference_date
+ImportHelper.import_economatica_csv "db/economatica-period-#{$share_reference_date.to_date.to_s}.csv", $share_reference_date
 
 # add legal nature
 ImportHelper.import_legal_nature_csv 'db/legal-nature-and-cnpj-for-names.csv'
@@ -20,5 +22,8 @@ Owner.all(:source => 'Exame').each{ |o| o.destroy }
 ImportHelper.import_bovespa :cvm_id => 16772, :reference_date => $share_reference_date
 ImportHelper.import_bovespa :cvm_id => 18678, :reference_date => $share_reference_date
 ImportHelper.import_bovespa :cvm_id => 18902, :reference_date => $share_reference_date
+ImportHelper.import_bovespa :cvm_id => 21784, :reference_date => $share_reference_date
+
+#ImportHelper.import_stockholders_csv 'db/manually-collected-shareholders.csv'
 
 

@@ -25,8 +25,9 @@ class Owner
   key :cvm_id, Integer
   key :classes, Array
   key :traded, Boolean
-  key :stock_market, String
-  key :stock_code, String
+  key :stock_market, Array
+  key :stock_code, Array
+  key :stock_code_base, String
   key :shares_quantity, Hash # {'class' => 'quantity'}
   # extra info
   key :open_date, Time
@@ -41,21 +42,27 @@ class Owner
   key :phone, String
   key :website, String
 
-  key :own_revenue, Float, :default => 0
-  key :indirect_revenue, Float, :default => 0
-  key :total_revenue, Float, :default => 0
+  key :own_revenue, Float
+  key :indirect_revenue, Float
+  key :total_revenue, Float
 
-  key :own_patrimony, Float, :default => 0
-  key :indirect_patrimony, Float, :default => 0
-  key :total_patrimony, Float, :default => 0
+  key :own_patrimony, Float
+  key :indirect_patrimony, Float
+  key :total_patrimony, Float
 
   key :valor_ranking_position, Integer
+
+  key :source_detail, String
 
   # normalized versions
   key :name_n, String
   key :formal_name_n, String
 
+  # preference order of sources to use
+  BalanceSources = ['Economatica', 'Valor']
+
   many :balances, :foreign_key => :company_id, :dependent => :destroy_all
+
   many :owners_shares, :class_name => 'Share', :foreign_key => :company_id, :dependent => :destroy_all
   many :owned_shares, :class_name => 'Share', :foreign_key => :owner_id, :dependent => :destroy_all
 
@@ -67,9 +74,11 @@ class Owner
   many :donations_made, :class_name => 'Donation', :foreign_key => :grantor_id, :dependent => :destroy_all
   many :donations_received, :class_name => 'Donation', :foreign_key => :candidate_id, :dependent => :destroy_all
 
-  validates_uniqueness_of :formal_name, :allow_nil => true
   validates_uniqueness_of :cgc, :allow_nil => true
   validates_uniqueness_of :cnpj_root, :allow_nil => true
+  validates_uniqueness_of :name
+  validates_uniqueness_of :formal_name, :allow_nil => true
+  validates_uniqueness_of :stock_name, :allow_nil => true
   validates_inclusion_of :capital_type, :in => %w(private state), :allow_nil => true
   validate :validate_cgc
 
@@ -77,23 +86,33 @@ class Owner
   before_save :normalize_fields
 
   def self.first_or_new(source, attributes = {})
-    cgc = attributes[:cgc]
-    name = attributes[:name]
-    formal_name = attributes[:formal_name]
+    by_cgc = by_name = by_formal_name = nil
+    cgc, name = attributes[:cgc], attributes[:name]
+    formal_name, stock_name = attributes[:formal_name], attributes[:stock_name]
+
+    name = NameEquivalence.replace source, name
+    # no name filled, get and replace from formal_name
+    name = Owner.process_name name, source, formal_name || stock_name
+    attributes[:name] = name
 
     exact_match = self.first(attributes)
+    by_cgc = self.find_by_cgc(cgc) unless cgc.blank?
 
-    attributes[:name], name = NameEquivalence.replace source, name
-    attributes[:formal_name], formal_name = NameEquivalence.replace source, formal_name
-    name_n = name.filter_normalization unless name.blank?
-    formal_name_n = formal_name.filter_normalization unless formal_name.blank?
+    unless name.blank?
+      name_n = name.name_normalization
+      by_name = self.first :name => name
+      by_name ||= self.first :$or => [{:name_n => name_n}, {:formal_name_n => name_n}]
+    end
+    unless formal_name.blank?
+      formal_name_n = formal_name.name_normalization
+      by_formal_name = self.first :formal_name => formal_name
+      by_formal_name ||= self.first :$or => [{:formal_name_n => formal_name_n}, {:name_n => formal_name_n}]
+    end
 
-    exact_match ||= self.first(attributes)
-    owner_by_cgc = owner_by_name = owner_by_formal_name = nil
-    owner_by_cgc = self.find_by_cgc(cgc) unless cgc.blank?
-    owner_by_name = self.find_by_name_n(name_n) unless name.blank?
-    owner_by_formal_name = self.find_by_formal_name_n(formal_name_n) unless formal_name.blank?
-    owner = exact_match || owner_by_cgc || owner_by_name || owner_by_formal_name || self.new
+    owner = exact_match || by_cgc || by_name || by_formal_name || self.new
+
+    # uncomment to print when new owners are created
+    #puts "--- New owner #{name} ---" if owner.new_record?
 
     owner.source ||= source
     owner.add_cgc(cgc) unless cgc.blank?
@@ -121,11 +140,17 @@ class Owner
     CgcHelper.cpf?(self.cgc.first)
   end
 
-  def balance_with_value(attr, reference_date = nil)
+  def stock_code_base
+    code = stock_code.first
+    code =~ /([a-z]+)/i
+    $1
+  end
+
+  def balance_with_value(attr = :revenue, reference_date = $balance_reference_date)
     scoped = self.balances.with_reference_date(reference_date)
     balance = nil
     # get balance value in the following preference order
-    ['Economatica', 'Valor'].each do |source|
+    BalanceSources.each do |source|
       balance = scoped.where(:source => source).first
       next if balance.nil?
 
@@ -135,88 +160,84 @@ class Owner
     balance
   end
 
-  def value(attr, reference_date = nil)
+  def value(attr = :revenue, reference_date = $balance_reference_date)
     balance = balance_with_value attr, reference_date
     return 0 if balance.nil?
-    balance.send(attr)
+    balance.send attr
   end
 
-  def indirect_parcial_controlled_companies(share_reference_date = nil)
+  def controller_share(reference_date = $share_reference_date)
+    s = self.owners_shares.on.greatest.with_reference_date(reference_date).first
+    s if s and s.control?
+  end
+  def controller(reference_date = $share_reference_date)
+    s = self.controller_share(reference_date)
+    s.owner if s
+  end
 
-    def __recursion(company, percentage, share_reference_date, visited = [])
+  def indirect_parcial_controlled_companies(share_reference_date = $share_reference_date)
+
+    def __recursion(company, percentage, control, share_reference_date, route = Set.new)
       company.owned_shares.on.greatest.with_reference_date(share_reference_date).map do |owned_share|
         owned_company = owned_share.company
         next if owned_share.percentage.nil?
 
-        next if visited.include? owned_company
-        visited << owned_company
+        pair = [company, owned_company]
+        next if route.include? pair
 
         p = percentage ? (owned_share.percentage*percentage)/100 : owned_share.percentage
-        owned = __recursion(owned_company, p, share_reference_date, visited).compact
+        control = control.nil? ? owned_share.control? : (control && owned_share.control?)
+        owned = __recursion owned_company, p, control, share_reference_date, route+[pair]
+
         if owned.empty?
-          next if company == visited.first or owned_share.control?
+          next if control == true
           "#{owned_company.name} (#{owned_share.percentage.c}%, final=#{p.c}%)"
         else
-          owned = owned.join("\n- ")
-          "#{owned_company.name} => {\n- #{owned}}"
+          sep = "#{'•• '*(route.size+1)}"
+          end_sep = owned.count > 1 ? "\n#{sep}}" : "}"
+          begin_sep = owned.count > 1 ? "\n" : ""
+          owned = sep + owned.join(sep)
+          "#{owned_company.name} => {#{begin_sep}#{owned}#{end_sep}"
         end
-      end
+      end.flatten.compact
     end
 
-    __recursion(self, nil, share_reference_date, [self]).flatten.compact
+    __recursion self, nil, nil, share_reference_date
   end
-  def indirect_total_controlled_companies(share_reference_date = nil)
+  def indirect_total_controlled_companies(share_reference_date = $share_reference_date)
 
-    def __recursion(company, share_reference_date, visited = [])
+    def __recursion(company, share_reference_date, route = Set.new)
       company.owned_shares.on.greatest.with_reference_date(share_reference_date).map do |owned_share|
+        next unless owned_share.control?
         owned_company = owned_share.company
 
-        next if visited.include? owned_company
-        visited << owned_company
-
-        next unless owned_share.control?
+        pair = [company, owned_company]
+        next if route.include? pair
 
         list = []
-        if company != visited.first # only indirect
-          list << "#{owned_company.name} (controlada por #{company.name})"
-        end
+        list << "#{owned_company.name} (controlada por #{company.name})" unless route.size.zero?
+        list += __recursion owned_company, share_reference_date, route+[pair]
 
-        list << __recursion(owned_company, share_reference_date, visited)
         list
-      end
+      end.flatten.compact
     end
 
-    __recursion(self, share_reference_date, [self]).flatten.compact
+    __recursion self, share_reference_date
   end
 
-  def controlled_companies(share_reference_date = nil)
-
-    def __recursion(company, share_reference_date, visited = [])
-      company.owned_shares.on.greatest.with_reference_date(share_reference_date).each do |owned_share|
-        owned_company = owned_share.company
-
-        next if visited.include? owned_company
-        visited << owned_company
-
-        __recursion(owned_company, share_reference_date, visited)
-      end
-    end
-
-    visited = [self]
-    __recursion(self, share_reference_date, visited)
-    visited
-  end
-
-  def calculate_own_value(attr = :revenue, balance_reference_date = nil)
-    v = value(attr, balance_reference_date)
-    self.send "own_#{attr}=", v
+  def calculate_own_value(attr = :revenue, balance_reference_date = $balance_reference_date)
+    own_value = self.value attr, balance_reference_date
+    self.send "own_#{attr}=", own_value
     self.save
-    v
+    own_value
   end
-  def calculate_indirect_value(attr = :revenue, balance_reference_date = nil, share_reference_date = nil)
+  def calculate_indirect_value(attr = :revenue, balance_reference_date = $balance_reference_date, share_reference_date = $share_reference_date)
 
-    def __recursion(company, attr = :revenue, balance_reference_date = nil, share_reference_date = nil,
-                    visited = [], fully_controlled = [])
+    def __recursion(company, attr, balance_reference_date, share_reference_date,
+                    route = Set.new)
+
+      # uncomment to print formula
+      #print "\nP#{company.name.downcase} = V#{company.name.downcase}" if route.size.zero?
 
       company.owned_shares.on.with_reference_date(share_reference_date).inject(0) do |sum, owned_share|
         owned_company = owned_share.company
@@ -225,54 +246,47 @@ class Owner
 
         # company controls owned_company? (is percentage bigger than 50%?)
         is_controller = owned_share.control?
-        fully_controlled << owned_company if is_controller
+        has_controller = owned_company.controller(share_reference_date)
 
         # company has parcial controll of owned_company,
         # but owned_company is fully controlled by another company,
         # so we set wij = 0
-        next sum if not is_controller and fully_controlled.include?(owned_company)
+        next sum if not is_controller and has_controller
 
-        next sum if visited.include? owned_company
-        visited << owned_company
+        pair = [company, owned_company]
+        next sum if route.include? pair
 
-        total_value = owned_company.send("total_#{attr}")
-        if total_value.zero?
-          own_value = owned_company.send("own_#{attr}")
-          if own_value.zero?
-            own_value = owned_company.calculate_own_value(attr, balance_reference_date)
-          end
+        # uncomment to print route
+        #puts (route.map{ |p| p.first.name } << company.name << owned_company.name).join('->')
+        # uncomment to print formula
+        #print " + W#{company.name.downcase}#{owned_company.name.downcase} * (V#{owned_company.name.downcase}"
+        # uncomment to print formula
 
-          indirect_value = owned_company.send("indirect_#{attr}")
-          if indirect_value.zero?
-            indirect_value = __recursion owned_company, attr, balance_reference_date, share_reference_date, visited, fully_controlled
-            # cache value
-            owned_company.send("indirect_#{attr}=", indirect_value)
-          end
-
-          total_value = own_value + indirect_value
-          # cache value
-          owned_company.send("total_#{attr}=", total_value)
-          owned_company.save
-        end
+        own_value = owned_company.value attr, balance_reference_date
+        indirect_value = __recursion owned_company, attr, balance_reference_date, share_reference_date, route+[pair]
+        total_value = own_value + indirect_value
 
         w = is_controller ? 1 : owned_share.percentage/100
         x = w * total_value
+
+        #print ')'
 
         sum + x
       end
     end
 
-    v = __recursion(self, attr, balance_reference_date, share_reference_date, [self], [])
-    self.send "indirect_#{attr}=", v
+    indirect_value = __recursion self, attr, balance_reference_date, share_reference_date
+    self.send "indirect_#{attr}=", indirect_value
     self.save
-    v
+    indirect_value
   end
-  def calculate_value(attr = :revenue, balance_reference_date = nil, share_reference_date = nil)
-    self.calculate_own_value attr, balance_reference_date
-    self.calculate_indirect_value attr, balance_reference_date, share_reference_date
-    v = self.send "total_#{attr}=", self.send("own_#{attr}") + self.send("indirect_#{attr}")
+  def calculate_value(attr = :revenue, balance_reference_date = $balance_reference_date, share_reference_date = $share_reference_date)
+    own_value = self.calculate_own_value attr, balance_reference_date
+    indirect_value = self.calculate_indirect_value attr, balance_reference_date, share_reference_date
+    total_value = own_value + indirect_value
+    self.send "total_#{attr}=", total_value
     self.save
-    v
+    total_value
   end
 
   def cgc=(value)
@@ -285,10 +299,9 @@ class Owner
   end
 
   def set_value(attr, value)
-    key = Owner.keys[attr.to_s]
     if attr.is_a?(Proc)
       attr.call self, value
-    elsif key and key.type == Array
+    elsif key = Owner.keys[attr] and key.type == Array
       old_value = self.send attr
       old_value << value unless old_value.include?(value)
     else
@@ -296,16 +309,22 @@ class Owner
     end
   end
 
+  def self.process_name name, source, alternative
+    name = name.remove_company_nature.squish unless name.blank?
+    return name unless name.blank?
+    name = NameEquivalence.replace source, alternative
+  end
+
   protected
 
   def assign_defaults
-    self.name ||= NameEquivalence.replace(self.source, self.formal_name || self.stock_name)
     self.cnpj_root ||= CgcHelper.extract_cnpj_root(self.cgc.first) if self.cnpj?
+    self.stock_code_base = self.stock_code_base
   end
 
   def normalize_fields
-    self.name_n = self.name.filter_normalization
-    self.formal_name_n = self.formal_name.filter_normalization if self.formal_name
+    self.name_n = self.name.name_normalization
+    self.formal_name_n = self.formal_name.name_normalization if self.formal_name
     self.stock_name = self.stock_name.upcase if self.stock_name
   end
 

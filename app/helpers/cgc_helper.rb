@@ -3,7 +3,9 @@
 module CgcHelper
 
   def self.parse(cgc)
-    cgc = self.remove_non_numbers(cgc)
+    return nil if cgc.blank?
+    cgc = self.remove_non_numbers cgc
+    return nil if cgc.blank?
     if cgc.size > 11
       '%014d' % cgc.to_i
     else
@@ -12,7 +14,8 @@ module CgcHelper
   end
 
   def self.format(cgc)
-    '%s/%s-%s' % [cgc[0..8], cgc[8..11], cgc[12..13]]
+    return nil if cgc.blank?
+    '%s.%s.%s/%s-%s' % [cgc[0..1], cgc[2..4], cgc[5..7], cgc[8..11], cgc[12..13]]
   end
 
   def self.extract_cnpj_root(cnpj)

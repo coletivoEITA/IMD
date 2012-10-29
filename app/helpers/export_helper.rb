@@ -3,7 +3,7 @@
 module ExportHelper
 
   def self.export_companies_donations_by_party(options = {})
-    FasterCSV.open("output/companeis-donation-by-party.csv", "w") do |csv|
+    CSV.open("output/companeis-donation-by-party.csv", "w") do |csv|
 	  #set header
       csv << ['nome', 'razão social', 'cnpj', 'total doado', '% por partido']
 	  #TODO:refactore - filter donation by option arguments
@@ -32,7 +32,7 @@ module ExportHelper
   end
 
   def self.export_grantor_donations_by_candidacy
-    FasterCSV.open("output/grantor-donation-by-candidacy.csv", "w") do |csv|
+    CSV.open("output/grantor-donation-by-candidacy.csv", "w") do |csv|
 	  #set header
       csv << ['nome', 'razão social', 'cnpj',
               'total doado', '% por candidatura']
@@ -54,28 +54,27 @@ module ExportHelper
 
   def self.export_owners_rankings(attr = :revenue, balance_reference_date = $balance_reference_date, share_reference_date = $share_reference_date)
 
-    def self.export_raking(attr = :revenue, balance_reference_date = $balance_reference_date, share_reference_date = $share_reference_date)
+    def self.export_raking(attr, balance_reference_date, share_reference_date)
 
       puts 'calculating values'
       Share.each{ |s| s.calculate_percentage; s.save }
       CalculationHelper.calculate_owners_value attr, balance_reference_date, share_reference_date
 
       puts 'loading data'
-      uniao = Owner.find_by_name 'Uniao Federal (Tesouro Nacional)'
       value_field = "total_#{attr}".to_sym
-      owners = Owner.order(value_field.desc).where(:name.ne => 'Acoes em Tesouraria').all
+      owners = Owner.order(value_field.desc).where(:name_n.ne => 'acoes em tesouraria').all
+      #total = owners.sum(&value_field)
 
       puts 'exporting data'
       CSV.open("output/#{attr}-ranking.csv", "w") do |csv|
-        csv << ['Posição no Ranking', 'contr?', 'Nome', 'Razão Social', 'CNPJ', 'Natureza Jurídica',
+        csv << ['Posição no Ranking', 'Controlada?', 'Nome', 'Razão Social', 'CNPJ',
+                'Natureza Jurídica', 'Código BOVESPA',
                 'Receita líquida pela Valor (milhões de reias)', 'Receita líquida pela Economatica (milhões de reias)',
                 '“Poder” indireto (das empresas em que i tem participação)', '“Poder” total (receita da empresa i + valor indireto)',
-                'Indicador', 'Fonte',
+                'Indicador (por milhão de rendas médias)', 'Fonte',
                 'Poder direto - controle', 'Poder direto - parcial',
                 'Poder indireto - controle', 'Poder indireto - parcial',
                 'Composição acionária direta', 'Estatal ou Privada?']
-
-        #total = owners.sum(&value_field)
 
         i = 0
         owners.each do |owner|
@@ -83,12 +82,13 @@ module ExportHelper
           cgc = cgc ? CgcHelper.format(cgc) : '-'
 
           legal_nature = owner.legal_nature || '-'
+          stock_code = owner.stock_code_base
 
           owners_shares = owner.owners_shares.on.greatest.with_reference_date(share_reference_date).all
           owned_shares = owner.owned_shares.on.greatest.with_reference_date(share_reference_date).all
 
-          controlled = owners_shares.first
-          is_controlled = controlled && controlled.owner != uniao && controlled.control?
+          controller = owner.controller
+          is_controlled = controller && controller.id != $uniao.id
           controlled = is_controlled ? 'sim' : ''
 
           # uncomment to skip controlled
@@ -129,7 +129,8 @@ module ExportHelper
 
           #shares_percent_sum = owners_shares.sum{ |s| s.percentage.nil? ? 0 : s.percentage }
 
-          csv << [position, controlled, owner.name, owner.formal_name, cgc, legal_nature,
+          csv << [position, controlled, owner.name, owner.formal_name, cgc,
+                  legal_nature, stock_code,
                   valor_value, economatica_value,
                   indirect_value, total_value,
                   index_value, source,
@@ -140,7 +141,7 @@ module ExportHelper
       end
     end
 
-    export_raking attr, $balance_reference_date, $share_reference_date
+    export_raking attr, balance_reference_date, share_reference_date
     true
   end
 

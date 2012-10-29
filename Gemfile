@@ -36,7 +36,11 @@ gem 'jquery-rails'
 # gem 'capistrano'
 
 # To use debugger
-#gem 'ruby-debug', :group => :development
+if RUBY_VERSION >= "1.9"
+  gem 'ruby-debug19', :group => [:test, :development]
+else
+  gem 'ruby-debug', :group => [:test, :development]
+end
 
 gem "nifty-generators", :group => :development
 
@@ -52,6 +56,7 @@ gem 'mechanize'
 
 gem 'unicode'
 
-gem "rspec-rails", "~> 2.0", :group => [:test, :development]
+gem 'rspec-rails', '~> 2.0', :group => [:test, :development]
+gem 'database_cleaner', :group => [:test]
 
 gem 'levenshtein'

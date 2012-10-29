@@ -12,17 +12,21 @@ db_timeout = (config[env]['timeout'] || '1').to_i
 MongoMapper.connection = Mongo::Connection.new db_host, db_port, :pool_size => db_pool, :pool_timeout => db_timeout
 MongoMapper.database = db_name
 
+raise 'Install mongo 1.6+' if MongoMapper.connection.server_version < '1.6.0'
+
 Owner.ensure_index :source
 Owner.ensure_index :cgc
 Owner.ensure_index :cnpj_root
+Owner.ensure_index :stock_code
+Owner.ensure_index :stock_code_base
+Owner.ensure_index :stock_market
 Owner.ensure_index :classes
 Owner.ensure_index :naics
 Owner.ensure_index :name
 Owner.ensure_index :formal_name
+Owner.ensure_index :stock_name
 Owner.ensure_index :name_n
 Owner.ensure_index :formal_name_n
-Owner.ensure_index :asclaras_id
-Owner.ensure_index [[:name, 1], [:asclaras_id, 1]]
 
 NameEquivalence.ensure_index :name
 NameEquivalence.ensure_index :synonymous
@@ -58,6 +62,15 @@ Candidacy.ensure_index :year
 Candidacy.ensure_index :asclaras_id
 Candidacy.ensure_index [[:candidate_id, 1], [:year, 1]]
 Candidacy.ensure_index [[:candidate_id, 1], [:year, 1], [:asclaras_id, 1]]
+
+Grantor.ensure_index :owner_id
+Grantor.ensure_index :year
+Grantor.ensure_index :asclaras_id
+Grantor.ensure_index [[:owner_id, 1], [:year, 1], [:asclaras_id, 1]]
+
+Cache.ensure_index :identifier
+Cache.ensure_index :url
+Cache.ensure_index :url_host
 
 # for sorting
 Owner.ensure_index :own_revenue

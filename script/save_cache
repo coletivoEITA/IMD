@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+require File.dirname(__FILE__) + '/../config/environment'
+
+CacheFile = "caches.json"
+CachePath = "#{Rails.root}/db/#{CacheFile}"
+
+system "mongoexport -d #{MongoMapper.database.name} -c caches > #{CachePath}"

@@ -6,8 +6,7 @@ class Share
   timestamps!
 
   key :source, String, :required => :true
-  key :reference_date, Time, :required => :true
-
+  key :reference_date, Time, :required => :true, :default => $balance_reference_date
   key :sclass, String, :required => :true
 
   key :company_id, ObjectId, :required => :true
@@ -19,16 +18,18 @@ class Share
   key :owner_id, ObjectId
   belongs_to :owner
 
+  key :source_detail, String
+
   validates_presence_of :company
   validates_presence_of :name
   validates_presence_of :owner
   validates_uniqueness_of :name, :scope => [:source, :company_id, :sclass, :reference_date]
   validates_numericality_of :quantity, :greater_than => 0.0, :allow_nil => true
   validates_numericality_of :percentage, :greater_than => 0.0, :allow_nil => true
-  validate :quantity_xor_percentage
+  #validate :quantity_xor_percentage
 
   before_validation :create_owner
-  before_save :calculate_percentage
+  before_validation :calculate_percentage
 
   scope :on, :sclass => 'ON'
   scope :pn, :sclass => 'PN'
@@ -48,7 +49,8 @@ class Share
   end
 
   def create_owner
-    self.owner ||= Owner.first_or_new "#{self.source} associado", :name => self.name, :formal_name => self.name
+    return if self.owner
+    self.owner = Owner.first_or_new "#{self.source} associado", :name => self.name, :formal_name => self.name
     self.owner.save!
   end
 
@@ -60,6 +62,9 @@ class Share
   end
 
   def calculate_percentage
+    # nil instead of zero
+    self.percentage = nil if percentage and percentage.zero?
+
     return if self.quantity.blank?
     return if self.total.blank? or self.total.to_i.zero?
 
