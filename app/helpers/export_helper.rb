@@ -63,80 +63,76 @@ module ExportHelper
       puts 'loading data'
       value_field = "total_#{attr}".to_sym
       owners = Owner.order(value_field.desc).where(:name_n.ne => 'acoes em tesouraria').all
-      #total = owners.sum(&value_field)
 
       puts 'exporting data'
       CSV.open("output/#{attr}-ranking.csv", "w") do |csv|
-        csv << ['Posição no Ranking', 'Controlada?', 'Nome', 'Razão Social', 'CNPJ',
-                'Natureza Jurídica', 'Código BOVESPA',
+        csv << ['R', 'PA (milhões de reais)', 'Empresa ou Pessoa', 'Controlada diretamente por:',
+                'Controle direto', 'Participação direta', 'Controle indireto', 'Participação indireta (sem controle)',
+                'CNPJ', 'Cód. Bovespa', 'Fonte',
                 'Receita líquida pela Valor (milhões de reias)', 'Receita líquida pela Economatica (milhões de reias)',
-                '“Poder” indireto (das empresas em que i tem participação)', '“Poder” total (receita da empresa i + valor indireto)',
-                'Indicador (por milhão de rendas médias)', 'Fonte',
-                'Poder direto - controle', 'Poder direto - parcial',
-                'Poder indireto - controle', 'Poder indireto - parcial',
-                'Composição acionária direta', 'Estatal ou Privada?']
+                '“Poder” Indireto (milhões de reais)', 'PA (milhões de reais)',]
 
         i = 0
         owners.each do |owner|
           cgc = owner.cgc.first
           cgc = cgc ? CgcHelper.format(cgc) : '-'
 
-          legal_nature = owner.legal_nature || '-'
+          #legal_nature = owner.legal_nature || '-'
           stock_code = owner.stock_code_base
 
-          owners_shares = owner.owners_shares.on.greatest.with_reference_date(share_reference_date).all
-          owned_shares = owner.owned_shares.on.greatest.with_reference_date(share_reference_date).all
-
-          controller = owner.controller
-          is_controlled = controller && controller.id != $uniao.id
-          controlled = is_controlled ? 'sim' : ''
-
-          # uncomment to skip controlled
-          #next if is_controlled
-
-          position = is_controlled ? '-' : i.to_s
-          i += 1 unless is_controlled
-
           valor_value = owner.balances.valor.with_reference_date(balance_reference_date).first
-          valor_value = valor_value.nil? ? '0.00' : (valor_value.value(attr)/1000000).c
-          valor_value = '-' if valor_value == '0.00'
+          valor_value = valor_value.nil? ? valor_value.c : (valor_value.value(attr)/1000000).c
           economatica_value = owner.balances.economatica.with_reference_date(balance_reference_date).first
-          economatica_value = economatica_value.nil? ? '0.00' : (economatica_value.value(attr)/1000000).c
-          economatica_value = '-' if economatica_value == '0.00'
+          economatica_value = economatica_value.nil? ? economatica_value.c : (economatica_value.value(attr)/1000000).c
 
           balance = owner.balance_with_value(attr, balance_reference_date)
           source = balance.nil? ? owner.source : balance.source_with_months
 
+          own_value = (owner.send("own_#{attr}")/1000000).c
           indirect_value = (owner.send("indirect_#{attr}")/1000000).c
-          indirect_value = '-' if indirect_value == '0.00'
           total_value = (owner.send("total_#{attr}")/1000000).c
-          total_value = '-' if total_value == '0.00'
-          index_value = total_value == '-' ? '-' : (total_value.to_f / (1345 * 12)).c
+          #index_value = total_value == '-' ? '-' : (total_value.to_f / (1345 * 12)).c(4)
+
+          owners_shares = owner.owners_shares.on.greatest.with_reference_date(share_reference_date).all
+          owned_shares = owner.owned_shares.on.greatest.with_reference_date(share_reference_date).all
+
+          shareholders = owners_shares.map do |s|
+            "#{s.owner.name} (#{s.percentage.c}#{'%' if s.percentage})"
+          end.join("\n")
 
           power_direct_control = owned_shares.select{ |s| s.control? }.map do |s|
-            "#{s.company.name} (#{s.percentage.c}%)"
+            "#{s.company.name} (#{s.percentage.c}#{'%' if s.percentage})"
           end.join("\n")
           power_direct_parcial = owned_shares.select{ |s| s.parcial? }.map do |s|
-            "#{s.company.name} (#{s.percentage.c}%)"
+            "#{s.company.name} (#{s.percentage.c}#{'%' if s.percentage})"
           end.join("\n")
 
           power_indirect_control = owner.indirect_total_controlled_companies(share_reference_date).join("\n")
           power_indirect_parcial = owner.indirect_parcial_controlled_companies(share_reference_date).join("\n")
 
-          shareholders = owners_shares.select{ |s| s.percentage }.map do |s|
-            "#{s.owner.name} (#{s.percentage.c}%)"
-          end.join("\n")
+          has_participation = !(power_direct_control.blank? && power_direct_parcial.blank? &&
+                              power_indirect_parcial.blank? && power_indirect_parcial.blank?)
 
-          #shares_percent_sum = owners_shares.sum{ |s| s.percentage.nil? ? 0 : s.percentage }
+          shares_percent_sum = owners_shares.sum{ |s| s.percentage.nil? ? 0 : s.percentage }
+          is_controlled = shares_percent_sum > 50
+          controlled = is_controlled ? 'sim' : ''
 
-          csv << [position, controlled, owner.name, owner.formal_name, cgc,
-                  legal_nature, stock_code,
+          if !is_controlled and has_participation and own_value == total_value
+            position = 'g'
+          elsif !is_controlled and not has_participation
+            position = 'f'
+          elsif is_controlled
+            position = 'controlada'
+          else
+            position = i.to_s
+          end
+          i += 1 if position.number?
+
+          csv << [position, total_value, owner.name, shareholders,
+                  power_direct_control, power_direct_parcial, power_indirect_control, power_indirect_parcial,
+                  cgc, stock_code, source,
                   valor_value, economatica_value,
-                  indirect_value, total_value,
-                  index_value, source,
-                  power_direct_control, power_direct_parcial,
-                  power_indirect_control, power_indirect_parcial,
-                  shareholders, owner.capital_type]
+                  indirect_value, total_value,]
         end
       end
     end

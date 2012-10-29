@@ -18,12 +18,13 @@ ImportHelper.import_exame_maiores 1.868
 # take companies from EXAME that didn't match any existing company
 Owner.all(:source => 'Exame').each{ |o| o.destroy }
 
-# fetch bndespar, telemar part, vicunha
+# fetch missing companies at bovespa, ...
 ImportHelper.import_bovespa :cvm_id => 16772, :reference_date => $share_reference_date
 ImportHelper.import_bovespa :cvm_id => 18678, :reference_date => $share_reference_date
 ImportHelper.import_bovespa :cvm_id => 18902, :reference_date => $share_reference_date
 ImportHelper.import_bovespa :cvm_id => 21784, :reference_date => $share_reference_date
+ImportHelper.import_bovespa :cvm_id => 22071, :reference_date => $share_reference_date
 
-#ImportHelper.import_stockholders_csv 'db/manually-collected-shareholders.csv'
+ImportHelper.import_stockholders_csv 'db/manually-collected-shareholders.csv'
 
 

@@ -164,9 +164,10 @@ module ImportHelper
         field = column_index_to_field(column_index).to_s
         column_index += 1
         next if field.blank?
+        next if value.blank?
+        value.squish!
 
         value = 'ON' if field == :classes and value == 'Ord'
-
         # jump preprocessed
         next if ['cgc', 'name'].include?(field)
 
@@ -184,12 +185,13 @@ module ImportHelper
                                      :name => value, :reference_date => reference_date, :sclass => $1)
         end
 
-        next if value.blank? or value == '-' or value == '0' or value == '0.0'
+        # jump nil
+        next if value == '-' or value == '0' or value == '0.0'
 
         if field.starts_with?('balance_')
-          balance.send "#{$1}=", value if field =~ /balance_(.+)/
+          balance.send "#{$1}=", value if balance and field =~ /balance_(.+)/
         elsif field.starts_with?('share_')
-          share.send "#{$3}=", value if field =~ /share_(.+)_(.+)_(.+)/
+          share.send "#{$3}=", value if share and field =~ /share_(.+)_(.+)_(.+)/
         elsif field == 'traded'
           company.traded = value == 'ativo'
         elsif field == 'shares_quantity'
@@ -202,8 +204,8 @@ module ImportHelper
 
       pp company
       company.save!
-      balance.save! if balance
-      share.save! if share and !share.name.blank? and !share.quantity.nil?
+      balance.save
+      share.save
     end
   end
 
@@ -406,7 +408,6 @@ module ImportHelper
 
     page = m.get url % {:cvm_id => cvm_id}
     formal_name = page.parser.css('h1 span.label')[0].text.squish
-    pp formal_name
 
     page = m.get frame_url % {:cvm_id => cvm_id}
 

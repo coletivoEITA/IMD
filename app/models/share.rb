@@ -20,9 +20,12 @@ class Share
 
   key :source_detail, String
 
+  key :name_n, String
+
   validates_presence_of :company
-  validates_presence_of :name
   validates_presence_of :owner
+  validates_presence_of :name
+  validates_presence_of :name_n
   validates_uniqueness_of :name, :scope => [:source, :company_id, :sclass, :reference_date]
   validates_numericality_of :quantity, :greater_than => 0.0, :allow_nil => true
   validates_numericality_of :percentage, :greater_than => 0.0, :allow_nil => true
@@ -30,6 +33,7 @@ class Share
 
   before_validation :create_owner
   before_validation :calculate_percentage
+  before_validation :normalize_fields
 
   scope :on, :sclass => 'ON'
   scope :pn, :sclass => 'PN'
@@ -58,7 +62,7 @@ class Share
     self.percentage && self.percentage > 50
   end
   def parcial?
-    self.percentage && self.percentage <= 50
+    self.percentage.nil? || self.percentage <= 50
   end
 
   def calculate_percentage
@@ -97,6 +101,10 @@ class Share
 
   def quantity_xor_percentage
     self.errors[:base] << 'Fill in percentage or quantity' if self.quantity.blank? and self.percentage.blank?
+  end
+
+  def normalize_fields
+    self.name_n = self.name.name_normalization
   end
 
 end

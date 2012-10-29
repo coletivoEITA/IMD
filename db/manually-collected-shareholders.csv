@@ -19,7 +19,7 @@ Mineração Paragominas S.A. (40,0%)
 Logística S.A. - MRS (41,5%)
 TKCSA (26,9%)
 CADAM S.A. (61,5%)
-Samarco Mineração S.A. (50,0%)
+Samarco Mineração S.A. (50,00001%)
 Hispanobrás (50,9%)
 FCA (99,9%)
 Pará Pigmentos S.A. - PPSA (indefinido)",,
@@ -39,7 +39,6 @@ Fundação Bradesco (46,3%)",,,
 BBD Participações S.A.,07.838.611/0001-52,Econoinfo,,"Lázaro de Mello Brandão (6,24%)",,,
 Antares,07.341.926/0001-90,Bradespar (site),"http://www.bradespar.com.br/Bradespar/?vgnextoid=d07ee700c3427210VgnVCM100000242810acRCRD&vgnextchannel=d07ee700c3427210VgnVCM100000242810acRCRD
 http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=BRAP",Bradespar (100%),"Millennium (100%)
-Brumado (100%)
 CPFL Energia (1,7%)",Existe CPFL no ranking!,
 Brumado,08.397.763/0001-20,Bradespar (site),"http://www.bradespar.com.br/Bradespar/?vgnextoid=d07ee700c3427210VgnVCM100000242810acRCRD&vgnextchannel=d07ee700c3427210VgnVCM100000242810acRCRD
 http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=BRAP",Antares (100%),"CPFL Energia (3,6%)",Existe CPFL no ranking!,
@@ -198,12 +197,18 @@ PT COMUNICAÇÕES S.A.,05.603.341/0001-75,Econoinfo,,"PT PORTUGAL, SGPS, S.A. (1
 Odebrecht Serviços e Part.,10.904.193/0001-69,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=BRKM,"ODEBRECHT S.A (71,76%)
 NORDESTE QUIMICA S.A - NORQUISA (28,24%)",,"Odebrecht tem no Ranking, mas está equivocadamente juntado á ODBINV, que é controladora da Odebrecht. Por isso, coloquei a Odebrecht aqui embaixo",
 Odebrecht S.A,05.144.757/0001-72,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=BRKM,ODBINV S.A (100%),,,
+ODBINV S.A,15.105.588/0001-15,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=ENRG,"KIEPPE PARTICIPAÇÕES E ADMINISTRAÇÕES LTDA (55,13%)
+GRAAL PARTICIPAÇÕES LTDA. (20,98%)",,,
 KIEPPE PARTICIPAÇÕES E ADMINISTRAÇÕES LTDA,04.215.837/0001-09,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=BRKM,"KIEPPE PATRIMONIAL LTDA S/C (99,95%)
 NORBERTO ODEBRECHT (0,01%)
 NORBERTO ODEBRECHT JUNIOR (0,01%)
 FRANCISCO PELTIER QUEIROZ (0,01%)
 EDUARDO ODEBRECHT (0,01%)
 EMILIO ALVES ODEBRECHT (0,01%)",,,
+GRAAL PARTICIPAÇÕES LTDA.,14.826.903/0001-30,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=BRKM,"ANA MARIA DE ALMEIDA GRADIN (33,33%)
+BERNARDO AFONSO DE ALMEIDA GRADIN (33,33%)
+MIGUEL DE ALMEIDA GRADIN (33,33%)
+VICTOR CALIXTO GRADIN BOULHOSA (0,01%)",,,
 KIEPPE PATRIMONIAL LTDA S/C,14.407.316/0001-07,Econoinfo,http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=BRKM,"RIOCON PATRIMONIAL LTDA (21,36%)
 N.O.JR PATRIMONIAL LTDA (21,36%)
 IPQ PATRIMONIAL S/C LTDA (21,36%)
@@ -277,7 +282,7 @@ CONSTRUÇÕES E COMÉRCIO CAMARGO CORRÊA S.A. (46,33%)
 ",,,
  CONSTRUÇÕES E COMÉRCIO CAMARGO CORRÊA S.A., 61.522.512/0001-02,Econoinfo,,Camargo Corrêa Construções e Participações S.A. (100%),,,
 Camargo Corrêa Construções e Participações S.A.,11.196.609/0001-02,Econoinfo,,CAMARGO CORRÊA S.A. (100%),,,
-CAMARGO CORRÊA ENERGIA S.A.,04.922.357/0001-88,Econoinfo,, CAMARGO CORRÊA INVESTIMENTO EM INFRA-ESTRUTURA S.A.,,,
+CAMARGO CORRÊA ENERGIA S.A.,04.922.357/0001-88,Econoinfo,, CAMARGO CORRÊA INVESTIMENTO EM INFRA-ESTRUTURA S.A. (100%),,,
  CAMARGO CORRÊA INVESTIMENTO EM INFRA-ESTRUTURA S.A.,02.372.232/0001-04,Econoinfo,,CAMARGO CORRÊA S.A. (100%),,,
 CAMARGO CORRÊA S.A.,01.098.905/0001-09,Econoinfo,," PARTICIPAÇÕES MORRO VERMELHO S.A. (99,9%)",,,
  PARTICIPAÇÕES MORRO VERMELHO S.A., 03.987.192/0001-60,Econoinfo,,"RCABON EMPREENDIMENTOS E PARTICIPAÇÕES S.A (33,33%)
@@ -325,6 +330,9 @@ Aguassanta Participações S.A. (18,72%)
 Usina Bom Jesus S.A. Açúcar e Álcool (15,40%)
 Usina Costa Pinto S.A. Açúcar e Álcool (13,78%)",,,
 Santa Bárbara Agrícola S.A.,55.364.616/0001-33,Econoinfo,,"Usina Costa Pinto S.A. Açúcar e Álcool (99,68%)",,,
+Usina Costa Pinto S.A. Açúcar e Álcool,44.689.123/0001-57,Econoinfo,,"HYPOSWISS BANCO PRIVADO S.A (00,00%)
+Adhemar João de Barros (00,00)
+Jaime M Chalam (00,00)",,,
 Pedro Ometto S.A. Administração e Participações,61.960.050/0001-05,Econoinfo,,"Nova Aguassanta Administração de Participações Ltda (99,99%)",,,
 Nova Aguassanta Administração de Participações Ltda,07.198.897/0001-59,Econoinfo,,"Aguassanta Participações S.A. (91,5%)
 OMETTO MORENO COMERCIO E EMPREENDIMENTOS LTDA. (6,25%)",,,
@@ -337,12 +345,11 @@ Flama Empreendimentos e Participações S/A,51.770.188/0001-98,Econoinfo,,"Ferna
 Ana Maria Ometto Altério (49,99%)",,,
 OMETTO MORENO COMERCIO E EMPREENDIMENTOS LTDA.,53.353.801/0001-05,Econoinfo,,"Fernando Manoel Ometto Moreno (100,00%)",,,
 Rezende Barbosa S.A. Administração e Participações,44.358.034/0001-28,Econoinfo,,"ROBERTO DE REZENDE BARBOSA (33,34%)
-Renato Eugenio de Rezende Barbosa (33,33%
+Renato Eugenio de Rezende Barbosa (33,33%)
 José Eugenio de Rezende Barbosa Sobrinho (33,33%)",,,
 Vicunha Siderurgia S/A,02.871.007/0001-04,Econoinfo,,"VICUNHA AÇOS S.A. (99,99%)
 ",,,
-VICUNHA AÇOS S.A.,04.213.131/0001-08,Econoinfo,,"Vicunha Steel S.A, (99,99%)",,,
-"Vicunha Steel S.A,",04.169.992/0001-36,Econoinfo,,"Rio Purus Participações S.A. (59,99%)
+Vicunha Steel S.A,04.169.992/0001-36,Econoinfo,,"Rio Purus Participações S.A. (59,99%)
 CFL Participações S.A. (39,99%)",,,
 Rio Purus Participações S.A., 60.078.060/0001-59,Econoinfo,,"Dorothéa Steinbruch (100,00%)",,,
 CFL Participações S.A. ,60.078.045/0001-00,Econoinfo,,"Fabio Steinbruch (33,33%)
@@ -377,12 +384,6 @@ QUATAR HOLDING LLC.,QATAR,Econoinfo,,"QATAR INVESTMENT AUTHORITY (100,00%)",,,
 ROPERFELI S.L.,ESPANHA,Econoinfo,,"ACS - Actividades de Construcción y Servicios (100,00%)",,,
 Fundo Mutuo Inv. Acoes BB Cart. Livre I,73.899.742/0001-74,Econoinfo,,"Caixa de Previdência dos Funcionários do Banco do Brasil - PREVI (100,00%)",,,
 BB Banco de Investimento S/A,24.933.830/0001-30,Econoinfo,,"Banco do Brasil S.A (100,00%)",,,
-Banco do Brasil S.A,00.000.000/0001-91,Econoinfo,,"Secretaria do Tesouro Nacional (51,87%)
-Caixa de Previdência dos Funcionários do Banco do Brasil - PREVI (10,38%)
-Fundo Garantidor à Exportação (4,87%)
-Fundo Fiscal de Inv. e Estabilização (2,18%)
-Fundo Garantidor para Investimentos (0,26%)
-Bndespar - BNDES Participacoes SA (0,01%)",,,
 Tim Brasil Servicos e Participacoes S.A.,02.600.854/0001-34,Econoinfo,,"Telecom Italia International N.V. (100,00%)",,,
 Telecom Italia International N.V.,,Econoinfo,,"Telecom Italia S.p.A. (100,00%)",,,
 Telecom Italia S.p.A.,,Econoinfo,,"Telco S.p.A. (22,40%)
@@ -415,3 +416,12 @@ Santa Venerina Investments & Arbitrage Inc,BAHAMAS,Econoinfo,,"MCMT Holding Limi
 Santa Marcelina Investiments & Arbitrage Inc,BAHAMAS,Econoinfo,,"Carlos Alberto da Veiga Sicupira (100,00%)",,,
 Holdco I S.A.,15.125.401/0001-45,Econoinfo,,"TEP Chile S.A. (0%)
 LATAM Airlines S.A. (0%)",,,
+Centennial Asset Brazilian Equity Fund Llc - BTG Pactual,11.598.483/0001-94,Econoinfo,,Centennial Asset Mining Fund LLC (100%),,,
+Centennial Asset Mining Fund LLC,07.732.392/0001-22,Econoinfo,,Eike Fuhrken Batista (100%),,,
+Centennial Asset Brazilian Equity Fund Llc - Itau Unibanco,12.055.153/0001-15,Econoinfo,,Eike Fuhrken Batista (100%),,,
+Mercatto Botafogo Mult FI,12.595.306/0001-17,Econoinfo,,"Eike Fuhrken Batista (97,03%)",,,
+Centennial Asset Participações Amapá,07.950.674/0001-04 ,Econoinfo,,"Eike Fuhrken Batista (56,81%)
+BNDES PARTICIPACOES S/A BNDESPAR (11,72%)
+Nobel Gestão de Recursos Ltda (7,42%)
+Centennial Asset Mining Fund LLC (3,96%)
+Centennial Asset Brazilian Equity Fund (1,48%) ",,,

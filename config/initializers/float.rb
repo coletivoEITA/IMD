@@ -2,8 +2,8 @@
 
 class Float
 
-  def c
-    '%.2f' % self
+  def c(digits = 2)
+    self.zero? ? '-' : ("%.#{digits}f" % self).gsub('.', ',')
   end
 
 end

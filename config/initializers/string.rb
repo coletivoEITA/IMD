@@ -4,12 +4,8 @@ require 'iconv' unless RUBY_VERSION >= "1.9"
 
 class String
 
-  def downcase
-    Unicode::downcase(self)
-  end
-
-  def upcase
-    Unicode::upcase(self)
+  def number?
+    true if Float(self) rescue false
   end
 
   def remove_non_ascii(replacement="")

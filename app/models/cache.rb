@@ -40,17 +40,18 @@ class Cache
   def self.enable
     #Cache.disable
     Methods.each do |method|
-      next if Mechanize.respond_to?("#{method}_with_cache")
+      next if Mechanize.new.respond_to?("#{method}_with_cache")
       Mechanize.send(:define_method, "#{method}_with_cache") do |*args|
         Cache.request_page self, method, *args
       end
-      Mechanize.alias_method_chain method, :cache
+      Mechanize.send :alias_method, "#{method}_without_cache", method
+      Mechanize.send :alias_method, method, "#{method}_with_cache"
     end
   end
 
   def self.disable
     Methods.each do |method|
-      next unless Mechanize.respond_to?("#{method}_without_cache")
+      next unless Mechanize.new.respond_to?("#{method}_without_cache")
       Mechanize.send :alias_method, "#{method}_without_cache", method
     end
   end
