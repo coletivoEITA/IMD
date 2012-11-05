@@ -5,12 +5,13 @@ class Owner
   include MongoMapper::Document
   timestamps!
 
+  NameFields = [:name, :formal_name, :stock_name]
+
   key :name, String, :required => :true
   key :source, String, :required => :true
 
   # companies
   key :formal_name, String
-  key :stock_name, String
   key :cgc, Array
   key :cnpj_root, String
   key :capital_type, String
@@ -21,10 +22,12 @@ class Owner
   key :naics, Array
   key :sector, String
   key :economatica_sector, String
+  key :main_activity, String
   # company stock info
   key :cvm_id, Integer
   key :classes, Array
   key :traded, Boolean
+  key :stock_name, Array
   key :stock_market, Array
   key :stock_code, Array
   key :stock_code_base, String
@@ -55,8 +58,9 @@ class Owner
   key :source_detail, String
 
   # normalized versions
-  key :name_n, String
-  key :formal_name_n, String
+  NameFields.each do |field|
+    key "#{field}_n", String
+  end
 
   # preference order of sources to use
   BalanceSources = ['Economatica', 'Valor']
@@ -74,11 +78,11 @@ class Owner
   many :donations_made, :class_name => 'Donation', :foreign_key => :grantor_id, :dependent => :destroy_all
   many :donations_received, :class_name => 'Donation', :foreign_key => :candidate_id, :dependent => :destroy_all
 
+  NameFields.each do |field|
+    validates_uniqueness_of field, :allow_nil => (field != :name)
+  end
   validates_uniqueness_of :cgc, :allow_nil => true
   validates_uniqueness_of :cnpj_root, :allow_nil => true
-  validates_uniqueness_of :name
-  validates_uniqueness_of :formal_name, :allow_nil => true
-  validates_uniqueness_of :stock_name, :allow_nil => true
   validates_inclusion_of :capital_type, :in => %w(private state), :allow_nil => true
   validate :validate_cgc
 
@@ -86,30 +90,21 @@ class Owner
   before_save :normalize_fields
 
   def self.first_or_new(source, attributes = {})
-    by_cgc = by_name = by_formal_name = nil
-    cgc, name = attributes[:cgc], attributes[:name]
-    formal_name, stock_name = attributes[:formal_name], attributes[:stock_name]
-
-    name = NameEquivalence.replace source, name
-    # no name filled, get and replace from formal_name
-    name = Owner.process_name name, source, formal_name || stock_name
-    attributes[:name] = name
+    by_cgc = by_stock_code = nil
+    cgc, stock_code = attributes[:cgc], attributes[:stock_code]
 
     exact_match = self.first(attributes)
     by_cgc = self.find_by_cgc(cgc) unless cgc.blank?
-
-    unless name.blank?
-      name_n = name.name_normalization
-      by_name = self.first :name => name
-      by_name ||= self.first :$or => [{:name_n => name_n}, {:formal_name_n => name_n}]
-    end
-    unless formal_name.blank?
-      formal_name_n = formal_name.name_normalization
-      by_formal_name = self.first :formal_name => formal_name
-      by_formal_name ||= self.first :$or => [{:formal_name_n => formal_name_n}, {:name_n => formal_name_n}]
+    unless stock_code.blank?
+      by_stock_code = self.find_by_stock_code(stock_code) || self.find_by_stock_code_base(StockCodeHelper.base(stock_code))
     end
 
-    owner = exact_match || by_cgc || by_name || by_formal_name || self.new
+    name = attributes[:name]
+    name = Owner.process_name name, source, attributes.reject{ |k, v| !NameFields.include?(k) or k == :name or v.blank? }.values.first
+    attributes[:name] = name
+    name_match = self.find_by_name_attrs attributes
+
+    owner = exact_match || by_cgc || by_stock_code || name_match || self.new
 
     # uncomment to print when new owners are created
     #puts "--- New owner #{name} ---" if owner.new_record?
@@ -118,7 +113,7 @@ class Owner
     owner.add_cgc(cgc) unless cgc.blank?
     attributes.each do |attr, value|
       next if attr.to_s == 'cgc'
-      owner.send("#{attr}=", owner.send(attr) || value)
+      owner.set_value attr, value
     end
     owner
   end
@@ -133,17 +128,24 @@ class Owner
     end
   end
 
+  def self.find_by_name_attrs(attributes)
+    ret = nil
+    attributes.each do |field, value|
+      next unless NameFields.include? field.to_sym
+      ret = self.first field => value
+      # OR search on normalized fields
+      name_n = value.name_normalization
+      ret ||= self.first :$or => attributes.map{ |k, v| {"#{k}_n" => name_n} }
+      break if ret
+    end
+    ret
+  end
+
   def cnpj?
     CgcHelper.cnpj?(self.cgc.first)
   end
   def cpf?
     CgcHelper.cpf?(self.cgc.first)
-  end
-
-  def stock_code_base
-    code = stock_code.first
-    code =~ /([a-z]+)/i
-    $1
   end
 
   def balance_with_value(attr = :revenue, reference_date = $balance_reference_date)
@@ -320,6 +322,7 @@ class Owner
   end
 
   def self.process_name name, source, alternative
+    name = NameEquivalence.replace source, name
     name = name.remove_company_nature.squish unless name.blank?
     return name unless name.blank?
     name = NameEquivalence.replace source, alternative
@@ -329,13 +332,17 @@ class Owner
 
   def assign_defaults
     self.cnpj_root ||= CgcHelper.extract_cnpj_root(self.cgc.first) if self.cnpj?
-    self.stock_code_base = self.stock_code_base
+    self.stock_code_base = StockCodeHelper.base(stock_code.first)
   end
 
   def normalize_fields
-    self.name_n = self.name.name_normalization
-    self.formal_name_n = self.formal_name.name_normalization if self.formal_name
-    self.stock_name = self.stock_name.upcase if self.stock_name
+    NameFields.each do |field|
+      norm = self.send(field)
+      norm = norm.first if norm.is_a?(Array)
+      next if norm.blank?
+      norm = norm.name_normalization
+      self.send "#{field}_n=", value
+    end
   end
 
   def validate_cgc

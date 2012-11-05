@@ -585,7 +585,7 @@ module ImportHelper
 
   def self.import_asclaras_grantor_locally()
     empty_donator = []
-	file_path = '/home/caioformiga/workspace/EITA/IMD/db/wget/wget-imported-bhakta/'	
+	file_path = '/home/caioformiga/workspace/EITA/IMD/db/wget/wget-imported-bhakta/'
 	#file_path = '/home/caioformiga/workspace/EITA/IMD/db/wget/'
 
 	dir = Dir.new(file_path)
@@ -612,8 +612,8 @@ module ImportHelper
 		pp 'deleted'
 	  end
 	}
-    #create log file with donators		
-	File.new("empty_donator.log", "w+") {|f| 
+    #create log file with donators
+	File.new("empty_donator.log", "w+") {|f|
 	  empty_donator.each { |d|
 		f.puts d
 	  }
@@ -861,6 +861,29 @@ module ImportHelper
     end
   end
 
+  def self.import_guiainvest_companies
+    url = "http://www.guiainvest.com.br/lista-acoes/default.aspx?listaacaopage=%{page}"
+    Cache.enable
+    m = Mechanize.new
+
+    (1..537).each do |page|
+      page = m.get url % {:page => page}
+
+      page.parser.css(".rgMasterTable tbody tr").each do |tr|
+        data = tr.css('td')
+        next if data.size != 3
+
+        stock_name = data[0].text.squish
+        stock_code = data[1].text.squish
+        activity = data[2].text.squish
+
+        company = Owner.first_or_new 'GuiaInvest', :stock_name => stock_name, :stock_code => stock_code
+        company.main_activity = activity
+        company.save!
+      end
+    end
+  end
+
   def self.import_stockholders_csv(file)
 
     def self.get_shares_pair(string)
@@ -912,31 +935,42 @@ module ImportHelper
 
   def self.import_econoinfo options = {}
 
-    def self.get_page(mech, stock_code)
+    def self.get_page mech, stock_code
+      ret = []
+      info_url = "http://www.econoinfo.com.br/sumario/a-empresa?ce=%{stock_code}"
       shareholders_url = "http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=%{stock_code}"
-      balance_url = "http://www.econoinfo.com.br/sumario/a-empresa?ce=%{stock_code}"
-      info_url = "http://www.econoinfo.com.br/demonstracoes-financeiras/demonstracao-do-resultado?ce=%{stock_code}"
       members_url = "http://www.econoinfo.com.br/governanca/alta-administracao?ce=%{stock_code}"
-      mech.get shareholders_url % {:stock_code => stock_code}
-      mech.get balance_url % {:stock_code => stock_code}
-      mech.get info_url % {:stock_code => stock_code}
-      mech.get members_url % {:stock_code => stock_code}
-    rescue
+      balance_url = "http://www.econoinfo.com.br/demonstracoes-financeiras/demonstracao-do-resultado?ce=%{stock_code}"
+      ret << mech.get(info_url % {:stock_code => stock_code})
+      ret << mech.get(shareholders_url % {:stock_code => stock_code})
+      ret << mech.get(members_url % {:stock_code => stock_code})
+      ret << mech.get(balance_url % {:stock_code => stock_code})
+      ret
+    rescue nil
     end
 
-    def process_page(page)
+    def self.process_info page
+    end
+
+    def self.process_shareholders page
+    end
+
+    def self.process stock_code
+      pages = get_page m, stock_code
+      process_info pages[0]
+      process_shareholders pages[1]
     end
 
     Cache.enable
     m = Mechanize.new
 
     if stock_code = options[:stock_code]
-      get_page m, stock_code
+      process stock_code
       return
     end
 
     Owner.all(:stock_code_base.ne => nil).each do |owner|
-      get_page m, owner.stock_code_base
+      process owner.stock_code_base
     end
 
   end
