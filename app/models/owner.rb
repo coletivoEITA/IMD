@@ -317,7 +317,7 @@ class Owner
       old_value = self.send attr
       old_value << value unless old_value.include?(value)
     else
-      self.send("#{attr}=", value)
+      self.send "#{attr}=", value
     end
   end
 

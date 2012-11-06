@@ -866,7 +866,7 @@ module ImportHelper
     Cache.enable
     m = Mechanize.new
 
-    (1..537).each do |page|
+    (1..27).each do |page|
       page = m.get url % {:page => page}
 
       page.parser.css(".rgMasterTable tbody tr").each do |tr|
@@ -946,33 +946,48 @@ module ImportHelper
       ret << mech.get(members_url % {:stock_code => stock_code})
       ret << mech.get(balance_url % {:stock_code => stock_code})
       ret
-    rescue nil
+    rescue
     end
 
-    def self.process_info page
+    def self.process_info owner, page
     end
 
-    def self.process_shareholders page
+    def self.shareholders_hash owner, page
+      tree_hash = {'' => owner.stock_code_base}
+
+      page.parser.css("#tabPosAcionariaScroll tr").map do |tr|
+        tree = tr.attr('id').gsub('posAcionaria:0:', '')
+        parent_tree = tree.split(':'); parent_tree.pop; parent_tree = parent_tree.join(':')
+        parent = tree_hash[parent_tree]
+        raise 'parent not found' if parent.nil?
+
+        tr.css('.detIcon a').first.attr('onclick') =~ /event, '([^']+)'/
+        tree_hash[tree] = $1
+        [parent, $1]
+      end
     end
 
-    def self.process stock_code
-      pages = get_page m, stock_code
-      process_info pages[0]
-      process_shareholders pages[1]
+    def self.process m, owner
+      pages = get_page m, owner.stock_code_base
+      return if pages.nil?
+      process_info owner, pages[0]
+      shareholders_hash owner, pages[1]
     end
 
     Cache.enable
     m = Mechanize.new
 
     if stock_code = options[:stock_code]
-      process stock_code
-      return
+      owner = Owner.find_by_stock_code_base stock_code
+      r = process(m, owner).to_a
+      ExportHelper.export_econoinfo_shareholders r
+    else
+      r = []
+      Owner.all(:stock_code_base.ne => nil).each do |owner|
+        r += process(m, owner).to_a
+      end
+      ExportHelper.export_econoinfo_shareholders r
     end
-
-    Owner.all(:stock_code_base.ne => nil).each do |owner|
-      process owner.stock_code_base
-    end
-
   end
 
 end

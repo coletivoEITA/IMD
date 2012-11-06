@@ -52,6 +52,17 @@ module ExportHelper
     end
   end
 
+  def self.export_econoinfo_shareholders(data)
+    CSV.open("output/econoinfo-assoc.csv", "w") do |csv|
+      csv << ['empresa', 'associado']
+
+      data.each do |parent, assoc|
+        next if parent.blank?
+        csv << [parent, assoc]
+      end
+    end
+  end
+
   def self.export_owners_rankings(attr = :revenue, balance_reference_date = $balance_reference_date, share_reference_date = $share_reference_date)
 
     def self.export_raking(attr, balance_reference_date, share_reference_date)
