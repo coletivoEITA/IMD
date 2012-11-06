@@ -19,10 +19,11 @@ class Candidacy
   key :votes, Integer
   key :status, String
 
-  key :asclaras_id, Integer
-
   key :revenue, Float
   key :revenue_per_vote, Float
+
+  # external references
+  key :asclaras_id, Integer
 
   many :donations
 

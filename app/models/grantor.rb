@@ -10,6 +10,7 @@ class Grantor
 
   key :year, Integer, :required => :true
 
-  key :asclaras_id, Integer, :required => :true
-	
+  # external references
+  key :asclaras_id, Integer
+
 end

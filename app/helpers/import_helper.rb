@@ -957,24 +957,25 @@ module ImportHelper
       m = Mechanize.new
       tree_hash = {'' => owner.econoinfo_ce}
 
-      page.parser.css("#tabPosAcionariaScroll tr").map do |tr|
+      page.parser.css("#tabPosAcionariaScroll tr").each do |tr|
         tree = tr.attr('id').gsub('posAcionaria:0:', '')
-        parent_tree = tree.split(':'); parent_tree.pop; parent_tree = parent_tree.join(':')
-        parent = tree_hash[parent_tree]
-        raise 'parent not found' if parent.nil?
+        #parent_tree = tree.split(':'); parent_tree.pop; parent_tree = parent_tree.join(':')
+        #parent = tree_hash[parent_tree]
+        #raise 'parent not found' if parent.nil?
 
         attr = tr.css('.detIcon a').first.attr('onclick')
         attr =~ /event, '([^']+)'/
-        id = $1
+        id = $1.to_i
         raise "can't find id in #{attr}" if id.nil?
 
         # cache assoc data
         Thread.join_to_limit 3, [Thread.main]
         Thread.new{ m.get assoc_url % {:assoc_id => id} }
 
-        tree_hash[tree] = id
-        [parent, id]
+        #tree_hash[tree] = id
+        #[parent, id]
       end
+      []
     end
 
     def self.process m, owner

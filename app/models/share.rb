@@ -22,6 +22,9 @@ class Share
 
   key :name_n, String
 
+  # external references
+  key :econoinfo_id, Integer
+
   validates_presence_of :company
   validates_presence_of :owner
   validates_presence_of :name
