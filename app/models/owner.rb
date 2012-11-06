@@ -57,6 +57,9 @@ class Owner
 
   key :source_detail, String
 
+  # external ids
+  key :econoinfo_ce, String
+
   # normalized versions
   NameFields.each do |field|
     key "#{field}_n", String
@@ -96,7 +99,9 @@ class Owner
     exact_match = self.first(attributes)
     by_cgc = self.find_by_cgc(cgc) unless cgc.blank?
     unless stock_code.blank?
-      by_stock_code = self.find_by_stock_code(stock_code) || self.find_by_stock_code_base(StockCodeHelper.base(stock_code))
+      by_stock_code = self.find_by_stock_code(stock_code)
+      base = StockCodeHelper.base stock_code
+      by_stock_code ||= self.find_by_stock_code_base(base) if base
     end
 
     name = attributes[:name]
@@ -105,16 +110,18 @@ class Owner
     name_match = self.find_by_name_attrs attributes
 
     owner = exact_match || by_cgc || by_stock_code || name_match || self.new
-
-    # uncomment to print when new owners are created
-    #puts "--- New owner #{name} ---" if owner.new_record?
-
     owner.source ||= source
     owner.add_cgc(cgc) unless cgc.blank?
     attributes.each do |attr, value|
       next if attr.to_s == 'cgc'
       owner.set_value attr, value
     end
+
+    # uncomment to print when new owners are created
+    #puts "--- New owner #{name} ---" if owner.new_record?
+    #pp attributes if !owner.new_record?
+    #pp owner if !owner.new_record?
+
     owner
   end
 
@@ -130,11 +137,11 @@ class Owner
 
   def self.find_by_name_attrs(attributes)
     ret = nil
-    attributes.each do |field, value|
+    attributes.each do |field, name|
       next unless NameFields.include? field.to_sym
-      ret = self.first field => value
+      ret = self.first field => name
       # OR search on normalized fields
-      name_n = value.name_normalization
+      name_n = name.name_normalization
       ret ||= self.first :$or => attributes.map{ |k, v| {"#{k}_n" => name_n} }
       break if ret
     end
@@ -315,7 +322,11 @@ class Owner
       attr.call self, value
     elsif key = Owner.keys[attr] and key.type == Array
       old_value = self.send attr
-      old_value << value unless old_value.include?(value)
+      if value.is_a?(Array)
+        old_value |= value
+      else
+        old_value << value unless old_value.include?(value)
+      end
     else
       self.send "#{attr}=", value
     end
@@ -341,7 +352,7 @@ class Owner
       norm = norm.first if norm.is_a?(Array)
       next if norm.blank?
       norm = norm.name_normalization
-      self.send "#{field}_n=", value
+      self.send "#{field}_n=", norm
     end
   end
 

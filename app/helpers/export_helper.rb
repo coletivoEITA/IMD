@@ -52,6 +52,15 @@ module ExportHelper
     end
   end
 
+  def self.export_econoinfo_company
+    CSV.open("output/econoinfo-company-codes.csv", "w") do |csv|
+      csv << ['nome da empresa', 'ce']
+      Owner.all(:econoinfo_ce.ne => nil).each do |company|
+        csv << [company.name, company.econoinfo_ce]
+      end
+    end
+  end
+
   def self.export_econoinfo_shareholders(data)
     CSV.open("output/econoinfo-assoc.csv", "w") do |csv|
       csv << ['empresa', 'associado']
