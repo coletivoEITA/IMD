@@ -36,7 +36,7 @@ gem 'jquery-rails'
 # gem 'capistrano'
 
 gem 'ruby-debug',   :platforms => :mri_18
-gem 'ruby-debug19', :platforms => :mri_19
+#gem 'ruby-debug19', :platforms => :mri_19
 
 gem "nifty-generators", :group => :development
 
