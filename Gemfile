@@ -35,11 +35,6 @@ gem 'jquery-rails'
 # Deploy with Capistrano
 # gem 'capistrano'
 
-gem 'ruby-debug',   :platforms => :mri_18
-#gem 'ruby-debug19', :platforms => :mri_19
-
-gem "nifty-generators", :group => :development
-
 gem 'fastercsv'
 
 gem 'bson_ext'
@@ -50,7 +45,19 @@ gem 'therubyracer', :platform => :mri
 
 gem 'mechanize'
 
-gem 'rspec-rails', '~> 2.0', :group => [:test, :development]
-gem 'database_cleaner', :group => [:test]
-
 gem 'levenshtein'
+
+group :development do
+  gem 'ruby-debug',   :platforms => :mri_18
+  #gem 'ruby-debug19', :platforms => :mri_19
+
+  gem "nifty-generators"
+
+  gem 'pry'
+  gem 'pry-rails'
+end
+
+group :test do
+  gem 'rspec-rails', '~> 2.0', :group => [:test]
+  gem 'database_cleaner', :group => [:test]
+end
