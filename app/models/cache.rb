@@ -17,18 +17,19 @@ class Cache
 
   def self.request_page(mech, method, *args)
     identifier = {:method => method, :args => args}
-    cache = Cache.first :identifier => identifier
+    cache = self.first :identifier => identifier
 
     uri = URI.parse args.first
     if cache
       content = cache.encoding ? cache.content.encodef(cache.encoding, 'UTF-8') : cache.content
       page = Mechanize::Page.new uri, nil, content, nil, mech
+      page.encoding = cache.encoding if cache.encoding
       puts "Cache hit for #{uri}"
     else
       page = mech.send("#{method}_without_cache", *args)
       encoding = page.encoding
       content = page.content.encodef('UTF-8', encoding)
-      cache = Cache.create! :identifier => identifier, :url => uri.to_s,
+      cache = self.create! :identifier => identifier, :url => uri.to_s,
         :content => content, :encoding => encoding
     end
 
@@ -38,7 +39,7 @@ class Cache
   Methods = [:get, :post]
 
   def self.enable
-    #Cache.disable
+    #self.disable
     Methods.each do |method|
       next if Mechanize.new.respond_to?("#{method}_with_cache")
       Mechanize.send(:define_method, "#{method}_with_cache") do |*args|
@@ -57,7 +58,7 @@ class Cache
   end
 
   def self.test
-    Cache.enable
+    self.enable
     m = Mechanize.new
     m.get 'http://kernel.org'
     m.get 'http://kernel.org'

@@ -25,188 +25,204 @@ module ImportHelper
     end
   end
 
-  def self.import_cvm_multiple_download
-    url = 'https://WWW.RAD.CVM.GOV.BR/DOWNLOAD/SolicitaDownload.asp'
+  module CVM
 
-    m = Mechanize.new
-    m.verify_mode = 0
+    def self.multiple_download
+      url = 'https://WWW.RAD.CVM.GOV.BR/DOWNLOAD/SolicitaDownload.asp'
 
-    page = m.post url, {'txtLogin' => '397dwl0000257', 'txtSenha' => 'outubro12',
-     'txtData' => '31/12/2012', 'txtHora' => '00:00', 'txtDocumento' => 'TODOS'}
+      m = Mechanize.new
+      m.verify_mode = 0
 
-    pp page.content
+      page = m.post url, {'txtLogin' => '397dwl0000257', 'txtSenha' => 'outubro12',
+                          'txtData' => '31/12/2012', 'txtHora' => '00:00', 'txtDocumento' => 'TODOS'}
+
+      pp page.content
+    end
+
+    def self.all
+      root_url = 'http://cvmweb.cvm.gov.br/SWB/Sistemas/SCW/CPublica/CiaAb/FormBuscaCiaAbOrdAlf.aspx'
+      letter_url = 'http://cvmweb.cvm.gov.br/SWB/Sistemas/SCW/CPublica/CiaAb/FormBuscaCiaAbOrdAlf.aspx?LetraInicial=A'
+      ian_url = 'http://siteempresas.bovespa.com.br/consbov/ExibeTodosDocumentosCVM.asp?CCVM=16802&CNPJ=02.288.752/0001-25&TipoDoc=C&QtLinks=3'
+      m = Mechanize.new
+
+      page = m.post ian_url, {'hdnCategoria' => 'IDI3 ', 'hdnPagina' => '', 'FechaI' => '', 'FechaV' => ''}
+      page.content
+
+      #m.get root_url
+      #m.get letter_url
+      #href = "javascript:__doPostBack('dlCiasCdCVM$_ctl1$Linkbutton1','')"
+      #href =~ /__doPostBack\('(.+)'.+'(.+)'\)/
+      #m.post letter_url, {'__EVENTTARGET' => $1, '__EVENTARGUMENT' => $2}
+    end
+
   end
 
-  def self.import_cvm
-    root_url = 'http://cvmweb.cvm.gov.br/SWB/Sistemas/SCW/CPublica/CiaAb/FormBuscaCiaAbOrdAlf.aspx'
-    letter_url = 'http://cvmweb.cvm.gov.br/SWB/Sistemas/SCW/CPublica/CiaAb/FormBuscaCiaAbOrdAlf.aspx?LetraInicial=A'
-    ian_url = 'http://siteempresas.bovespa.com.br/consbov/ExibeTodosDocumentosCVM.asp?CCVM=16802&CNPJ=02.288.752/0001-25&TipoDoc=C&QtLinks=3'
-    m = Mechanize.new
+  module Economatica
 
-    page = m.post ian_url, {'hdnCategoria' => 'IDI3 ', 'hdnPagina' => '', 'FechaI' => '', 'FechaV' => ''}
-    page.content
+    Source = 'Economatica'
+    CSVColumns = ActiveSupport::OrderedHash[
+      'Nome', :stock_name,
+      'Classe', :classes,
+      'CNPJ', :cgc,
+      'Pais Sede', :country,
+      'Ativo /|Cancelado', :traded,
+      'ID da|empresa', :cvm_id,
+      'Setor NAICS|ult disponiv', :naics,
+      'Setor|Economática', :economatica_sector,
+      'Tipo de Ativo', nil,
+      'Bolsa', :stock_market,
+      'Código', :stock_code,
+      'ISIN', nil,
+      /Meses|.+|no exercício|consolid:sim*/, :balance_months,
+      /Ativo Tot|.+|em moeda orig|consolid:sim*/, :balance_total_active,
+      /Patrim Liq|.+|em moeda orig|consolid:sim*/, :balance_patrimony,
+      /Receita|.+|em moeda orig|no exercício|consolid:sim*/, :balance_revenue,
+      /Lucro Bruto|.+|em moeda orig|no exercício|consolid:sim*/, :balance_gross_profit,
+      /Lucro Liq|.+|em moeda orig|no exercício|consolid:sim*/, :balance_net_profit,
+      /Moeda dos|Balanços/, :balance_currency,
+      /Qtd Ações|Outstanding|da empresa|.+/, :shares_quantity,
+      /LPA|.+|em moeda orig|de 12 meses|consolid:sim*|ajust p\/ prov/, nil,
+      /VPA|.+|em moeda orig|consolid:sim*|ajust p\/ prov/, nil,
+      /Vendas\/Acao|.+|em moeda orig|de 12 meses|consolid:sim*|ajust p\/ prov/, nil,
+      /Divid por Ação|.+|1 anos|em moeda orig/, nil,
+      /Div Yld (fim)|.+|no Ano|em moeda orig/, nil,
+      /Div Yld (inic)|.+|1 anos|em moeda orig/,nil,
+      /PrinAcion|.+|1.Maior|Sem Voto/, :share_PN_01_name,
+      /AcPossuid|.+|1.Maior|Sem Voto/, :share_PN_01_quantity,
+      /PrinAcion|.+|2.Maior|Sem Voto/, :share_PN_02_name,
+      /AcPossuid|.+|2.Maior|Sem Voto/, :share_PN_02_quantity,
+      /PrinAcion|.+|3.Maior|Sem Voto/, :share_PN_03_name,
+      /AcPossuid|.+|3.Maior|Sem Voto/, :share_PN_03_quantity,
+      /PrinAcion|.+|4.Maior|Sem Voto/, :share_PN_04_name,
+      /AcPossuid|.+|4.Maior|Sem Voto/, :share_PN_04_quantity,
+      /PrinAcion|.+|5.Maior|Sem Voto/, :share_PN_05_name,
+      /AcPossuid|.+|5.Maior|Sem Voto/, :share_PN_05_quantity,
+      /PrinAcion|.+|6.Maior|Sem Voto/, :share_PN_06_name,
+      /AcPossuid|.+|6.Maior|Sem Voto/, :share_PN_06_quantity,
+      /PrinAcion|.+|7.Maior|Sem Voto/, :share_PN_07_name,
+      /AcPossuid|.+|7.Maior|Sem Voto/, :share_PN_07_quantity,
+      /PrinAcion|.+|8.Maior|Sem Voto/, :share_PN_08_name,
+      /AcPossuid|.+|8.Maior|Sem Voto/, :share_PN_08_quantity,
+      /PrinAcion|.+|9.Maior|Sem Voto/, :share_PN_09_name,
+      /AcPossuid|.+|9.Maior|Sem Voto/, :share_PN_09_quantity,
+      /PrinAcion|.+|10.Maior|Sem Voto/, :share_PN_10_name,
+      /AcPossuid|.+|10.Maior|Sem Voto/, :share_PN_10_quantity,
+      /PrinAcion|.+|1.Maior|Com Voto/, :share_ON_01_name,
+      /AcPossuid|.+|1.Maior|Com Voto/, :share_ON_01_quantity,
+      /PrinAcion|.+|2.Maior|Com Voto/, :share_ON_02_name,
+      /AcPossuid|.+|2.Maior|Com Voto/, :share_ON_02_quantity,
+      /PrinAcion|.+|3.Maior|Com Voto/, :share_ON_03_name,
+      /AcPossuid|.+|3.Maior|Com Voto/, :share_ON_03_quantity,
+      /PrinAcion|.+|4.Maior|Com Voto/, :share_ON_04_name,
+      /AcPossuid|.+|4.Maior|Com Voto/, :share_ON_04_quantity,
+      /PrinAcion|.+|5.Maior|Com Voto/, :share_ON_05_name,
+      /AcPossuid|.+|5.Maior|Com Voto/, :share_ON_05_quantity,
+      /PrinAcion|.+|6.Maior|Com Voto/, :share_ON_06_name,
+      /AcPossuid|.+|6.Maior|Com Voto/, :share_ON_06_quantity,
+      /PrinAcion|.+|7.Maior|Com Voto/, :share_ON_07_name,
+      /AcPossuid|.+|7.Maior|Com Voto/, :share_ON_07_quantity,
+      /PrinAcion|.+|8.Maior|Com Voto/, :share_ON_08_name,
+      /AcPossuid|.+|8.Maior|Com Voto/, :share_ON_08_quantity,
+      /PrinAcion|.+|9.Maior|Com Voto/, :share_ON_09_name,
+      /AcPossuid|.+|9.Maior|Com Voto/, :share_ON_09_quantity,
+      /PrinAcion|.+|10.Maior|Com Voto/, :share_ON_10_name,
+      /AcPossuid|.+|10.Maior|Com Voto/, :share_ON_10_quantity,
+    ]
 
-    #m.get root_url
-    #m.get letter_url
-    #href = "javascript:__doPostBack('dlCiasCdCVM$_ctl1$Linkbutton1','')"
-    #href =~ /__doPostBack\('(.+)'.+'(.+)'\)/
-    #m.post letter_url, {'__EVENTTARGET' => $1, '__EVENTARGUMENT' => $2}
-  end
-
-  EconomaticaCSVColumns = ActiveSupport::OrderedHash[
-    'Nome', :stock_name,
-    'Classe', :classes,
-    'CNPJ', :cgc,
-    'Pais Sede', :country,
-    'Ativo /|Cancelado', :traded,
-    'ID da|empresa', :cvm_id,
-    'Setor NAICS|ult disponiv', :naics,
-    'Setor|Economática', :economatica_sector,
-    'Tipo de Ativo', nil,
-    'Bolsa', :stock_market,
-    'Código', :stock_code,
-    'ISIN', nil,
-    /Meses|.+|no exercício|consolid:sim*/, :balance_months,
-    /Ativo Tot|.+|em moeda orig|consolid:sim*/, :balance_total_active,
-    /Patrim Liq|.+|em moeda orig|consolid:sim*/, :balance_patrimony,
-    /Receita|.+|em moeda orig|no exercício|consolid:sim*/, :balance_revenue,
-    /Lucro Bruto|.+|em moeda orig|no exercício|consolid:sim*/, :balance_gross_profit,
-    /Lucro Liq|.+|em moeda orig|no exercício|consolid:sim*/, :balance_net_profit,
-    /Moeda dos|Balanços/, :balance_currency,
-    /Qtd Ações|Outstanding|da empresa|.+/, :shares_quantity,
-    /LPA|.+|em moeda orig|de 12 meses|consolid:sim*|ajust p\/ prov/, nil,
-    /VPA|.+|em moeda orig|consolid:sim*|ajust p\/ prov/, nil,
-    /Vendas\/Acao|.+|em moeda orig|de 12 meses|consolid:sim*|ajust p\/ prov/, nil,
-    /Divid por Ação|.+|1 anos|em moeda orig/, nil,
-    /Div Yld (fim)|.+|no Ano|em moeda orig/, nil,
-    /Div Yld (inic)|.+|1 anos|em moeda orig/,nil,
-    /PrinAcion|.+|1.Maior|Sem Voto/, :share_PN_01_name,
-    /AcPossuid|.+|1.Maior|Sem Voto/, :share_PN_01_quantity,
-    /PrinAcion|.+|2.Maior|Sem Voto/, :share_PN_02_name,
-    /AcPossuid|.+|2.Maior|Sem Voto/, :share_PN_02_quantity,
-    /PrinAcion|.+|3.Maior|Sem Voto/, :share_PN_03_name,
-    /AcPossuid|.+|3.Maior|Sem Voto/, :share_PN_03_quantity,
-    /PrinAcion|.+|4.Maior|Sem Voto/, :share_PN_04_name,
-    /AcPossuid|.+|4.Maior|Sem Voto/, :share_PN_04_quantity,
-    /PrinAcion|.+|5.Maior|Sem Voto/, :share_PN_05_name,
-    /AcPossuid|.+|5.Maior|Sem Voto/, :share_PN_05_quantity,
-    /PrinAcion|.+|6.Maior|Sem Voto/, :share_PN_06_name,
-    /AcPossuid|.+|6.Maior|Sem Voto/, :share_PN_06_quantity,
-    /PrinAcion|.+|7.Maior|Sem Voto/, :share_PN_07_name,
-    /AcPossuid|.+|7.Maior|Sem Voto/, :share_PN_07_quantity,
-    /PrinAcion|.+|8.Maior|Sem Voto/, :share_PN_08_name,
-    /AcPossuid|.+|8.Maior|Sem Voto/, :share_PN_08_quantity,
-    /PrinAcion|.+|9.Maior|Sem Voto/, :share_PN_09_name,
-    /AcPossuid|.+|9.Maior|Sem Voto/, :share_PN_09_quantity,
-    /PrinAcion|.+|10.Maior|Sem Voto/, :share_PN_10_name,
-    /AcPossuid|.+|10.Maior|Sem Voto/, :share_PN_10_quantity,
-    /PrinAcion|.+|1.Maior|Com Voto/, :share_ON_01_name,
-    /AcPossuid|.+|1.Maior|Com Voto/, :share_ON_01_quantity,
-    /PrinAcion|.+|2.Maior|Com Voto/, :share_ON_02_name,
-    /AcPossuid|.+|2.Maior|Com Voto/, :share_ON_02_quantity,
-    /PrinAcion|.+|3.Maior|Com Voto/, :share_ON_03_name,
-    /AcPossuid|.+|3.Maior|Com Voto/, :share_ON_03_quantity,
-    /PrinAcion|.+|4.Maior|Com Voto/, :share_ON_04_name,
-    /AcPossuid|.+|4.Maior|Com Voto/, :share_ON_04_quantity,
-    /PrinAcion|.+|5.Maior|Com Voto/, :share_ON_05_name,
-    /AcPossuid|.+|5.Maior|Com Voto/, :share_ON_05_quantity,
-    /PrinAcion|.+|6.Maior|Com Voto/, :share_ON_06_name,
-    /AcPossuid|.+|6.Maior|Com Voto/, :share_ON_06_quantity,
-    /PrinAcion|.+|7.Maior|Com Voto/, :share_ON_07_name,
-    /AcPossuid|.+|7.Maior|Com Voto/, :share_ON_07_quantity,
-    /PrinAcion|.+|8.Maior|Com Voto/, :share_ON_08_name,
-    /AcPossuid|.+|8.Maior|Com Voto/, :share_ON_08_quantity,
-    /PrinAcion|.+|9.Maior|Com Voto/, :share_ON_09_name,
-    /AcPossuid|.+|9.Maior|Com Voto/, :share_ON_09_quantity,
-    /PrinAcion|.+|10.Maior|Com Voto/, :share_ON_10_name,
-    /AcPossuid|.+|10.Maior|Com Voto/, :share_ON_10_quantity,
-  ]
-  def self.header_to_field(header)
-    field = EconomaticaCSVColumns[header]
-    if field.nil?
-      EconomaticaCSVColumns.each do |regexp, f|
-        next unless regexp.is_a?(Regexp)
-        if header =~ regexp
-          field = f
-          break
+    def self.header_to_field(header)
+      field = CSVColumns[header]
+      if field.nil?
+        CSVColumns.each do |regexp, f|
+          next unless regexp.is_a?(Regexp)
+          if header =~ regexp
+            field = f
+            break
+          end
         end
       end
+      field
     end
-    field
-  end
-  def self.column_index_to_field(column_index)
-    EconomaticaCSVColumns.values[column_index]
-  end
 
-  def self.import_economatica_csv(file, reference_date)
-    csv = CSV.table file, :headers => true, :header_converters => nil, :converters => nil
-    csv.each_with_index do |row, i|
-      stock_name = row.values_at(0).first
-      share_class = row.values_at(1).first
-      cnpj = row.values_at(2).first
-      country = row.values_at(3).first
+    def self.column_index_to_field(column_index)
+      CSVColumns.values[column_index]
+    end
 
-      next if country != 'BR' # only brazilian companies
-      next if cnpj == '-'
+    def self.csv file, reference_date
+      csv = CSV.table file, :headers => true, :header_converters => nil, :converters => nil
+      csv.each_with_index do |row, i|
+        stock_name = row.values_at(0).first
+        share_class = row.values_at(1).first
+        cnpj = row.values_at(2).first
+        country = row.values_at(3).first
 
-      share_class = 'ON' if share_class == 'Ord'
+        next if country != 'BR' # only brazilian companies
+        next if cnpj == '-'
 
-      cnpj = cnpj.to_i
-      cnpj = cnpj.zero? ? nil : ('%014d' % cnpj) # fix CNPJ format
+        share_class = 'ON' if share_class == 'Ord'
+        shares_quantity = {}
 
-      company = Owner.first_or_new 'Economatica', :cgc => cnpj, :stock_name => stock_name
-      company.source = 'Economatica' # preferential
-      balance = nil
-      share = nil
+        cnpj = cnpj.to_i
+        cnpj = cnpj.zero? ? nil : ('%014d' % cnpj) # fix CNPJ format
 
-      column_index = 0
-      row.each do |header, value|
-        field = column_index_to_field(column_index).to_s
-        column_index += 1
-        next if field.blank?
-        next if value.blank?
-        value.squish!
+        company = Owner.first_or_new Source, :cgc => cnpj, :stock_name => stock_name
+        company.source = Source # preferential
+        balance = nil
+        share = nil
 
-        value = 'ON' if field == :classes and value == 'Ord'
-        # jump preprocessed
-        next if ['cgc', 'name'].include?(field)
+        column_index = 0
+        row.each do |header, value|
+          field = column_index_to_field(column_index).to_s
+          column_index += 1
+          next if field.blank?
+          next if value.blank?
+          value.squish!
 
-        # create balance and share if this is their first field
-        if field == 'balance_months'
-          # here we finished getting company data
-          company.save!
-          balance.save if balance
-          balance = Balance.first_or_new(:company_id => company.id, :source => "Economatica",
-                                         :reference_date => reference_date)
+          value = 'ON' if field == :classes and value == 'Ord'
+          # jump preprocessed
+          next if ['cgc', 'name'].include?(field)
+
+          # uncomment so share are not imported
+          next if field =~ /share_(.+)_(.+)_(.+)/
+
+          # create balance and share if this is their first field
+          if field == 'balance_months'
+            # here we finished getting company data
+            company.save!
+            balance.save if balance
+            balance = Balance.first_or_new(:company_id => company.id, :source => Source,
+                                           :reference_date => reference_date)
+          end
+          if field =~ /share_(.+)_(.+)_name/
+            share.save if share
+            share = Share.first_or_new(:company_id => company.id, :source => Source,
+                                       :name => value, :reference_date => reference_date, :sclass => $1,
+                                       :total => shares_quantity[share_class])
+          end
+
+          # jump nil
+          next if value == '-' or value == '0' or value == '0.0'
+
+          if field.starts_with?('balance_')
+            balance.send "#{$1}=", value if balance and field =~ /balance_(.+)/
+          elsif field.starts_with?('share_')
+            share.send "#{$3}=", value if share and field =~ /share_(.+)_(.+)_(.+)/
+          elsif field == 'traded'
+            company.traded = value == 'ativo'
+          elsif field == 'shares_quantity'
+            shares_quantity[share_class] = value.to_i
+          else
+            company.set_value field, value
+          end
+
         end
-        if field =~ /share_(.+)_(.+)_name/
-          share.save if share
-          share = Share.first_or_new(:company_id => company.id, :source => "Economatica",
-                                     :name => value, :reference_date => reference_date, :sclass => $1)
-        end
 
-        # jump nil
-        next if value == '-' or value == '0' or value == '0.0'
-
-        if field.starts_with?('balance_')
-          balance.send "#{$1}=", value if balance and field =~ /balance_(.+)/
-        elsif field.starts_with?('share_')
-          share.send "#{$3}=", value if share and field =~ /share_(.+)_(.+)_(.+)/
-        elsif field == 'traded'
-          company.traded = value == 'ativo'
-        elsif field == 'shares_quantity'
-          company.shares_quantity[share_class] = value.to_i
-        else
-          company.set_value field, value
-        end
-
+        pp company
+        company.save!
+        balance.save if balance
+        share.save if share
       end
-
-      pp company
-      company.save!
-      balance.save
-      share.save
     end
+
   end
 
   def self.import_receita_company_info(options = {})
@@ -935,9 +951,17 @@ module ImportHelper
 
   module EconoInfo
 
+    Source = 'Econoinfo'
+    ListUrl = 'http://econoinfo.com.br/listas/empresas-da-bovespa'
+    InfoUrl = "http://www.econoinfo.com.br/sumario/a-empresa?ce=%{econoinfo_ce}"
+    ShareholdersUrl = "http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=%{econoinfo_ce}"
+    MembersUrl = "http://www.econoinfo.com.br/governanca/alta-administracao?ce=%{econoinfo_ce}"
+    BalanceUrl = "http://www.econoinfo.com.br/demonstracoes-financeiras/demonstracao-do-resultado?ce=%{econoinfo_ce}"
+    AssocUrl = "http://www.econoinfo.com.br/resources/componentes/econocorp/governanca/estrutura-acionaria/ajax/reqDetPosAcionaria.jsf?id=%{assoc_id}"
+
     def self.company_list
       m = Mechanize.new
-      page = m.get 'http://econoinfo.com.br/listas/empresas-da-bovespa'
+      page = m.get ListUrl
       page.parser.css('.cb_contH li').each do |li|
         link = li.css('a').first
         name = link.text.squish
@@ -952,79 +976,109 @@ module ImportHelper
           attrs[:stock_code] = code.split(' , ')
         end
 
-        company = Owner.first_or_new 'Econoinfo', attrs
+        company = Owner.first_or_new Source, attrs
         company.save!
       end
+    end
 
+    def self.shareholders company
+      Cache.enable
+      m = Mechanize.new
+      tree_hash = {'' => company.econoinfo_ce}
+      owner_hash = {'' => company}
+
+      page = m.get ShareholdersUrl % {:econoinfo_ce => company.econoinfo_ce}
+      page.parser.css("#tabPosAcionariaScroll tr").map do |tr|
+        tree = tr.attr('id').gsub('posAcionaria:0:', '')
+        parent_tree = tree.split(':'); parent_tree.pop; parent_tree = parent_tree.join(':')
+        parent = tree_hash[parent_tree]
+        owner_parent = owner_hash[parent_tree]
+        raise 'parent not found' if parent.nil?
+
+        attr = tr.css('.detIcon a').first.attr('onclick')
+        attr =~ /event, '([^']+)'/
+        id = $1.to_i
+        raise "can't find id in '#{attr}'" if id.nil?
+
+        tds = tr.css('td')
+        reference_date = $share_reference_date
+        name = tds[0].text.squish
+        shares_major_nationality = tds[2].text.squish
+        on_shares = tds[3].text.squish.gsub('.', '').to_i
+        on_percentage = tds[4].text.squish.gsub(',', '.').to_f
+        next if ['Ações em Tesouraria', 'Tesouraria', 'Outros', 'TOTAL'].include?(name)
+
+        share = Share.first_or_create :company => company.id, :source => Source, :reference_date => reference_date,
+          :name => name, :sclass => 'ON', :quantity => on_shares, :percentage => on_percentage
+        owner = share.owner
+        owner.shares_major_nationality = shares_major_nationality
+
+        # cache assoc data
+        # Thread.join_to_limit 3, [Thread.main]
+        # Thread.new{ m.get assoc_url % {:assoc_id => id} }
+        page = m.get AssocUrl % {:assoc_id => id}
+        attr_map = {
+          'CNPJ' => :cgc, 'CPF' => :cgc, 'UF' => :state,
+        }
+        attr_map.each do |field_name, attr|
+          field = page.parser.css("span:contains('#{field_name}')")[0]
+          next if field.nil?
+          value = field.parent.css('span.txtBold')[0].text.squish
+          next if value == 'Informações não fornecidas'
+
+          owner.set_value attr, value
+        end
+
+        owner.save!
+
+        tree_hash[tree] = id
+        owner_hash[tree] = owner
+      end
+    end
+
+    def self.get_pages owner
+      Cache.enable
+      m = Mechanize.new
+      m.get InfoUrl % {:econoinfo_ce => owner.econoinfo_ce}
+      m.get ShareholdersUrl % {:econoinfo_ce => owner.econoinfo_ce}
+      m.get MembersUrl % {:econoinfo_ce => owner.econoinfo_ce}
+      m.get BalanceUrl % {:econoinfo_ce => owner.econoinfo_ce}
+    rescue
+    end
+
+    def self.info owner
+      Cache.enable
+      m = Mechanize.new
+      page = m.get InfoUrl % {:econoinfo_ce => owner.econoinfo_ce}
+      trs = page.parser.css('.cb_contH .tabela tr')
+
+      attributes = {}
+      attributes[:formal_name] = trs[0].css('td')[1].text.squish
+      attributes[:cgc] = trs[3].css('td')[1].text.squish
+      attributes[:capital_type] = trs[6].css('td')[1].text.squish
+      attributes[:country] = trs[9].css('td')[1].text.squish
+      attributes[:stock_country] = trs[10].css('td')[1].text.squish
+
+      attributes.each do |attr, value|
+        owner.set_value attr, value
+      end
+      owner.save!
     end
 
     def self.all options = {}
 
-      def self.get_page mech, econoinfo_ce
-        ret = []
-        info_url = "http://www.econoinfo.com.br/sumario/a-empresa?ce=%{econoinfo_ce}"
-        shareholders_url = "http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=%{econoinfo_ce}"
-        members_url = "http://www.econoinfo.com.br/governanca/alta-administracao?ce=%{econoinfo_ce}"
-        balance_url = "http://www.econoinfo.com.br/demonstracoes-financeiras/demonstracao-do-resultado?ce=%{econoinfo_ce}"
-        ret << mech.get(info_url % {:econoinfo_ce => econoinfo_ce})
-        ret << mech.get(shareholders_url % {:econoinfo_ce => econoinfo_ce})
-        ret << mech.get(members_url % {:econoinfo_ce => econoinfo_ce})
-        ret << mech.get(balance_url % {:econoinfo_ce => econoinfo_ce})
-        ret
-      rescue
+      def self.process owner
+        info owner
+        shareholders owner
       end
-
-      def self.process_info owner, page
-      end
-
-      def self.shareholders_hash owner, page
-        assoc_url = "http://www.econoinfo.com.br/resources/componentes/econocorp/governanca/estrutura-acionaria/ajax/reqDetPosAcionaria.jsf?id=%{assoc_id}"
-        m = Mechanize.new
-        tree_hash = {'' => owner.econoinfo_ce}
-
-        page.parser.css("#tabPosAcionariaScroll tr").map do |tr|
-          tree = tr.attr('id').gsub('posAcionaria:0:', '')
-          parent_tree = tree.split(':'); parent_tree.pop; parent_tree = parent_tree.join(':')
-          parent = tree_hash[parent_tree]
-          raise 'parent not found' if parent.nil?
-
-          attr = tr.css('.detIcon a').first.attr('onclick')
-          attr =~ /event, '([^']+)'/
-          id = $1.to_i
-          raise "can't find id in #{attr}" if id.nil?
-
-          # cache assoc data
-          Thread.join_to_limit 3, [Thread.main]
-          Thread.new{ m.get assoc_url % {:assoc_id => id} }
-
-          tree_hash[tree] = id
-          [parent, id]
-        end
-      end
-
-      def self.process m, owner
-        pages = get_page m, owner.econoinfo_ce
-        return if pages.nil?
-        process_info owner, pages[0]
-        r = shareholders_hash owner, pages[1]
-        pp "#{owner.econoinfo_ce}: #{r.count}"
-        r
-      end
-
-      Cache.enable
-      m = Mechanize.new
 
       if econoinfo_ce = options[:econoinfo_ce]
         owner = Owner.find_by_econoinfo_ce econoinfo_ce
-        r = process(m, owner).to_a
-        ExportHelper.export_econoinfo_shareholders r
+        process owner
       else
-        #import_company_list m
-        r = []
         Owner.all(:econoinfo_ce.ne => nil).each do |owner|
-          r += process(m, owner).to_a
+          process owner
         end
-        ExportHelper.export_econoinfo_shareholders r
       end
     end
 

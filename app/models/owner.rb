@@ -7,11 +7,11 @@ class Owner
 
   NameFields = [:name, :formal_name, :stock_name]
 
-  key :name, String, :required => :true
+  key :name, Array, :required => :true
   key :source, String, :required => :true
 
   # companies
-  key :formal_name, String
+  key :formal_name, Array
   key :cgc, Array
   key :cnpj_root, String
   key :capital_type, String
@@ -31,7 +31,8 @@ class Owner
   key :stock_market, Array
   key :stock_code, Array
   key :stock_code_base, String
-  key :shares_quantity, Hash # {'class' => 'quantity'}
+  key :stock_country, String
+  key :shares_major_nationality, String
   # extra info
   key :open_date, Time
   key :legal_nature, String
@@ -62,7 +63,7 @@ class Owner
 
   # normalized versions
   NameFields.each do |field|
-    key "#{field}_n", String
+    key "#{field}_n", Array
   end
 
   # preference order of sources to use
@@ -86,7 +87,6 @@ class Owner
   end
   validates_uniqueness_of :cgc, :allow_nil => true
   validates_uniqueness_of :cnpj_root, :allow_nil => true
-  validates_inclusion_of :capital_type, :in => %w(private state), :allow_nil => true
   validate :validate_cgc
 
   before_validation :assign_defaults
@@ -111,16 +111,12 @@ class Owner
 
     owner = exact_match || by_cgc || by_stock_code || name_match || self.new
     owner.source ||= source
-    owner.add_cgc(cgc) unless cgc.blank?
     attributes.each do |attr, value|
-      next if attr.to_s == 'cgc'
       owner.set_value attr, value
     end
 
     # uncomment to print when new owners are created
     #puts "--- New owner #{name} ---" if owner.new_record?
-    #pp attributes if !owner.new_record?
-    #pp owner if !owner.new_record?
 
     owner
   end
@@ -318,9 +314,12 @@ class Owner
   end
 
   def set_value(attr, value)
-    if attr.is_a?(Proc)
+    attr = attr.to_s
+    if attr == 'cgc'
+      self.add_cgc value
+    elsif attr.is_a?(Proc)
       attr.call self, value
-    elsif key = Owner.keys[attr] and key.type == Array
+    elsif key = self.class.keys[attr] and key.type == Array
       old_value = self.send attr
       if value.is_a?(Array)
         old_value |= value
@@ -348,11 +347,9 @@ class Owner
 
   def normalize_fields
     NameFields.each do |field|
-      norm = self.send(field)
-      norm = norm.first if norm.is_a?(Array)
-      next if norm.blank?
-      norm = norm.name_normalization
-      self.send "#{field}_n=", norm
+      names = self.send field
+      next if names.blank?
+      self.set_value "#{field}_n", Array(names).map{ |name| name.name_normalization }
     end
   end
 

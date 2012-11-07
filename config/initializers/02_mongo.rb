@@ -27,6 +27,7 @@ Owner.ensure_index :formal_name
 Owner.ensure_index :stock_name
 Owner.ensure_index :name_n
 Owner.ensure_index :formal_name_n
+Owner.ensure_index :stock_name_n
 
 NameEquivalence.ensure_index :name
 NameEquivalence.ensure_index :synonymous

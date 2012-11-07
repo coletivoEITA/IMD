@@ -14,6 +14,7 @@ class Share
 
   key :name, String
   key :quantity, Fixnum
+  key :total, Fixnum
   key :percentage, Float
   key :owner_id, ObjectId
   belongs_to :owner
@@ -82,14 +83,8 @@ class Share
   end
 
   def total
-    return @total if @total
-    @total = self.company.shares_quantity[self.sclass]
-    if @total.nil?
-      sq = self.company.shares_quantity.select{ |sclass, quantity| sclass.starts_with?(self.sclass) }.first
-      return unless sq
-      @total = sq[1]
-    end
-    @total
+    return self['total'] if self['total']
+    # TODO: try to guess from siblings
   end
 
   def quantity=(value)
