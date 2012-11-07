@@ -1,0 +1,4 @@
+[submodule "db/dump"]
+	path = db/dump
+	url = git://github.com/coletivoEITA/IMD-dump.git
+	pushurl = git@github.com:coletivoEITA/IMD-dump.git
