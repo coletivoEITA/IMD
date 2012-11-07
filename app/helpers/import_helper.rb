@@ -980,7 +980,7 @@ module ImportHelper
       owner_hash = {'' => company}
 
       page = m.get ShareholdersUrl % {:econoinfo_ce => company.econoinfo_ce}
-      page.parser.css("#tabPosAcionariaScroll tr").map do |tr|
+      page.parser.css("#tabPosAcionariaScroll tbody tr").each do |tr|
         tree = tr.attr('id').gsub('posAcionaria:0:', '')
         parent_tree = tree.split(':'); parent_tree.pop; parent_tree = parent_tree.join(':')
         parent = tree_hash[parent_tree]
@@ -998,6 +998,8 @@ module ImportHelper
         shares_major_nationality = tds[2].text.squish
         on_shares = tds[3].text.squish.gsub('.', '').to_i
         on_percentage = tds[4].text.squish.gsub(',', '.').to_f
+
+        tree_hash[tree] = id
         next if ['Ações em Tesouraria', 'Tesouraria', 'Outros', 'TOTAL'].include?(name)
 
         # cache assoc data
@@ -1017,7 +1019,7 @@ module ImportHelper
           attributes[attr] = value
         end
 
-        owner = Owner.first_or_new Source, attributes.merge(:name => name)
+        owner_hash[tree] = owner = Owner.first_or_new Source, attributes.merge(:name => name)
         owner.shares_major_nationality = shares_major_nationality
         owner.save!
         pp owner
@@ -1026,9 +1028,6 @@ module ImportHelper
           :source => Source, :reference_date => reference_date,
           :name => name, :sclass => 'ON', :quantity => on_shares, :percentage => on_percentage
         pp share
-
-        tree_hash[tree] = id
-        owner_hash[tree] = owner
       end
     end
 
