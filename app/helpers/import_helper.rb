@@ -933,59 +933,10 @@ module ImportHelper
     end
   end
 
-  def self.import_econoinfo options = {}
+  module EconoInfo
 
-    def self.get_page mech, econoinfo_ce
-      ret = []
-      info_url = "http://www.econoinfo.com.br/sumario/a-empresa?ce=%{econoinfo_ce}"
-      shareholders_url = "http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=%{econoinfo_ce}"
-      members_url = "http://www.econoinfo.com.br/governanca/alta-administracao?ce=%{econoinfo_ce}"
-      balance_url = "http://www.econoinfo.com.br/demonstracoes-financeiras/demonstracao-do-resultado?ce=%{econoinfo_ce}"
-      ret << mech.get(info_url % {:econoinfo_ce => econoinfo_ce})
-      ret << mech.get(shareholders_url % {:econoinfo_ce => econoinfo_ce})
-      ret << mech.get(members_url % {:econoinfo_ce => econoinfo_ce})
-      ret << mech.get(balance_url % {:econoinfo_ce => econoinfo_ce})
-      ret
-    rescue
-    end
-
-    def self.process_info owner, page
-    end
-
-    def self.shareholders_hash owner, page
-      assoc_url = "http://www.econoinfo.com.br/resources/componentes/econocorp/governanca/estrutura-acionaria/ajax/reqDetPosAcionaria.jsf?id=%{assoc_id}"
+    def self.company_list
       m = Mechanize.new
-      tree_hash = {'' => owner.econoinfo_ce}
-
-      page.parser.css("#tabPosAcionariaScroll tr").each do |tr|
-        tree = tr.attr('id').gsub('posAcionaria:0:', '')
-        #parent_tree = tree.split(':'); parent_tree.pop; parent_tree = parent_tree.join(':')
-        #parent = tree_hash[parent_tree]
-        #raise 'parent not found' if parent.nil?
-
-        attr = tr.css('.detIcon a').first.attr('onclick')
-        attr =~ /event, '([^']+)'/
-        id = $1.to_i
-        raise "can't find id in #{attr}" if id.nil?
-
-        # cache assoc data
-        Thread.join_to_limit 3, [Thread.main]
-        Thread.new{ m.get assoc_url % {:assoc_id => id} }
-
-        #tree_hash[tree] = id
-        #[parent, id]
-      end
-      []
-    end
-
-    def self.process m, owner
-      pages = get_page m, owner.econoinfo_ce
-      return if pages.nil?
-      process_info owner, pages[0]
-      shareholders_hash owner, pages[1]
-    end
-
-    def self.import_company_list m
       page = m.get 'http://econoinfo.com.br/listas/empresas-da-bovespa'
       page.parser.css('.cb_contH li').each do |li|
         link = li.css('a').first
@@ -1007,21 +958,76 @@ module ImportHelper
 
     end
 
-    Cache.enable
-    m = Mechanize.new
+    def self.all options = {}
 
-    if econoinfo_ce = options[:econoinfo_ce]
-      owner = Owner.find_by_econoinfo_ce econoinfo_ce
-      r = process(m, owner).to_a
-      ExportHelper.export_econoinfo_shareholders r
-    else
-      #import_company_list m
-      r = []
-      Owner.all(:econoinfo_ce.ne => nil).each do |owner|
-        r += process(m, owner).to_a
+      def self.get_page mech, econoinfo_ce
+        ret = []
+        info_url = "http://www.econoinfo.com.br/sumario/a-empresa?ce=%{econoinfo_ce}"
+        shareholders_url = "http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=%{econoinfo_ce}"
+        members_url = "http://www.econoinfo.com.br/governanca/alta-administracao?ce=%{econoinfo_ce}"
+        balance_url = "http://www.econoinfo.com.br/demonstracoes-financeiras/demonstracao-do-resultado?ce=%{econoinfo_ce}"
+        ret << mech.get(info_url % {:econoinfo_ce => econoinfo_ce})
+        ret << mech.get(shareholders_url % {:econoinfo_ce => econoinfo_ce})
+        ret << mech.get(members_url % {:econoinfo_ce => econoinfo_ce})
+        ret << mech.get(balance_url % {:econoinfo_ce => econoinfo_ce})
+        ret
+      rescue
       end
-      ExportHelper.export_econoinfo_shareholders r
+
+      def self.process_info owner, page
+      end
+
+      def self.shareholders_hash owner, page
+        assoc_url = "http://www.econoinfo.com.br/resources/componentes/econocorp/governanca/estrutura-acionaria/ajax/reqDetPosAcionaria.jsf?id=%{assoc_id}"
+        m = Mechanize.new
+        tree_hash = {'' => owner.econoinfo_ce}
+
+        page.parser.css("#tabPosAcionariaScroll tr").map do |tr|
+          tree = tr.attr('id').gsub('posAcionaria:0:', '')
+          parent_tree = tree.split(':'); parent_tree.pop; parent_tree = parent_tree.join(':')
+          parent = tree_hash[parent_tree]
+          raise 'parent not found' if parent.nil?
+
+          attr = tr.css('.detIcon a').first.attr('onclick')
+          attr =~ /event, '([^']+)'/
+          id = $1.to_i
+          raise "can't find id in #{attr}" if id.nil?
+
+          # cache assoc data
+          Thread.join_to_limit 3, [Thread.main]
+          Thread.new{ m.get assoc_url % {:assoc_id => id} }
+
+          tree_hash[tree] = id
+          [parent, id]
+        end
+      end
+
+      def self.process m, owner
+        pages = get_page m, owner.econoinfo_ce
+        return if pages.nil?
+        process_info owner, pages[0]
+        r = shareholders_hash owner, pages[1]
+        pp "#{owner.econoinfo_ce}: #{r.count}"
+        r
+      end
+
+      Cache.enable
+      m = Mechanize.new
+
+      if econoinfo_ce = options[:econoinfo_ce]
+        owner = Owner.find_by_econoinfo_ce econoinfo_ce
+        r = process(m, owner).to_a
+        ExportHelper.export_econoinfo_shareholders r
+      else
+        #import_company_list m
+        r = []
+        Owner.all(:econoinfo_ce.ne => nil).each do |owner|
+          r += process(m, owner).to_a
+        end
+        ExportHelper.export_econoinfo_shareholders r
+      end
     end
+
   end
 
 end
