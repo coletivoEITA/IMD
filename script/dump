@@ -4,7 +4,7 @@ require File.dirname(__FILE__) + '/../config/environment'
 system "mongodump -d #{MongoMapper.database.name}"
 
 DumpDir = "#{Rails.root}/dump"
-CacheDir = "#{Rails.root}/db/dump-#{ARGV[0]}"
+CacheDir = "#{Rails.root}/db/dump/#{ARGV[0]}"
 
 system "rm -fr #{CacheDir}"
 system "rm -fr #{DumpDir}/#{MongoMapper.database.name}/cache*"
