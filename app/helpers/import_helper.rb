@@ -951,7 +951,7 @@ module ImportHelper
 
   module EconoInfo
 
-    Source = 'Econoinfo'
+    Source = 'EconoInfo'
     ListUrl = 'http://econoinfo.com.br/listas/empresas-da-bovespa'
     InfoUrl = "http://www.econoinfo.com.br/sumario/a-empresa?ce=%{econoinfo_ce}"
     ShareholdersUrl = "http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=%{econoinfo_ce}"
@@ -979,6 +979,35 @@ module ImportHelper
         company = Owner.first_or_new Source, attrs
         company.save!
       end
+    end
+
+    def self.get_pages owner
+      Cache.enable
+      m = Mechanize.new
+      m.get InfoUrl % {:econoinfo_ce => owner.econoinfo_ce}
+      m.get ShareholdersUrl % {:econoinfo_ce => owner.econoinfo_ce}
+      m.get MembersUrl % {:econoinfo_ce => owner.econoinfo_ce}
+      m.get BalanceUrl % {:econoinfo_ce => owner.econoinfo_ce}
+    rescue
+    end
+
+    def self.info owner
+      Cache.enable
+      m = Mechanize.new
+      page = m.get InfoUrl % {:econoinfo_ce => owner.econoinfo_ce}
+      trs = page.parser.css('.cb_contH .tabela tr')
+
+      attributes = {}
+      attributes[:formal_name] = trs[0].css('td')[1].text.squish
+      attributes[:cgc] = trs[3].css('td')[1].text.squish
+      attributes[:capital_type] = trs[6].css('td')[1].text.squish
+      attributes[:country] = trs[9].css('td')[1].text.squish
+      attributes[:stock_country] = trs[10].css('td')[1].text.squish
+
+      attributes.each do |attr, value|
+        owner.set_value attr, value
+      end
+      owner.save!
     end
 
     def self.shareholders company
@@ -1036,35 +1065,6 @@ module ImportHelper
       end
     end
 
-    def self.get_pages owner
-      Cache.enable
-      m = Mechanize.new
-      m.get InfoUrl % {:econoinfo_ce => owner.econoinfo_ce}
-      m.get ShareholdersUrl % {:econoinfo_ce => owner.econoinfo_ce}
-      m.get MembersUrl % {:econoinfo_ce => owner.econoinfo_ce}
-      m.get BalanceUrl % {:econoinfo_ce => owner.econoinfo_ce}
-    rescue
-    end
-
-    def self.info owner
-      Cache.enable
-      m = Mechanize.new
-      page = m.get InfoUrl % {:econoinfo_ce => owner.econoinfo_ce}
-      trs = page.parser.css('.cb_contH .tabela tr')
-
-      attributes = {}
-      attributes[:formal_name] = trs[0].css('td')[1].text.squish
-      attributes[:cgc] = trs[3].css('td')[1].text.squish
-      attributes[:capital_type] = trs[6].css('td')[1].text.squish
-      attributes[:country] = trs[9].css('td')[1].text.squish
-      attributes[:stock_country] = trs[10].css('td')[1].text.squish
-
-      attributes.each do |attr, value|
-        owner.set_value attr, value
-      end
-      owner.save!
-    end
-
     def self.all options = {}
 
       def self.process owner
@@ -1077,7 +1077,11 @@ module ImportHelper
         process owner
       else
         Owner.all(:econoinfo_ce.ne => nil).each do |owner|
-          process owner
+          if method = options[:method]
+            send method, owner
+          else
+            process owner
+          end
         end
       end
     end
