@@ -27,12 +27,12 @@ class Balance
   validates_presence_of :months
   validates_presence_of :currency
 
-  scope :economatica, :source => 'Economatica'
-  scope :exame, :source => 'Exame'
-  scope :valor, :source => 'Valor'
-
   scope :with_reference_date, lambda{ |reference_date|
     reference_date.blank? ? {:reference_date.ne => nil} : {:reference_date => reference_date}
+  }
+  scope :with_reference_year, lambda{ |reference_date|
+    reference_date.blank? ? {:reference_date.ne => nil} :
+      {:reference_date.gt => reference_date.beginning_of_year, :reference_date.lt => reference_date.end_of_year}
   }
   scope :lastest, :order => :reference_date.desc
 

@@ -154,17 +154,22 @@ module ImportHelper
         share_class = row.values_at(1).first
         cnpj = row.values_at(2).first
         country = row.values_at(3).first
+        stock_code = row.values_at(10).first
 
-        next if country != 'BR' # only brazilian companies
-        next if cnpj == '-'
+        #next if country != 'BR' # only brazilian companies
+        next if cnpj == '-' and country == 'BR'
 
         share_class = 'ON' if share_class == 'Ord'
         shares_quantity = {}
 
-        cnpj = cnpj.to_i
-        cnpj = cnpj.zero? ? nil : ('%014d' % cnpj) # fix CNPJ format
+        if country != 'BR'
+          cnpj = 'foreign'
+        else
+          cnpj = cnpj.to_i
+          cnpj = cnpj.zero? ? nil : ('%014d' % cnpj) # fix CNPJ format
+        end
 
-        company = Owner.first_or_new Source, :cgc => cnpj, :stock_name => stock_name
+        company = Owner.first_or_new Source, :cgc => cnpj, :stock_name => stock_name, :stock_code => stock_code
         balance = nil
         share = nil
 
@@ -186,7 +191,6 @@ module ImportHelper
           # create balance and share if this is their first field
           if field == 'balance_months'
             # here we finished getting company data
-            company.save!
             balance.save if balance
             balance = Balance.first_or_new(:company_id => company.id, :source => Source,
                                            :reference_date => reference_date)
@@ -409,12 +413,13 @@ module ImportHelper
 
   module Bovespa
 
+    Source = 'Bovespa'
+
     def self.all options = {}
       Cache.enable
       m = Mechanize.new
       url = "http://www.bmfbovespa.com.br/cias-listadas/empresas-listadas/ResumoEmpresaPrincipal.aspx?codigoCvm=%{cvm_id}&idioma=pt-br"
       frame_url = "http://www.bmfbovespa.com.br/pt-br/mercados/acoes/empresas/ExecutaAcaoConsultaInfoEmp.asp?CodCVM=%{cvm_id}"
-      source = 'Bovespa'
 
       attr_map = {
         'CNPJ' => proc{ |o, v| o.add_cgc v },
@@ -457,14 +462,14 @@ module ImportHelper
         total_shares = tds[3].text.squish.gsub(',', '.').to_f
 
         unless on_percentage.zero?
-          s = Share.first_or_new(:company_id => company.id, :name => name, :source => source,
+          s = Share.first_or_new(:company_id => company.id, :name => name, :source => Source,
                                  :reference_date => reference_date, :sclass => 'ON')
           s.percentage = on_percentage
           s.save!
           pp s
         end
         unless pn_percentage.zero?
-          s = Share.first_or_new(:company_id => company.id, :name => name, :source => source,
+          s = Share.first_or_new(:company_id => company.id, :name => name, :source => Source,
                                  :reference_date => reference_date, :sclass => 'PN')
           s.percentage = pn_percentage
           s.save!
@@ -513,6 +518,8 @@ module ImportHelper
 
   module Exame
 
+    Source = 'Exame'
+
     def self.all dolar_value
 
       def self.process_company(year, reference_date, key, dolar_value, tds, spans = nil)
@@ -534,7 +541,7 @@ module ImportHelper
         pp company
         company.save!
 
-        balance = Balance.first_or_new(:company_id => company.id, :source => "Exame", :reference_date => reference_date)
+        balance = Balance.first_or_new(:company_id => company.id, :source => Source, :reference_date => reference_date)
         value = tds[7].text.gsub('.', '').gsub(',', '.').to_f * 1000000
         value *= dolar_value # convert from Dolar to Real
         balance.currency = 'Real'
@@ -592,6 +599,8 @@ module ImportHelper
 
   module Valor
 
+    Source = 'Valor'
+
     def self.csv file, reference_date
       csv = CSV.table file, :headers => true, :header_converters => nil, :converters => nil
       csv.each_with_index do |row, i|
@@ -607,7 +616,7 @@ module ImportHelper
         company.valor_ranking_position = ranking_position
         company.save!
 
-        balance = Balance.first_or_new(:company_id => company.id, :source => "Valor",
+        balance = Balance.first_or_new(:company_id => company.id, :source => Source,
                                        :currency => 'Real', :reference_date => reference_date)
         balance.revenue = revenue.to_f * 1000000
         balance.save!
@@ -887,6 +896,7 @@ module ImportHelper
     ShareholdersUrl = "http://www.econoinfo.com.br/governanca/estrutura-acionaria?ce=%{econoinfo_ce}"
     MembersUrl = "http://www.econoinfo.com.br/governanca/alta-administracao?ce=%{econoinfo_ce}"
     BalanceUrl = "http://www.econoinfo.com.br/demonstracoes-financeiras/demonstracao-do-resultado?ce=%{econoinfo_ce}"
+    PatrimonyUrl = "http://www.econoinfo.com.br/demonstracoes-financeiras/balanco-patrimonial?ce=%{econoinfo_ce}"
     AssocUrl = "http://www.econoinfo.com.br/resources/componentes/econocorp/governanca/estrutura-acionaria/ajax/reqDetPosAcionaria.jsf?id=%{assoc_id}"
 
     def self.company_list
@@ -919,6 +929,7 @@ module ImportHelper
       m.get ShareholdersUrl % {:econoinfo_ce => owner.econoinfo_ce}
       m.get MembersUrl % {:econoinfo_ce => owner.econoinfo_ce}
       m.get BalanceUrl % {:econoinfo_ce => owner.econoinfo_ce}
+      m.get PatrimonyUrl % {:econoinfo_ce => owner.econoinfo_ce}
     rescue
     end
 
@@ -939,6 +950,27 @@ module ImportHelper
         owner.set_value attr, value
       end
       owner.save!
+    end
+
+    def self.balances company
+      Cache.enable
+      m = Mechanize.new
+      page = m.get BalanceUrl % {:econoinfo_ce => company.econoinfo_ce}
+
+      table = page.parser.css('.tabDF')
+      table.css('th').each_with_index do |th, i|
+        next unless th.text.squish =~ /(.+) \((\d+)m\)/
+        reference_date, months = DateHelper.date_from_brazil($1), $2.to_i
+
+        tr = table.css('tbody tr')[0]
+        td = tr.css('td')[i]
+        next if td.nil?
+        revenue = td.text.squish.gsub('.', '').gsub(',', '.').to_f * 1000000
+
+        balance = Balance.first_or_create :company_id => company.id, :source => Source,
+          :reference_date => reference_date, :months => months, :revenue => revenue
+        pp balance
+      end
     end
 
     def self.shareholders company
@@ -968,11 +1000,6 @@ module ImportHelper
         on_percentage = tds[4].text.squish.gsub(',', '.').to_f
         next if ['Ações em Tesouraria', 'Tesouraria', 'Outros', 'TOTAL'].include?(name)
 
-        share = Share.first_or_create :company => company.id, :source => Source, :reference_date => reference_date,
-          :name => name, :sclass => 'ON', :quantity => on_shares, :percentage => on_percentage
-        owner = share.owner
-        owner.shares_major_nationality = shares_major_nationality
-
         # cache assoc data
         # Thread.join_to_limit 3, [Thread.main]
         # Thread.new{ m.get assoc_url % {:assoc_id => id} }
@@ -980,16 +1007,25 @@ module ImportHelper
         attr_map = {
           'CNPJ' => :cgc, 'CPF' => :cgc, 'UF' => :state,
         }
+        attributes = {}
         attr_map.each do |field_name, attr|
           field = page.parser.css("span:contains('#{field_name}')")[0]
           next if field.nil?
           value = field.parent.css('span.txtBold')[0].text.squish
           next if value == 'Informações não fornecidas'
 
-          owner.set_value attr, value
+          attributes[attr] = value
         end
 
+        owner = Owner.first_or_new Source, attributes.merge(:name => name)
+        owner.shares_major_nationality = shares_major_nationality
         owner.save!
+        pp owner
+
+        share = Share.first_or_create :company => company.id, :owner_id => owner.id,
+          :source => Source, :reference_date => reference_date,
+          :name => name, :sclass => 'ON', :quantity => on_shares, :percentage => on_percentage
+        pp share
 
         tree_hash[tree] = id
         owner_hash[tree] = owner
@@ -998,21 +1034,21 @@ module ImportHelper
 
     def self.all options = {}
 
-      def self.process owner
-        info owner
-        shareholders owner
+      def self.process owner, options
+        if method = options[:method]
+          send method, owner
+        else
+          info owner
+          shareholders owner
+        end
       end
 
       if econoinfo_ce = options[:econoinfo_ce]
         owner = Owner.find_by_econoinfo_ce econoinfo_ce
-        process owner
+        process owner, options
       else
         Owner.all(:econoinfo_ce.ne => nil).each do |owner|
-          if method = options[:method]
-            send method, owner
-          else
-            process owner
-          end
+          process owner, options
         end
       end
     end

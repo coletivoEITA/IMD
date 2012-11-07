@@ -7,29 +7,29 @@ class Owner
 
   NameFields = [:name, :formal_name, :stock_name]
 
-  key :name, Array, :required => :true
+  key :name, Set, :required => :true
   key :source, String, :required => :true
 
   # companies
-  key :formal_name, Array
-  key :cgc, Array
+  key :formal_name, Set
+  key :cgc, Set
   key :cnpj_root, String
   key :capital_type, String
   # group
   #key :group_id, ObjectId
   #belongs_to :group, :class_name => 'OwnerGroup'
   # company categorization
-  key :naics, Array
+  key :naics, Set
   key :sector, String
   key :economatica_sector, String
   key :main_activity, String
   # company stock info
   key :cvm_id, Integer
-  key :classes, Array
+  key :classes, Set
   key :traded, Boolean
-  key :stock_name, Array
-  key :stock_market, Array
-  key :stock_code, Array
+  key :stock_name, Set
+  key :stock_market, Set
+  key :stock_code, Set
   key :stock_code_base, String
   key :stock_country, String
   key :shares_major_nationality, String
@@ -63,11 +63,11 @@ class Owner
 
   # normalized versions
   NameFields.each do |field|
-    key "#{field}_n", Array
+    key "#{field}_n", Set
   end
 
   # preference order of sources to use
-  BalanceSources = ['Economatica', 'Valor']
+  BalanceSources = ['Economatica', 'EconoInfo', 'Valor']
 
   many :balances, :foreign_key => :company_id, :dependent => :destroy_all
 
@@ -152,7 +152,7 @@ class Owner
   end
 
   def balance_with_value(attr = :revenue, reference_date = $balance_reference_date)
-    scoped = self.balances.with_reference_date(reference_date)
+    scoped = self.balances.latest.with_reference_year reference_date
     balance = nil
     # get balance value in the following preference order
     BalanceSources.each do |source|
@@ -168,7 +168,7 @@ class Owner
   def value(attr = :revenue, reference_date = $balance_reference_date)
     balance = balance_with_value attr, reference_date
     return 0 if balance.nil?
-    balance.send attr
+    balance.value attr
   end
 
   def controller_share(reference_date = $share_reference_date)
@@ -319,13 +319,9 @@ class Owner
       self.add_cgc value
     elsif attr.is_a?(Proc)
       attr.call self, value
-    elsif key = self.class.keys[attr] and key.type == Array
+    elsif key = self.class.keys[attr] and key.type == Set
       old_value = self.send attr
-      if value.is_a?(Array)
-        old_value |= value
-      else
-        old_value << value unless old_value.include?(value)
-      end
+      Set.new(Array(value)).each{ |value| old_value << value }
     else
       self.send "#{attr}=", value
     end
@@ -349,7 +345,7 @@ class Owner
     NameFields.each do |field|
       names = self.send field
       next if names.blank?
-      self.set_value "#{field}_n", Array(names).map{ |name| name.name_normalization }
+      self.set_value "#{field}_n", names.map{ |name| name.name_normalization }
     end
   end
 
