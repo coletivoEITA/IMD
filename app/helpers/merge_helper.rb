@@ -2,7 +2,7 @@
 
 module MergeHelper
 
-  def self.merge_pair(dest, source)
+  def self.owner dest, source
     source.balances.each{ |b| b.update_attribute :company_id, dest.id }
     source.owned_shares.each{ |s| s.update_attribute :owner_id, dest.id }
     source.owners_shares.each{ |s| s.update_attribute :company_id, dest.id }
@@ -12,9 +12,10 @@ module MergeHelper
     source.donations_made.each{ |d| d.update_attribute :grantor_id, dest.id }
     source.donations_received.each{ |d| d.update_attribute :candidate_id, dest.id }
 
-    source.cgc.each{ |cgc| dest.add_cgc cgc }
+    source.attributes.each{ |key, value| dest.set_value key, value }
 
     source.destroy
+    dest
   end
 
 end

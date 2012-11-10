@@ -92,16 +92,26 @@ class Owner
   before_validation :assign_defaults
   before_save :normalize_fields
 
-  def self.first_or_new(source, attributes = {})
+  def self.first_or_new source, attributes = {}
     by_cgc = by_stock_code = nil
     cgc, stock_code = attributes[:cgc], attributes[:stock_code]
 
-    exact_match = self.first(attributes)
-    by_cgc = self.find_by_cgc(cgc) unless cgc.blank?
+    exact_match = self.first attributes
+    by_cgc = self.find_by_cgc cgc unless cgc.blank?
     unless stock_code.blank?
       by_stock_code = self.find_by_stock_code(stock_code)
       base = StockCodeHelper.base stock_code
       by_stock_code ||= self.find_by_stock_code_base(base) if base
+    end
+
+    NameFields.each do |f|
+      name = attributes[f]
+      next if name.blank?
+      # remove end punctuation
+      name.sub! /[?!,;]?$/, ''
+      # capitalize each word TODO: fix downcase to utf8
+      #name = name.downcase.split(' ').each{ |word| word.capitalize! }.join(' ')
+      attributes[f] = name
     end
 
     name = attributes[:name]
@@ -109,11 +119,11 @@ class Owner
     attributes[:name] = name
     name_match = self.find_by_name_attrs attributes
 
-    owner = exact_match || by_cgc || by_stock_code || name_match || self.new
+    #name_match = MergeHelper.owner by_cgc, name_match if (name_match and by_cgc) and name_match != by_cgc
+
+    owner = exact_match || name_match || by_cgc || by_stock_code || self.new
     owner.source ||= source
-    attributes.each do |attr, value|
-      owner.set_value attr, value
-    end
+    attributes.each{ |attr, value| owner.set_value attr, value }
 
     # uncomment to print when new owners are created
     #puts "--- New owner #{name} ---" if owner.new_record?
@@ -132,16 +142,14 @@ class Owner
   end
 
   def self.find_by_name_attrs(attributes)
-    ret = nil
     attributes.each do |field, name|
       next unless NameFields.include? field.to_sym
-      ret = self.first field => name
-      # OR search on normalized fields
+      ret = self.first :$or => NameFields.map{ |k, v| {k => name} }
       name_n = name.name_normalization
-      ret ||= self.first :$or => attributes.map{ |k, v| {"#{k}_n" => name_n} }
-      break if ret
+      ret ||= self.first :$or => NameFields.map{ |k, v| {"#{k}_n" => name_n} }
+      return ret if ret
     end
-    ret
+    nil
   end
 
   def cnpj?
@@ -304,13 +312,17 @@ class Owner
     total_value
   end
 
-  def cgc=(value)
-    self['cgc'] = CgcHelper.parse value
+  def cgc= value
+    raise 'Use add_cgc instead'
   end
-  def add_cgc(cgc)
-    cgc = CgcHelper.parse cgc
-    return if cgc.blank?
-    self.cgc << cgc unless self.cgc.include?(cgc)
+  def add_cgc cgc
+    Array(cgc).each do |cgc|
+      cgc = CgcHelper.parse cgc
+      return if cgc.blank?
+      # don't allow CGCs with different roots
+      return if self.cgc.first and !cgc.starts_with?(CgcHelper.extract_cnpj_root(self.cgc.first))
+      self.cgc << cgc
+    end
   end
 
   def set_value(attr, value)

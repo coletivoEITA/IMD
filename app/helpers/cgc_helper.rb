@@ -18,7 +18,8 @@ module CgcHelper
     '%s.%s.%s/%s-%s' % [cgc[0..1], cgc[2..4], cgc[5..7], cgc[8..11], cgc[12..13]]
   end
 
-  def self.extract_cnpj_root(cnpj)
+  def self.extract_cnpj_root cnpj
+    return unless self.cnpj? cnpj
     cnpj[0..-7] if cnpj
   end
 

@@ -1000,7 +1000,10 @@ module ImportHelper
         on_percentage = tds[4].text.squish.gsub(',', '.').to_f
 
         tree_hash[tree] = id
-        next if ['Ações em Tesouraria', 'Tesouraria', 'Outros', 'TOTAL'].include?(name)
+        next if ['Outros', 'TOTAL'].include?(name) or name =~ /tesouraria/i
+
+        # in case the previous was one of the list above
+        owner_parent ||= company
 
         # cache assoc data
         # Thread.join_to_limit 3, [Thread.main]
@@ -1018,16 +1021,20 @@ module ImportHelper
 
           attributes[attr] = value
         end
+        attributes.merge! :formal_name => name
 
-        owner_hash[tree] = owner = Owner.first_or_new Source, attributes.merge(:name => name)
+        owner_hash[tree] = owner = Owner.first_or_new("#{Source} associado", attributes)
         owner.shares_major_nationality = shares_major_nationality
-        owner.save!
         pp owner
+        owner.save!
 
-        share = Share.first_or_create :company => company.id, :owner_id => owner.id,
+        share = Share.first_or_new :company_id => owner_parent.id, :owner_id => owner.id,
           :source => Source, :reference_date => reference_date,
-          :name => name, :sclass => 'ON', :quantity => on_shares, :percentage => on_percentage
+          :name => name, :sclass => 'ON'
+        share.quantity = on_shares
+        share.percentage = on_percentage
         pp share
+        share.save!
       end
     end
 
@@ -1141,6 +1148,11 @@ module ImportHelper
         share.save
       end
     end
+  end
+
+  module EconoInfoData
+
+
   end
 
 end

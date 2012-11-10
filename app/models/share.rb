@@ -48,7 +48,7 @@ class Share
   scope :with_reference_date, lambda{ |reference_date|
     reference_date.blank? ? {:reference_date.ne => nil} : {:reference_date => reference_date}
   }
-  scope :lastest, :order => :reference_date.desc
+  scope :latest, :order => :reference_date.desc
 
   scope :greatest, :order => :percentage.desc
 
@@ -88,7 +88,9 @@ class Share
   end
 
   def quantity=(value)
-    self['quantity'] = value.to_i
+    value = value.to_i
+    value = nil if value.zero?
+    self['quantity'] = value
   end
 
   def value(attr)

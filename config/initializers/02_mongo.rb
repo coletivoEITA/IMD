@@ -42,8 +42,7 @@ Share.ensure_index :name
 Share.ensure_index :sclass
 Share.ensure_index :reference_date
 Share.ensure_index [[:name, 1], [:company_id, 1], [:source, 1], [:sclass, 1], [:reference_date, 1]]
-Share.ensure_index [[:name, 1], [:company_id, 1], [:source, 1], [:sclass, 1], [:reference_date, 1], [:percentage, 1]]
-Share.ensure_index [[:name, 1], [:company_id, 1], [:source, 1], [:sclass, 1], [:reference_date, 1], [:quantity, 1]]
+Share.ensure_index [[:name, 1], [:company_id, 1], [:owner_id, 1], [:source, 1], [:sclass, 1], [:reference_date, 1]]
 
 Balance.ensure_index :reference_date
 Balance.ensure_index :owner_id

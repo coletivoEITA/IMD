@@ -34,7 +34,7 @@ class Balance
     reference_date.blank? ? {:reference_date.ne => nil} :
       {:reference_date.gt => reference_date.beginning_of_year, :reference_date.lt => reference_date.end_of_year}
   }
-  scope :lastest, :order => :reference_date.desc
+  scope :latest, :order => :reference_date.desc
 
   def value(attr = :revenue)
     (MonthsReference / self.months) * self.send(attr)
