@@ -1152,6 +1152,55 @@ module ImportHelper
 
   module EconoInfoData
 
+    Source = EconoInfo::Source
+
+    def self.companies_csv
+      csv = CSV.table 'db/econoinfo-assoc.csv', :headers => true, :header_converters => nil, :converters => nil
+      csv.each_with_index do |row, i|
+        attrs = {}
+        attrs[:formal_name] = row.values_at(2).first
+        attrs[:cgc] = row.values_at(3).first
+        econoinfo_ce = row.values_at(1).first
+        shares_major_nationality = row.values_at(5).first
+        daniel_id = row.values_at(0).first.to_i
+
+        owner = Owner.first_or_new Source, attrs
+        daniel_id = Array(owner.daniel_id) << daniel_id if owner.daniel_id and owner.daniel_id != daniel_id
+        owner.attributes = {:daniel_id => daniel_id}
+        owner.econoinfo_ce = econoinfo_ce
+        owner.shares_major_nationality = shares_major_nationality
+        pp owner
+        owner.save!
+      end
+    end
+
+    def self.shareholders_csv
+      csv = CSV.table 'db/econoinfo-relacoes.csv', :headers => true, :header_converters => nil, :converters => nil
+      csv.each_with_index do |row, i|
+        daniel_id = row.values_at(1).first.to_i
+        daniel_mae_id = row.values_at(2).first.to_i
+        on_shares = row.values_at(3).first.to_i
+        on_percentage = row.values_at(4).first.to_f
+        pn_shares = row.values_at(5).first.to_i
+        pn_percentage = row.values_at(6).first.to_f
+        reference_date = $share_reference_date
+
+        next if daniel_mae_id == -1
+
+        company = Owner.first :daniel_id => daniel_id
+        raise "can't find id #{daniel_id}" if company.nil?
+
+        owner = Owner.first :daniel_id => daniel_mae_id
+        raise "can't find id #{daniel_mae_id}" if owner.nil?
+
+        share = Share.first_or_new :company_id => company.id, :owner_id => owner.id,
+          :sclass => 'ON', :name => owner.name, :source => "#{Source} associado", :reference_date => reference_date
+        share.quantity = on_shares
+        share.percentage = on_percentage
+        pp share
+        share.save!
+      end
+    end
 
   end
 

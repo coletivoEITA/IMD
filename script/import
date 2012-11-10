@@ -10,5 +10,7 @@ ImportHelper::EconoInfo.all :method => :info
 ImportHelper::Economatica.csv "db/economatica-period-#{$balance_reference_date.to_date.to_s}.csv", $balance_reference_date
 
 ImportHelper::EconoInfo.all :method => :balances
-ImportHelper::EconoInfo.all :method => :shareholders
+
+ImportHelper::EconoInfoData.companies_csv
+ImportHelper::EconoInfoData.shareholders_csv
 
