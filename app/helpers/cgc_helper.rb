@@ -13,9 +13,13 @@ module CgcHelper
     end
   end
 
-  def self.format(cgc)
+  def self.format cgc
     return nil if cgc.blank?
-    '%s.%s.%s/%s-%s' % [cgc[0..1], cgc[2..4], cgc[5..7], cgc[8..11], cgc[12..13]]
+    if self.cnpj? cgc
+      '%s.%s.%s/%s-%s' % [cgc[0..1], cgc[2..4], cgc[5..7], cgc[8..11], cgc[12..13]]
+    elsif self.cpf? cgc
+      '%s.%s.%s-%s' % [cgc[0..2], cgc[3..5], cgc[6..8], cgc[9..10]]
+    end
   end
 
   def self.extract_cnpj_root cnpj

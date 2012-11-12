@@ -1158,10 +1158,10 @@ module ImportHelper
       csv = CSV.table 'db/econoinfo-assoc.csv', :headers => true, :header_converters => nil, :converters => nil
       csv.each_with_index do |row, i|
         attrs = {}
-        attrs[:formal_name] = row.values_at(2).first
-        attrs[:cgc] = row.values_at(3).first
+        attrs[:formal_name] = row.values_at(3).first
+        attrs[:cgc] = row.values_at(4).first
         econoinfo_ce = row.values_at(1).first
-        shares_major_nationality = row.values_at(5).first
+        shares_major_nationality = row.values_at(6).first
         daniel_id = row.values_at(0).first.to_i
 
         owner = Owner.first_or_new Source, attrs
@@ -1187,14 +1187,16 @@ module ImportHelper
 
         next if daniel_mae_id == -1
 
-        company = Owner.first :daniel_id => daniel_id
-        raise "can't find id #{daniel_id}" if company.nil?
+        owner = Owner.first :daniel_id => daniel_id
+        raise "can't find id #{daniel_id}" if owner.nil?
 
-        owner = Owner.first :daniel_id => daniel_mae_id
-        raise "can't find id #{daniel_mae_id}" if owner.nil?
+        company = Owner.first :daniel_id => daniel_mae_id
+        raise "can't find id #{daniel_mae_id}" if company.nil?
+
+        next if company == owner
 
         share = Share.first_or_new :company_id => company.id, :owner_id => owner.id,
-          :sclass => 'ON', :name => owner.name, :source => "#{Source} associado", :reference_date => reference_date
+          :sclass => 'ON', :name => owner.name.first, :source => "#{Source} associado", :reference_date => reference_date
         share.quantity = on_shares
         share.percentage = on_percentage
         pp share

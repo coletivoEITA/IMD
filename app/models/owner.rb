@@ -121,7 +121,7 @@ class Owner
 
     #name_match = MergeHelper.owner by_cgc, name_match if (name_match and by_cgc) and name_match != by_cgc
 
-    owner = exact_match || name_match || by_cgc || by_stock_code || self.new
+    owner = exact_match || by_cgc || name_match || by_stock_code || self.new
     owner.source ||= source
     attributes.each{ |attr, value| owner.set_value attr, value }
 
@@ -144,6 +144,8 @@ class Owner
   def self.find_by_name_attrs(attributes)
     attributes.each do |field, name|
       next unless NameFields.include? field.to_sym
+      next if name.blank?
+
       ret = self.first :$or => NameFields.map{ |k, v| {k => name} }
       name_n = name.name_normalization
       ret ||= self.first :$or => NameFields.map{ |k, v| {"#{k}_n" => name_n} }
@@ -175,7 +177,7 @@ class Owner
 
   def value(attr = :revenue, reference_date = $balance_reference_date)
     balance = balance_with_value attr, reference_date
-    return 0 if balance.nil?
+    return 0.0 if balance.nil?
     balance.value attr
   end
 
@@ -206,13 +208,13 @@ class Owner
         participation = "#{owned_share.percentage.c}%, final=#{p.c}%"
         if owned.empty?
           next if control == true or direct
-          "#{owned_company.name} (#{participation})"
+          "#{owned_company.name.first} (#{participation})"
         else
           sep = owned.count > 1 ? "\n#{'•• '*(route.size+1)}" : ''
           end_sep = owned.count > 1 ? "\n#{'•• '*(route.size)}}" : "}"
           owned = sep + owned.join(sep)
           participation = direct ? '' : " (#{participation})"
-          "#{owned_company.name}#{participation} => {#{owned}#{end_sep}"
+          "#{owned_company.name.first}#{participation} => {#{owned}#{end_sep}"
         end
       end.flatten.compact
     end
@@ -231,7 +233,7 @@ class Owner
         next if route.include? pair
 
         list = []
-        list << "#{owned_company.name} (controlada por #{company.name})" unless direct
+        list << "#{owned_company.name.first} (controlada por #{company.name.first})" unless direct
         list += __recursion owned_company, share_reference_date, route+[pair]
 
         list
@@ -248,18 +250,17 @@ class Owner
     own_value
   end
 
+  FormulaPrint = false # one of [:letter, :number, :route]
+
   def calculate_power attr = :revenue, balance_reference_date = $balance_reference_date, share_reference_date = $share_reference_date
 
-    # uncomment to print formula
-    #print "\nP#{self.name.downcase} = "
+    print "\nP#{self.name.first.downcase} = " if FormulaPrint
 
     def __recursion(company, attr, balance_reference_date, share_reference_date, route = Set.new)
       own_value = company.value attr, balance_reference_date
 
-      # uncomment to print letter formula
-      #print "V#{company.name.downcase}"
-      # uncomment to print number formula
-      #print own_value.to_s
+      print "V#{company.name.first.downcase}" if FormulaPrint == :letter
+      print own_value.to_s if FormulaPrint == :number
 
       company.owned_shares.on.with_reference_date(share_reference_date).inject(own_value) do |sum, owned_share|
         owned_company = owned_share.company
@@ -280,18 +281,14 @@ class Owner
 
         w = is_controller ? 1 : owned_share.percentage/100
 
-        # uncomment to print route
-        #puts (route.map{ |p| p.first.name } << company.name << owned_company.name).join(',')
-        # uncomment to print letter formula
-        #print " + W#{company.name.downcase}#{owned_company.name.downcase} * ( "
-        # uncomment to print number formula
-        #print " + #{w} * ( "
+        puts (route.map{ |p| p.first.name.first } << company.name.first << owned_company.name.first).join(',') if FormulaPrint == :route
+        print " + W#{company.name.first.downcase}#{owned_company.name.first.downcase} * ( " if FormulaPrint == :letter
+        print " + #{w} * ( " if FormulaPrint == :number
 
         power = __recursion owned_company, attr, balance_reference_date, share_reference_date, route+[pair]
         x = w * power
 
-        # uncomment to print formula
-        #print " )"
+        print " )" if FormulaPrint
 
         sum + x
       end

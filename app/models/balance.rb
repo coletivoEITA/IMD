@@ -16,11 +16,11 @@ class Balance
   key :months, Integer, :default => MonthsReference
   key :currency, String, :default => 'Real'
 
-  key :total_active, Float, :default => 0
-  key :patrimony, Float, :default => 0
-  key :revenue, Float, :default => 0
-  key :gross_profit, Float, :default => 0
-  key :net_profit, Float, :default => 0
+  key :total_active, Float, :default => 0.0
+  key :patrimony, Float, :default => 0.0
+  key :revenue, Float, :default => 0.0
+  key :gross_profit, Float, :default => 0.0
+  key :net_profit, Float, :default => 0.0
 
   validates_presence_of :company
   validates_uniqueness_of :reference_date, :scope => [:source, :company_id]
@@ -36,7 +36,7 @@ class Balance
   }
   scope :latest, :order => :reference_date.desc
 
-  def value(attr = :revenue)
+  def value attr = :revenue
     (MonthsReference / self.months) * self.send(attr)
   end
 

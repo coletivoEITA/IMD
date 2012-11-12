@@ -33,6 +33,7 @@ class Share
   validates_uniqueness_of :name, :scope => [:source, :company_id, :sclass, :reference_date]
   validates_numericality_of :quantity, :greater_than => 0.0, :allow_nil => true
   validates_numericality_of :percentage, :greater_than => 0.0, :allow_nil => true
+  validate :company_differ_from_owner
   #validate :quantity_xor_percentage
 
   before_validation :create_owner
@@ -105,6 +106,10 @@ class Share
 
   def normalize_fields
     self.name_n = self.name.name_normalization
+  end
+
+  def company_differ_from_owner
+    self.errors[:owner] << "Can't have a share of itself" if company == owner
   end
 
 end

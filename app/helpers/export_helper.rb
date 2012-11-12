@@ -25,7 +25,7 @@ module ExportHelper
 		  "#{party} (#{percentage}%)"
 		end.join(' ')
 		#create on line of grantor donations by party
-		csv << [owner.name, owner.formal_name, owner.cgc.first,
+		csv << [owner.name.first, owner.formal_name.first, owner.cgc.first,
 			  sum_donated, percentage_by_party]
 	  end
     end
@@ -43,10 +43,10 @@ module ExportHelper
 		#concat a percentage by candidacy
   	    percentage_by_candidacy = owner.donations_made.group_by{ |d| d.candidacy }.map do |candidacy, donations|
 	      percentage = (donations.sum(&:value) / sum_donated) * 100
-	      "#{candidacy.year} - #{candidacy.candidate.name} - #{candidacy.role} (#{percentage})"
+	      "#{candidacy.year} - #{candidacy.candidate.name.first} - #{candidacy.role} (#{percentage})"
 		end.join(' ')
    		#create on line of grantor donations by party
-        csv << [owner.name, owner.formal_name, owner.cgc.first,
+        csv << [owner.name.first, owner.formal_name.first, owner.cgc.first,
                 sum_donated, percentage_by_candidacy]
       end
     end
@@ -56,7 +56,7 @@ module ExportHelper
     CSV.open("output/econoinfo-company-codes.csv", "w") do |csv|
       csv << ['nome da empresa', 'ce']
       Owner.all(:econoinfo_ce.ne => nil).each do |company|
-        csv << [company.name, company.econoinfo_ce]
+        csv << [company.name.first, company.econoinfo_ce]
       end
     end
   end
@@ -82,14 +82,13 @@ module ExportHelper
 
       puts 'loading data'
       value_field = "total_#{attr}".to_sym
-      owners = Owner.order(value_field.desc).where(:name_n.ne => 'acoes em tesouraria').all
+      owners = Owner.order(value_field.desc).all
 
       puts 'exporting data'
       CSV.open("output/#{attr}-ranking.csv", "w") do |csv|
         csv << ['R', 'PA (milhões de reais)', 'Empresa ou Pessoa', 'Controlada diretamente por:',
                 'Controle direto', 'Participação direta', 'Controle indireto', 'Participação indireta (sem controle)',
-                'CNPJ', 'Cód. Bovespa', 'Fonte',
-                'Receita líquida pela Valor (milhões de reias)', 'Receita líquida pela Economatica (milhões de reias)',
+                'CNPJ', 'Cód. Bovespa', 'Fonte', 'Receita líquida (milhões de reias)',
                 '“Poder” Indireto (milhões de reais)', 'PA (milhões de reais)',]
 
         i = 0
@@ -100,10 +99,7 @@ module ExportHelper
           #legal_nature = owner.legal_nature || '-'
           stock_code = owner.stock_code_base
 
-          valor_value = owner.balances.valor.with_reference_date(balance_reference_date).first
-          valor_value = valor_value.nil? ? valor_value.c : (valor_value.value(attr)/1000000).c
-          economatica_value = owner.balances.economatica.with_reference_date(balance_reference_date).first
-          economatica_value = economatica_value.nil? ? economatica_value.c : (economatica_value.value(attr)/1000000).c
+          value = (owner.value(attr, balance_reference_date)/1000000).c
 
           balance = owner.balance_with_value(attr, balance_reference_date)
           source = balance.nil? ? owner.source : balance.source_with_months
@@ -117,14 +113,14 @@ module ExportHelper
           owned_shares = owner.owned_shares.on.greatest.with_reference_date(share_reference_date).all
 
           shareholders = owners_shares.map do |s|
-            "#{s.owner.name} (#{s.percentage.c}#{'%' if s.percentage})"
+            "#{s.owner.name.first} (#{s.percentage.c}#{'%' if s.percentage})"
           end.join("\n")
 
           power_direct_control = owned_shares.select{ |s| s.control? }.map do |s|
-            "#{s.company.name} (#{s.percentage.c}#{'%' if s.percentage})"
+            "#{s.company.name.first} (#{s.percentage.c}#{'%' if s.percentage})"
           end.join("\n")
           power_direct_parcial = owned_shares.select{ |s| s.parcial? }.map do |s|
-            "#{s.company.name} (#{s.percentage.c}#{'%' if s.percentage})"
+            "#{s.company.name.first} (#{s.percentage.c}#{'%' if s.percentage})"
           end.join("\n")
 
           power_indirect_control = owner.indirect_total_controlled_companies(share_reference_date).join("\n")
@@ -148,10 +144,9 @@ module ExportHelper
           end
           i += 1 if position.number?
 
-          csv << [position, total_value, owner.name, shareholders,
+          csv << [position, total_value, owner.name.first, shareholders,
                   power_direct_control, power_direct_parcial, power_indirect_control, power_indirect_parcial,
-                  cgc, stock_code, source,
-                  valor_value, economatica_value,
+                  cgc, stock_code, source, value,
                   indirect_value, total_value,]
         end
       end
@@ -163,8 +158,8 @@ module ExportHelper
 
   def self.export_owners
     File.open('owners.txt', 'w') do |f|
-      cc = Owner.all.map{ |c| "#{c.name} (Empresa)\t#{c.cnpj}" }.uniq
-      ss = Share.all.map{ |c| c.name }.uniq
+      cc = Owner.all.map{ |c| "#{c.name.first} (Empresa)\t#{c.cnpj}" }.uniq
+      ss = Share.all.map{ |c| c.name.first }.uniq
       f.write((cc+ss).sort.join("\n"))
     end
   end
