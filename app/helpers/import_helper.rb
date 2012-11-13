@@ -965,7 +965,10 @@ module ImportHelper
         tr = table.css('tbody tr')[0]
         td = tr.css('td')[i]
         next if td.nil?
-        revenue = td.text.squish.gsub('.', '').gsub(',', '.').to_f * 1000000
+        value = td.text.squish.downcase
+        multiplier = if value.ends_with?(' m') then 1000000 elsif value.ends_with?(' k') then 1000 else 1 end
+        revenue = value.gsub('.', '').gsub(',', '.').to_f
+        revenue *= multiplier
 
         balance = Balance.first_or_create :company_id => company.id, :source => Source,
           :reference_date => reference_date, :months => months, :revenue => revenue
@@ -1061,6 +1064,64 @@ module ImportHelper
 
   end
 
+  module EconoInfoData
+
+    Source = EconoInfo::Source
+
+    def self.companies_csv
+      csv = CSV.table 'db/econoinfo-assoc.csv', :headers => true, :header_converters => nil, :converters => nil
+      csv.each_with_index do |row, i|
+        attrs = {}
+        attrs[:formal_name] = row.values_at(3).first
+        attrs[:cgc] = row.values_at(4).first
+        econoinfo_ce = row.values_at(1).first
+        shares_major_nationality = row.values_at(6).first
+        daniel_id = row.values_at(0).first.to_i
+
+        owner = Owner.first_or_new Source, attrs
+        old_daniel_id = Array(owner.attributes[:daniel_id])
+        daniel_id = old_daniel_id << daniel_id unless old_daniel_id.include?(daniel_id)
+        owner.attributes = {:daniel_id => daniel_id}
+        owner.econoinfo_ce = econoinfo_ce
+        owner.shares_major_nationality = shares_major_nationality
+        pp owner
+        owner.save!
+      end
+    end
+
+    def self.shareholders_csv
+      csv = CSV.table 'db/econoinfo-relacoes.csv', :headers => true, :header_converters => nil, :converters => nil
+      csv.each_with_index do |row, i|
+        daniel_id = row.values_at(1).first.to_i
+        daniel_mae_id = row.values_at(2).first.to_i
+        on_shares = row.values_at(3).first.to_i
+        on_percentage = row.values_at(4).first.to_f
+        pn_shares = row.values_at(5).first.to_i
+        pn_percentage = row.values_at(6).first.to_f
+        reference_date = $share_reference_date
+
+        next if daniel_mae_id == -1
+
+        owner = Owner.first :daniel_id => daniel_id
+        raise "can't find id #{daniel_id}" if owner.nil?
+
+        company = Owner.first :daniel_id => daniel_mae_id
+        raise "can't find id #{daniel_mae_id}" if company.nil?
+
+        next if company == owner
+
+        share = Share.first_or_new :company_id => company.id, :owner_id => owner.id,
+          :sclass => 'ON', :name => owner.name.first, :source => "#{Source} associado", :reference_date => reference_date
+        share.quantity = on_shares
+        share.percentage = on_percentage
+        pp share
+        share.save!
+      end
+    end
+
+  end
+
+
   def self.import_legal_nature_csv(file)
     csv = CSV.table file, :headers => true, :header_converters => nil, :converters => nil
     csv.each_with_index do |row, i|
@@ -1148,62 +1209,6 @@ module ImportHelper
         share.save
       end
     end
-  end
-
-  module EconoInfoData
-
-    Source = EconoInfo::Source
-
-    def self.companies_csv
-      csv = CSV.table 'db/econoinfo-assoc.csv', :headers => true, :header_converters => nil, :converters => nil
-      csv.each_with_index do |row, i|
-        attrs = {}
-        attrs[:formal_name] = row.values_at(3).first
-        attrs[:cgc] = row.values_at(4).first
-        econoinfo_ce = row.values_at(1).first
-        shares_major_nationality = row.values_at(6).first
-        daniel_id = row.values_at(0).first.to_i
-
-        owner = Owner.first_or_new Source, attrs
-        daniel_id = Array(owner.daniel_id) << daniel_id if owner.daniel_id and owner.daniel_id != daniel_id
-        owner.attributes = {:daniel_id => daniel_id}
-        owner.econoinfo_ce = econoinfo_ce
-        owner.shares_major_nationality = shares_major_nationality
-        pp owner
-        owner.save!
-      end
-    end
-
-    def self.shareholders_csv
-      csv = CSV.table 'db/econoinfo-relacoes.csv', :headers => true, :header_converters => nil, :converters => nil
-      csv.each_with_index do |row, i|
-        daniel_id = row.values_at(1).first.to_i
-        daniel_mae_id = row.values_at(2).first.to_i
-        on_shares = row.values_at(3).first.to_i
-        on_percentage = row.values_at(4).first.to_f
-        pn_shares = row.values_at(5).first.to_i
-        pn_percentage = row.values_at(6).first.to_f
-        reference_date = $share_reference_date
-
-        next if daniel_mae_id == -1
-
-        owner = Owner.first :daniel_id => daniel_id
-        raise "can't find id #{daniel_id}" if owner.nil?
-
-        company = Owner.first :daniel_id => daniel_mae_id
-        raise "can't find id #{daniel_mae_id}" if company.nil?
-
-        next if company == owner
-
-        share = Share.first_or_new :company_id => company.id, :owner_id => owner.id,
-          :sclass => 'ON', :name => owner.name.first, :source => "#{Source} associado", :reference_date => reference_date
-        share.quantity = on_shares
-        share.percentage = on_percentage
-        pp share
-        share.save!
-      end
-    end
-
   end
 
 end

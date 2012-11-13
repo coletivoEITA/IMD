@@ -16,5 +16,7 @@
 /tmp
 /.rbx
 
+*.swp
+
 # Ignore config files
 /config/mongo.yml

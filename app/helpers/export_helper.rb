@@ -77,16 +77,51 @@ module ExportHelper
     def self.export_raking(attr, balance_reference_date, share_reference_date)
 
       puts 'calculating values'
-      Share.each{ |s| s.calculate_percentage; s.save }
-      CalculationHelper.calculate_owners_value attr, balance_reference_date, share_reference_date
+      #Share.each{ |s| s.calculate_percentage; s.save }
+      #CalculationHelper.calculate_owners_value attr, balance_reference_date, share_reference_date
 
-      puts 'loading data'
+      puts 'loading'
       value_field = "total_#{attr}".to_sym
       owners = Owner.order(value_field.desc).all
 
-      puts 'exporting data'
+      puts 'loading participations'
+      owners_participations = {}
+      owners.each do |owner|
+        participations = {}
+
+        owned_shares = owner.owned_shares.on.greatest.with_reference_date(share_reference_date).all
+
+        power_direct_control = owned_shares.select{ |s| s.control? }.map do |s|
+          "#{s.company.name.first} (#{s.percentage.c}#{'%' if s.percentage})"
+        end
+        power_direct_parcial = owned_shares.select{ |s| s.parcial? }.map do |s|
+          "#{s.company.name.first} (#{s.percentage.c}#{'%' if s.percentage})"
+        end
+
+        power_indirect_control = owner.indirect_total_controlled_companies(share_reference_date)
+        power_indirect_parcial = owner.indirect_parcial_controlled_companies(share_reference_date)
+
+        participations = {:direct_control => power_direct_control, :direct_parcial => power_direct_parcial,
+                          :indirect_control => power_indirect_control, :indirect_parcial => power_indirect_parcial}
+        participations[:count] = participations.values.inject(0){ |s, p| s+p.count }
+
+        participations.each{ |k, v| next if k == :count; participations[k] = v.join '\n' }
+
+        owners_participations[owner] = participations
+      end
+
+      puts 'sorting'
+      owners = owners.sort do |a, b|
+        comp = a.send("total_#{attr}") <=> b.send("total_#{attr}")
+        next -comp unless comp.nil? or comp.zero?
+        comp = owners_participations[a][:count] <=> owners_participations[b][:count]
+        next -comp unless comp.nil? or comp.zero?
+        comp = a.name.first <=> b.name.first
+      end
+
+      puts 'exporting'
       CSV.open("output/#{attr}-ranking.csv", "w") do |csv|
-        csv << ['R', 'PA (milhões de reais)', 'Empresa ou Pessoa', 'Controlada diretamente por:',
+        csv << ['R', 'Obs', 'PA (milhões de reais)', 'Empresa ou Pessoa', 'Controlada diretamente por:',
                 'Controle direto', 'Participação direta', 'Controle indireto', 'Participação indireta (sem controle)',
                 'CNPJ', 'Cód. Bovespa', 'Fonte', 'Receita líquida (milhões de reias)',
                 '“Poder” Indireto (milhões de reais)', 'PA (milhões de reais)',]
@@ -110,42 +145,34 @@ module ExportHelper
           #index_value = total_value == '-' ? '-' : (total_value.to_f / (1345 * 12)).c(4)
 
           owners_shares = owner.owners_shares.on.greatest.with_reference_date(share_reference_date).all
-          owned_shares = owner.owned_shares.on.greatest.with_reference_date(share_reference_date).all
-
           shareholders = owners_shares.map do |s|
             "#{s.owner.name.first} (#{s.percentage.c}#{'%' if s.percentage})"
           end.join("\n")
 
-          power_direct_control = owned_shares.select{ |s| s.control? }.map do |s|
-            "#{s.company.name.first} (#{s.percentage.c}#{'%' if s.percentage})"
-          end.join("\n")
-          power_direct_parcial = owned_shares.select{ |s| s.parcial? }.map do |s|
-            "#{s.company.name.first} (#{s.percentage.c}#{'%' if s.percentage})"
-          end.join("\n")
+          participations = owners_participations[owner]
 
-          power_indirect_control = owner.indirect_total_controlled_companies(share_reference_date).join("\n")
-          power_indirect_parcial = owner.indirect_parcial_controlled_companies(share_reference_date).join("\n")
-
-          has_participation = !(power_direct_control.blank? && power_direct_parcial.blank? &&
-                              power_indirect_parcial.blank? && power_indirect_parcial.blank?)
-
+          has_participation = participations[:count] > 0
+          has_own_value = own_value != '-'
           shares_percent_sum = owners_shares.sum{ |s| s.percentage.nil? ? 0 : s.percentage }
           is_controlled = shares_percent_sum > 50
           controlled = is_controlled ? 'sim' : ''
 
-          if !is_controlled and has_participation and own_value == total_value
-            position = 'g'
-          elsif !is_controlled and not has_participation
-            position = 'f'
-          elsif is_controlled
+          ps = ''
+          if owner.cnpj? and (!has_participation or !has_own_value)
+            ps << 'nc ' if !has_participation
+            ps << 'nv' if !has_own_value
+          end
+
+          if is_controlled
             position = 'controlada'
           else
             position = i.to_s
           end
           i += 1 if position.number?
 
-          csv << [position, total_value, owner.name.first, shareholders,
-                  power_direct_control, power_direct_parcial, power_indirect_control, power_indirect_parcial,
+          csv << [position, ps, total_value, owner.name.first, shareholders,
+                  participations[:direct_control], participations[:direct_parcial],
+                  participations[:indirect_control], participations[:indirect_parcial],
                   cgc, stock_code, source, value,
                   indirect_value, total_value,]
         end

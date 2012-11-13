@@ -155,10 +155,10 @@ class Owner
   end
 
   def cnpj?
-    CgcHelper.cnpj?(self.cgc.first)
+    CgcHelper.cnpj? self.cgc.first
   end
   def cpf?
-    CgcHelper.cpf?(self.cgc.first)
+    CgcHelper.cpf? self.cgc.first
   end
 
   def balance_with_value(attr = :revenue, reference_date = $balance_reference_date)
