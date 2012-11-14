@@ -166,10 +166,10 @@ module ExportHelper
           #ou controla, ou participa de alguem que controla
           if owner.person?
             position = 'pessoa'
+          #elsif owner.eper?(attr, share_reference_date)
+            #position = 'eper'
           elsif owner.controlled?(share_reference_date) and owner.controller(share_reference_date).company?
             position = 'controlada'
-          elsif owner.eper?(attr, share_reference_date)
-            position = 'eper'
           else
             position = i.to_s
           end
@@ -179,7 +179,8 @@ module ExportHelper
           #indirect_controllers = owner.indirect_controllers share_reference_date
           #activity_control_tree = owner.activity_control_tree(share_reference_date).join "\n"
 
-          capital_type = '' unless ['Governo', 'Estatal'].include? owner.capital_type
+          capital_type = owner.capital_type
+          capital_type = '' unless ['Governo', 'Estatal'].include? capital_type
 
           csv << [position, is_controller, ps, capital_type,
                   total_value, owner.name.first,

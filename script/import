@@ -17,6 +17,10 @@ ImportHelper::EconoInfo.all :method => :balances
 ImportHelper::EconoInfoData.companies_csv
 ImportHelper::EconoInfoData.shareholders_csv
 
+o=Owner.find_by_name 'Investidores Institucionais'
+o.type = 'Pessoa'
+o.save!
+
 governments = Owner.all :$or => [
   {:name => /secretaria/i}, {:name => /governo/i}, {:name => /estado/i},
   {:name => 'União Federal'}]

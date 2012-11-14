@@ -50,6 +50,34 @@ module MongoCaching
 
   end
 
+  def cache_method method, type, &block
+      sync_from_proc = Proc.new do |record|
+        value = record.send(from_field)
+        associated.each{ |i| i.update_attribute name, value }
+      end
+      cache_proc = Proc.new do
+        value = self.send method
+        value = block.call value if block
+        self.update_attribute name, value
+      end
+
+      key "#{method}_cached", type
+
+      define_method "cache_#{name}", &cache_proc
+  end
+
+  def cache_external association, type
+    from_class = (self.associations[from.to_sym].options[:class_name] || from.camelize).constantize
+
+    cache_method association do |value|
+      if value.is_a?(Array)
+        value.map{ |v| v.send :attributes }
+      else
+        value.send :attributes
+      end
+    end
+  end
+
   module InstanceMethods
 
 

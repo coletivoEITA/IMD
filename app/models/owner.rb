@@ -55,7 +55,7 @@ class Owner
   key :indirect_patrimony, Float
   key :total_patrimony, Float
 
-  key :valor_ranking_position, Integer
+  key :sum_percentages_squares, Float
 
   key :source_detail, String
 
@@ -156,10 +156,10 @@ class Owner
   end
 
   def company?
-    self.cnpj? or self.type == 'Empresa' or self.cgc.empty?
+    !person?
   end
   def person?
-    !company?
+    type == 'Pessoa' or self.cpf?
   end
   def cnpj?
     CgcHelper.cnpj? self.cgc.first
@@ -195,6 +195,13 @@ class Owner
   end
   def owners_shares share_reference_date = $share_reference_date
     @owners_shares ||= self.orig_owners_shares.on.greatest.with_reference_date(share_reference_date)
+  end
+
+  def calculate_sum_percentages_squares reference_date = $share_reference_date
+    self.sum_percentages_squares = self.owners_shares(reference_date).inject(0) do |sum, s|
+      next sum if s.percentage.nil?
+      sum + s.percentage ** 2
+    end
   end
 
   def controller_share reference_date = $share_reference_date
@@ -257,7 +264,6 @@ class Owner
     def __recursion company, activities, percentage, reference_date, route = Set.new
       company.owned_shares(reference_date).map do |owned_share|
         owned_company = owned_share.company
-        next if owned_company.main_activity.nil?
 
         pair = [company, owned_company]
         next if route.include? pair
@@ -267,6 +273,7 @@ class Owner
         __recursion owned_company, activities, p, reference_date, route+[pair]
       end
 
+      return if owned_company.main_activity.blank?
       activities[company.main_activity] ||= 0.0
       activities[company.main_activity] += percentage if percentage
     end
@@ -357,9 +364,9 @@ class Owner
       company.owned_shares(share_reference_date).inject(own_value) do |sum, owned_share|
         owned_company = owned_share.company
 
-        next sum if owned_share.percentage.nil?
+        next sum if owned_share.participation.nil?
 
-        # company controls owned_company? (is percentage bigger than 50%?)
+        # company controls owned_company? (is participation bigger than 50%?)
         is_controller = owned_share.control?
         has_controller = owned_company.controller(share_reference_date)
 
@@ -371,7 +378,7 @@ class Owner
         pair = [company, owned_company]
         next sum if route.include? pair
 
-        w = is_controller ? 1 : owned_share.percentage/100
+        w = is_controller ? 1 : owned_share.participation
 
         puts (route.map{ |p| p.first.name.first } << company.name.first << owned_company.name.first).join(',') if FormulaPrint == :route
         print " + W#{company.name.first.downcase}#{owned_company.name.first.downcase} * ( " if FormulaPrint == :letter

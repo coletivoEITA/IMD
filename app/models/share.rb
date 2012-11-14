@@ -19,6 +19,9 @@ class Share
   key :owner_id, ObjectId
   belongs_to :owner
 
+  key :relative_participation, Float
+  alias_method :participation, :relative_participation
+
   key :source_detail, String
 
   key :name_n, String
@@ -64,10 +67,29 @@ class Share
   end
 
   def control?
-    self.percentage && self.percentage > 50
+    !self.participation.nil? && self.participation > 0.5
   end
   def parcial?
-    self.percentage.nil? || self.percentage <= 50
+    self.participation.nil? || self.participation <= 0.5
+  end
+
+  def total
+    return self['total'] if self['total']
+    # TODO: try to guess from siblings
+  end
+
+  def quantity=(value)
+    value = value.to_i
+    value = nil if value.zero?
+    self['quantity'] = value
+  end
+
+  def value attr
+    self.participation * self.company.value(attr)
+  end
+
+  def raw_participation
+    self.percentage.nil? ? 0 : self.percentage/100
   end
 
   def calculate_percentage
@@ -83,26 +105,15 @@ class Share
     self.percentage
   end
 
-  def total
-    return self['total'] if self['total']
-    # TODO: try to guess from siblings
-  end
-
-  def quantity=(value)
-    value = value.to_i
-    value = nil if value.zero?
-    self['quantity'] = value
-  end
-
-  def value(attr)
-    (self.percentage/100) * self.company.value(attr)
+  def calculate_relative_participation
+    if self.percentage.nil?
+      self.relative_participation = nil
+      return
+    end
+    self.relative_participation = (self.percentage ** 2) / self.company.sum_percentages_squares
   end
 
   protected
-
-  def quantity_xor_percentage
-    self.errors[:base] << 'Fill in percentage or quantity' if self.quantity.blank? and self.percentage.blank?
-  end
 
   def normalize_fields
     self.name_n = self.name.name_normalization
