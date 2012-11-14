@@ -14,6 +14,8 @@ MongoMapper.database = db_name
 
 raise 'Install mongo 1.6+' if MongoMapper.connection.server_version < '1.6.0'
 
+MongoMapper::Document.plugin MongoMapper::Plugins::IdentityMap
+
 Owner.ensure_index :source
 Owner.ensure_index :cgc
 Owner.ensure_index :cnpj_root

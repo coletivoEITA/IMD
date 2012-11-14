@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# coding: UTF-8
+
 require File.dirname(__FILE__) + '/../config/environment'
 
 ImportHelper.clear_db
@@ -15,3 +17,17 @@ ImportHelper::EconoInfo.all :method => :balances
 ImportHelper::EconoInfoData.companies_csv
 ImportHelper::EconoInfoData.shareholders_csv
 
+governments = Owner.all :$or => [
+  {:name => /secretaria/i}, {:name => /governo/i}, {:name => /estado/i},
+  {:name => 'União Federal'}]
+governments.each{ |s| s.capital_type = 'Governo'; s.save }
+def set_state_company companies
+  companies.each do |a|
+    list = a.owned_shares.select{ |s| s.control? }.map(&:company).each do |b|
+      b.capital_type = 'Estatal'
+      b.save!
+    end
+    set_state_company list
+  end
+end
+set_state_company governments

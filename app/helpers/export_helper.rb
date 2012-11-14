@@ -77,24 +77,22 @@ module ExportHelper
     def self.export_raking(attr, balance_reference_date, share_reference_date)
 
       puts 'calculating values'
-      #Share.each{ |s| s.calculate_percentage; s.save }
       #CalculationHelper.calculate_owners_value attr, balance_reference_date, share_reference_date
 
       puts 'loading'
       value_field = "total_#{attr}".to_sym
       owners = Owner.order(value_field.desc).all
+      #owners = Owner.all :name => /braskem/i
 
       puts 'loading participations'
       owners_participations = {}
       owners.each do |owner|
         participations = {}
 
-        owned_shares = owner.owned_shares.on.greatest.with_reference_date(share_reference_date).all
-
-        power_direct_control = owned_shares.select{ |s| s.control? }.map do |s|
+        power_direct_control = owner.owned_shares(share_reference_date).select{ |s| s.control? }.map do |s|
           "#{s.company.name.first} (#{s.percentage.c}#{'%' if s.percentage})"
         end
-        power_direct_parcial = owned_shares.select{ |s| s.parcial? }.map do |s|
+        power_direct_parcial = owner.owned_shares(share_reference_date).select{ |s| s.parcial? }.map do |s|
           "#{s.company.name.first} (#{s.percentage.c}#{'%' if s.percentage})"
         end
 
@@ -104,8 +102,6 @@ module ExportHelper
         participations = {:direct_control => power_direct_control, :direct_parcial => power_direct_parcial,
                           :indirect_control => power_indirect_control, :indirect_parcial => power_indirect_parcial}
         participations[:count] = participations.values.inject(0){ |s, p| s+p.count }
-
-        participations.each{ |k, v| next if k == :count; participations[k] = v.join '\n' }
 
         owners_participations[owner] = participations
       end
@@ -121,13 +117,20 @@ module ExportHelper
 
       puts 'exporting'
       CSV.open("output/#{attr}-ranking.csv", "w") do |csv|
-        csv << ['R', 'Obs', 'PA (milhões de reais)', 'Empresa ou Pessoa', 'Controlada diretamente por:',
+        csv << ['R', 'Contr.', 'Obs', 'Tipo de capital',
+                'PA (milhões de reais)', 'Empresa ou Pessoa',
+                'Controlada diretamente por:', 'Controlada indiretamente por:',
+                #'Atividades controladas',
                 'Controle direto', 'Participação direta', 'Controle indireto', 'Participação indireta (sem controle)',
                 'CNPJ', 'Cód. Bovespa', 'Fonte', 'Receita líquida (milhões de reias)',
                 '“Poder” Indireto (milhões de reais)', 'PA (milhões de reais)',]
 
         i = 0
         owners.each do |owner|
+          pp owner
+
+          is_controller = owner.controller?(share_reference_date) ? 'é controladora' : ''
+
           cgc = owner.cgc.first
           cgc = cgc ? CgcHelper.format(cgc) : '-'
 
@@ -144,33 +147,44 @@ module ExportHelper
           total_value = (owner.send("total_#{attr}")/1000000).c
           #index_value = total_value == '-' ? '-' : (total_value.to_f / (1345 * 12)).c(4)
 
-          owners_shares = owner.owners_shares.on.greatest.with_reference_date(share_reference_date).all
-          shareholders = owners_shares.map do |s|
+          shareholders = owner.owners_shares(share_reference_date).map do |s|
             "#{s.owner.name.first} (#{s.percentage.c}#{'%' if s.percentage})"
           end.join("\n")
 
           participations = owners_participations[owner]
+          participations.each{ |k, v| next if k == :count; participations[k] = v.join "\n" }
 
           has_participation = participations[:count] > 0
           has_own_value = own_value != '-'
-          shares_percent_sum = owners_shares.sum{ |s| s.percentage.nil? ? 0 : s.percentage }
-          is_controlled = shares_percent_sum > 50
-          controlled = is_controlled ? 'sim' : ''
 
           ps = ''
-          if owner.cnpj? and (!has_participation or !has_own_value)
+          if owner.company? and (!has_participation or !has_own_value)
             ps << 'nc ' if !has_participation
             ps << 'nv' if !has_own_value
           end
 
-          if is_controlled
+          #ou controla, ou participa de alguem que controla
+          if owner.person?
+            position = 'pessoa'
+          elsif owner.controlled?(share_reference_date) and owner.controller(share_reference_date).company?
             position = 'controlada'
+          elsif owner.eper?(attr, share_reference_date)
+            position = 'eper'
           else
             position = i.to_s
           end
           i += 1 if position.number?
 
-          csv << [position, ps, total_value, owner.name.first, shareholders,
+          indirect_controllers = ''
+          #indirect_controllers = owner.indirect_controllers share_reference_date
+          #activity_control_tree = owner.activity_control_tree(share_reference_date).join "\n"
+
+          capital_type = '' unless ['Governo', 'Estatal'].include? owner.capital_type
+
+          csv << [position, is_controller, ps, capital_type,
+                  total_value, owner.name.first,
+                  shareholders, indirect_controllers,
+                  #activity_control_tree,
                   participations[:direct_control], participations[:direct_parcial],
                   participations[:indirect_control], participations[:indirect_parcial],
                   cgc, stock_code, source, value,

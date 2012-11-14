@@ -169,7 +169,7 @@ module ImportHelper
           cnpj = cnpj.zero? ? nil : ('%014d' % cnpj) # fix CNPJ format
         end
 
-        company = Owner.first_or_new Source, :cgc => cnpj, :stock_name => stock_name, :stock_code => stock_code
+        company = Owner.first_or_new Source, :cgc => cnpj
         balance = nil
         share = nil
 
@@ -184,6 +184,9 @@ module ImportHelper
           value = 'ON' if field == :classes and value == 'Ord'
           # jump preprocessed
           next if ['cgc', 'name'].include?(field)
+
+          # uncomment so share are not imported
+          next unless field =~ /balance_(.+)/
 
           # uncomment so share are not imported
           next if field =~ /share_(.+)_(.+)_(.+)/
@@ -220,7 +223,7 @@ module ImportHelper
         end
 
         pp company
-        company.save!
+        company.save
         balance.save if balance
         share.save if share
       end
@@ -942,6 +945,7 @@ module ImportHelper
       attributes = {}
       attributes[:formal_name] = trs[0].css('td')[1].text.squish
       attributes[:cgc] = trs[3].css('td')[1].text.squish
+      attributes[:main_activity] = trs[4].css('td')[1].text.squish
       attributes[:capital_type] = trs[6].css('td')[1].text.squish
       attributes[:country] = trs[9].css('td')[1].text.squish
       attributes[:stock_country] = trs[10].css('td')[1].text.squish
@@ -1074,6 +1078,7 @@ module ImportHelper
         attrs = {}
         attrs[:formal_name] = row.values_at(3).first
         attrs[:cgc] = row.values_at(4).first
+        type = row.values_at(5).first
         econoinfo_ce = row.values_at(1).first
         shares_major_nationality = row.values_at(6).first
         daniel_id = row.values_at(0).first.to_i
@@ -1081,6 +1086,7 @@ module ImportHelper
         owner = Owner.first_or_new Source, attrs
         old_daniel_id = Array(owner.attributes[:daniel_id])
         daniel_id = old_daniel_id << daniel_id unless old_daniel_id.include?(daniel_id)
+        owner.type = type
         owner.attributes = {:daniel_id => daniel_id}
         owner.econoinfo_ce = econoinfo_ce
         owner.shares_major_nationality = shares_major_nationality
