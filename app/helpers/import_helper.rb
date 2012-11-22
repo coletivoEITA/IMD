@@ -1076,11 +1076,11 @@ module ImportHelper
       csv = CSV.table 'db/econoinfo-assoc.csv', :headers => true, :header_converters => nil, :converters => nil
       csv.each_with_index do |row, i|
         attrs = {}
-        attrs[:formal_name] = row.values_at(3).first
-        attrs[:cgc] = row.values_at(4).first
-        type = row.values_at(5).first
-        econoinfo_ce = row.values_at(1).first
-        shares_major_nationality = row.values_at(6).first
+        attrs[:formal_name] = row.values_at(5).first
+        attrs[:cgc] = row.values_at(6).first
+        type = row.values_at(7).first
+        econoinfo_ce = row.values_at(3).first
+        shares_major_nationality = row.values_at(8).first
         daniel_id = row.values_at(0).first.to_i
 
         owner = Owner.first_or_new Source, attrs
@@ -1102,8 +1102,7 @@ module ImportHelper
         daniel_mae_id = row.values_at(2).first.to_i
         on_shares = row.values_at(3).first.to_i
         on_percentage = row.values_at(4).first.to_f
-        pn_shares = row.values_at(5).first.to_i
-        pn_percentage = row.values_at(6).first.to_f
+        relative_participation = row.values_at(5).first.to_f/100
         reference_date = $share_reference_date
 
         next if daniel_mae_id == -1
@@ -1120,13 +1119,13 @@ module ImportHelper
           :sclass => 'ON', :name => owner.name.first, :source => "#{Source} associado", :reference_date => reference_date
         share.quantity = on_shares
         share.percentage = on_percentage
+        share.relative_participation = relative_participation
         pp share
         share.save!
       end
     end
 
   end
-
 
   def self.import_legal_nature_csv(file)
     csv = CSV.table file, :headers => true, :header_converters => nil, :converters => nil
