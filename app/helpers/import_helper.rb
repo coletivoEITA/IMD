@@ -1073,25 +1073,31 @@ module ImportHelper
     Source = EconoInfo::Source
 
     def self.companies_csv
+      reference_date = $balance_reference_date
+
       csv = CSV.table 'db/econoinfo-assoc.csv', :headers => true, :header_converters => nil, :converters => nil
       csv.each_with_index do |row, i|
         attrs = {}
-        attrs[:formal_name] = row.values_at(5).first
-        attrs[:cgc] = row.values_at(6).first
-        type = row.values_at(7).first
-        econoinfo_ce = row.values_at(3).first
-        shares_major_nationality = row.values_at(8).first
+        attrs[:econoinfo_ce] = row.values_at(1).first
+        attrs[:formal_name] = row.values_at(2).first
+        attrs[:cgc] = row.values_at(3).first
+        attrs[:type] = row.values_at(4).first
+        attrs[:shares_major_nationality] = row.values_at(5).first
+        revenue = row.values_at(6).first.to_f
+        revenue_months = row.values_at(7).first.to_i
         daniel_id = row.values_at(0).first.to_i
 
-        owner = Owner.first_or_new Source, attrs
-        old_daniel_id = Array(owner.attributes[:daniel_id])
-        daniel_id = old_daniel_id << daniel_id unless old_daniel_id.include?(daniel_id)
-        owner.type = type
-        owner.attributes = {:daniel_id => daniel_id}
-        owner.econoinfo_ce = econoinfo_ce
-        owner.shares_major_nationality = shares_major_nationality
+        owner = Owner.new :daniel_id => daniel_id
+        owner.source = Source
+        attrs.each{ |k,v| next if v.blank?; owner.set_value k, v }
         pp owner
         owner.save!
+
+        unless revenue.zero? or revenue_months.zero?
+          balance = owner.balances.create! :source => Economatica::Source,
+            :reference_date => reference_date, :months => revenue_months, :revenue => revenue
+          pp balance
+        end
       end
     end
 

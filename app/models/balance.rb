@@ -37,6 +37,7 @@ class Balance
   scope :latest, :order => :reference_date.desc
 
   def value attr = :revenue
+    return 0 if self.months.blank? or self.months.zero?
     (MonthsReference / self.months) * self.send(attr)
   end
 

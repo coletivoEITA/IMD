@@ -94,10 +94,33 @@ class Owner
   before_save :normalize_fields
 
   def self.first_or_new source, attributes = {}
+    #equivalent = self.find_equivalent source, attributes
+
+    exact_match = self.first attributes
+    owner = exact_match || self.new
+    owner.source ||= source
+    attributes.each{ |attr, value| owner.set_value attr, value }
+
+    # uncomment to print when new owners are created
+    #puts "--- New owner #{name} ---" if owner.new_record?
+
+    owner
+  end
+
+  def self.find_by_cgc(cgc)
+    return nil if cgc.blank?
+    cgc = CgcHelper.parse cgc
+    if CgcHelper.cnpj?(cgc)
+      self.find_by_cnpj_root(CgcHelper.extract_cnpj_root(cgc)) || super(cgc)
+    else
+      super(cgc)
+    end
+  end
+
+  def self.find_equivalent source, attributes = {}
     by_cgc = by_stock_code = nil
     cgc, stock_code = attributes[:cgc], attributes[:stock_code]
 
-    exact_match = self.first attributes
     by_cgc = self.find_by_cgc cgc unless cgc.blank?
     unless stock_code.blank?
       by_stock_code = self.find_by_stock_code(stock_code)
@@ -122,24 +145,7 @@ class Owner
 
     #name_match = MergeHelper.owner by_cgc, name_match if (name_match and by_cgc) and name_match != by_cgc
 
-    owner = exact_match || by_cgc || name_match || by_stock_code || self.new
-    owner.source ||= source
-    attributes.each{ |attr, value| owner.set_value attr, value }
-
-    # uncomment to print when new owners are created
-    #puts "--- New owner #{name} ---" if owner.new_record?
-
-    owner
-  end
-
-  def self.find_by_cgc(cgc)
-    return nil if cgc.blank?
-    cgc = CgcHelper.parse cgc
-    if CgcHelper.cnpj?(cgc)
-      self.find_by_cnpj_root(CgcHelper.extract_cnpj_root(cgc)) || super(cgc)
-    else
-      super(cgc)
-    end
+    by_cgc || name_match || by_stock_code
   end
 
   def self.find_by_name_attrs(attributes)
@@ -445,6 +451,7 @@ class Owner
   protected
 
   def assign_defaults
+    self.name += self.formal_name
     self.cnpj_root ||= CgcHelper.extract_cnpj_root(self.cgc.first) if self.cnpj?
     self.stock_code_base = StockCodeHelper.base(stock_code.first)
   end

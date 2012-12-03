@@ -5,17 +5,9 @@ require File.dirname(__FILE__) + '/../config/environment'
 
 ImportHelper.clear_db
 
-ImportHelper::EconoInfo.company_list
-ImportHelper::EconoInfo.all :method => :info
-
-# add balances
-ImportHelper::Economatica.csv "db/economatica-period-#{$balance_reference_date.to_date.to_s}.csv", $balance_reference_date
-Owner.destroy_all(:source => 'Economatica')
-
-ImportHelper::EconoInfo.all :method => :balances
-
 ImportHelper::EconoInfoData.companies_csv
 ImportHelper::EconoInfoData.shareholders_csv
+ImportHelper::EconoInfo.all :method => :balances
 
 o=Owner.find_by_name 'Investidores Institucionais'
 o.type = 'Pessoa'
