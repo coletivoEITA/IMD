@@ -239,20 +239,24 @@ class Owner
   end
 
   def indirect_controllers reference_date = $share_reference_date
-    def __recursion company, reference_date, route = Set.new
+    def __recursion company, reference_date, percentage = nil, route = Set.new
       company.owners_shares(reference_date).map do |owner_share|
         owner = owner_share.owner
-
+        next if owner_share.percentage.nil?
         next if route.include? company
 
-        owners = __recursion owner, reference_date, route+[company]
+        p = percentage ? (owner_share.percentage*percentage)/100 : owner_share.percentage
+        owners = __recursion owner, reference_date, p, route+[company]
 
         li = "•• "
-        name = "#{li}#{owner.name.first}"
-        next name if owners.empty?
-        sep = "\n#{li*(route.size)}"
-        owners = sep + owners.join(sep)
-        "#{name} => #{owners}"
+        sep = li*(route.size+1)
+        participation = "#{owner_share.percentage.c}%, final=#{p.c}%"
+        title = "#{sep}#{owner.name.first} (#{participation})"
+        if owners.empty? then
+          title
+        else
+          "#{title}\n#{owners.join "\n"}"
+        end
       end.flatten.compact
     end
 
@@ -261,8 +265,8 @@ class Owner
 
   def activity_control_tree reference_date = $share_reference_date
 
-    def __recursion company, activities, percentage, reference_date, route = Set.new
-      company.owned_shares(reference_date).map do |owned_share|
+    def __recursion company, activities, reference_date, percentage = nil, route = Set.new
+      company.owned_shares(reference_date).each do |owned_share|
         owned_company = owned_share.company
 
         pair = [company, owned_company]
@@ -270,16 +274,16 @@ class Owner
 
         p = if percentage and owned_share.percentage
               then (owned_share.percentage*percentage)/100 else owned_share.percentage end
-        __recursion owned_company, activities, p, reference_date, route+[pair]
+        __recursion owned_company, activities, reference_date, p, route+[pair]
       end
 
-      return if owned_company.main_activity.blank?
+      return if company.main_activity.blank?
       activities[company.main_activity] ||= 0.0
       activities[company.main_activity] += percentage if percentage
     end
 
     activities = {}
-    __recursion self, activities, nil, reference_date
+    __recursion self, activities, reference_date
     activities = activities.map do |activity, percentage|
       "#{activity} (#{percentage.c}#{'%' if percentage})"
     end
@@ -287,7 +291,7 @@ class Owner
 
   def indirect_parcial_controlled_companies reference_date = $share_reference_date
 
-    def __recursion company, percentage, control, reference_date, route = Set.new
+    def __recursion company, reference_date, control = nil, percentage = nil, route = Set.new
       company.owned_shares(reference_date).map do |owned_share|
         owned_company = owned_share.company
         next if owned_share.percentage.nil?
@@ -298,31 +302,27 @@ class Owner
 
         p = percentage ? (owned_share.percentage*percentage)/100 : owned_share.percentage
         control = control.nil? ? owned_share.control? : (control && owned_share.control?)
-        owned = __recursion owned_company, p, control, reference_date, route+[pair]
+        owned = __recursion owned_company, reference_date, control, p, route+[pair]
 
         li = "•• "
-        participation = "#{owned_share.percentage.c}%, final=#{p.c}%"
-        title = "#{li}#{owned_company.name.first}"
+        sep = li*(route.size+1)
+        title = "#{sep}#{owned_company.name.first}"
+        participation = "#{owned_share.percentage.c}%"
+        participation += ", final=#{p.c}%" unless direct
         if owned.empty?
           next if control == true or direct
           "#{title} (#{participation})"
         else
-          sep = "\n#{li*(route.size+1)}"
-          owned = sep + owned.join(sep)
-          if direct
-            "#{title} => #{owned}"
-          else
-            "#{title} (#{participation}) => #{owned}"
-          end
+          "#{title} (#{participation})\n#{owned.join "\n"}"
         end
       end.flatten.compact
     end
 
-    __recursion self, nil, nil, reference_date
+    __recursion self, reference_date
   end
-  def indirect_total_controlled_companies(reference_date = $share_reference_date)
+  def indirect_total_controlled_companies reference_date = $share_reference_date
 
-    def __recursion(company, reference_date, route = Set.new)
+    def __recursion company, reference_date, route = Set.new
       company.owned_shares(reference_date).map do |owned_share|
         next unless owned_share.control?
         owned_company = owned_share.company
@@ -355,7 +355,7 @@ class Owner
 
     print "\nP#{self.name.first.downcase} = " if FormulaPrint
 
-    def __recursion(company, attr, balance_reference_date, share_reference_date, route = Set.new)
+    def __recursion company, attr, balance_reference_date, share_reference_date, route = Set.new
       own_value = company.value attr, balance_reference_date
 
       print "V#{company.name.first.downcase}" if FormulaPrint == :letter

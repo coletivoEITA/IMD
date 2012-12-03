@@ -72,9 +72,9 @@ module ExportHelper
     end
   end
 
-  def self.export_owners_rankings(attr = :revenue, balance_reference_date = $balance_reference_date, share_reference_date = $share_reference_date)
+  module Ranking
 
-    def self.export_raking(attr, balance_reference_date, share_reference_date)
+    def self.csv attr = :revenue, balance_reference_date = $balance_reference_date, share_reference_date = $share_reference_date
 
       puts 'calculating values'
       #CalculationHelper.calculate_owners_value attr, balance_reference_date, share_reference_date
@@ -117,7 +117,7 @@ module ExportHelper
 
       puts 'exporting'
       CSV.open("output/#{attr}-ranking.csv", "w") do |csv|
-        csv << ['R', 'Contr.', 'Obs', 'Tipo de capital',
+        csv << ['id', 'R', 'Contr.', 'Obs', 'Tipo de capital',
                 'PA (milhões de reais)', 'Empresa ou Pessoa',
                 'Controlada diretamente por:', 'Controlada indiretamente por:',
                 #'Atividades controladas',
@@ -128,8 +128,6 @@ module ExportHelper
         i = 0
         owners.each do |owner|
           pp owner
-
-          is_controller = owner.controller?(share_reference_date) ? 'é controladora' : ''
 
           cgc = owner.cgc.first
           cgc = cgc ? CgcHelper.format(cgc) : '-'
@@ -157,33 +155,32 @@ module ExportHelper
           has_participation = participations[:count] > 0
           has_own_value = own_value != '-'
 
+          if owner.person?
+            position = 'pessoa'
+          elsif owner.controlled?(share_reference_date)
+            position = 'controlada'
+          elsif owner.controller?(share_reference_date)
+            position = i.to_s
+          else
+            position = 'nao é controladora última'
+          end
+          i += 1 if position.number?
+
+          indirect_controllers = ''
+          indirect_controllers = owner.indirect_controllers(share_reference_date).join "\n"
+          #activity_control_tree = owner.activity_control_tree(share_reference_date).join "\n"
+
+          capital_type = owner.capital_type
+          capital_type = '' unless ['Governo', 'Estatal'].include? capital_type
+          is_controller = owner.controller?(share_reference_date) ? 'é controladora' : ''
           ps = ''
           if owner.company? and (!has_participation or !has_own_value)
             ps << 'nc ' if !has_participation
             ps << 'nv' if !has_own_value
           end
 
-          #ou controla, ou participa de alguem que controla
-          if owner.person?
-            position = 'pessoa'
-          #elsif owner.eper?(attr, share_reference_date)
-            #position = 'eper'
-          elsif owner.controlled?(share_reference_date) and owner.controller(share_reference_date).company?
-            position = 'controlada'
-          else
-            position = i.to_s
-          end
-          i += 1 if position.number?
-
-          indirect_controllers = ''
-          #indirect_controllers = owner.indirect_controllers share_reference_date
-          #activity_control_tree = owner.activity_control_tree(share_reference_date).join "\n"
-
-          capital_type = owner.capital_type
-          capital_type = '' unless ['Governo', 'Estatal'].include? capital_type
-
-          csv << [position, is_controller, ps, capital_type,
-                  total_value, owner.name.first,
+          csv << [owner.daniel_id, position, is_controller, ps, capital_type,
+                  total_value, owner.formal_name.first,
                   shareholders, indirect_controllers,
                   #activity_control_tree,
                   participations[:direct_control], participations[:direct_parcial],
@@ -194,8 +191,6 @@ module ExportHelper
       end
     end
 
-    export_raking attr, balance_reference_date, share_reference_date
-    true
   end
 
   def self.export_owners
