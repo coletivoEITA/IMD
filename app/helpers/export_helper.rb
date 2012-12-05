@@ -77,7 +77,7 @@ module ExportHelper
     def self.csv attr = :revenue, balance_reference_date = $balance_reference_date, share_reference_date = $share_reference_date
 
       puts 'calculating values'
-      CalculationHelper.calculate_owners_value attr, balance_reference_date, share_reference_date
+      #CalculationHelper.calculate_owners_value attr, balance_reference_date, share_reference_date
 
       puts 'loading'
       value_field = "total_#{attr}".to_sym
@@ -167,7 +167,7 @@ module ExportHelper
           i += 1 if position.number?
 
           indirect_controllers = ''
-          #indirect_controllers = owner.indirect_controllers(share_reference_date).join "\n"
+          indirect_controllers = owner.indirect_controllers(share_reference_date).join "\n"
           #activity_control_tree = owner.activity_control_tree(share_reference_date).join "\n"
 
           capital_type = owner.capital_type

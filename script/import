@@ -14,7 +14,7 @@ o.type = 'Pessoa'
 o.save!
 
 governments = Owner.all :$or => [
-  {:name => /secretaria/i}, {:name => /governo/i}, {:name => /estado/i},
+  {:name => /secretaria/i}, {:name => /governo/i}, {:name => /estado/i, :name => /prefeitura/i},
   {:name => 'União Federal'}]
 governments.each{ |s| s.capital_type = 'Governo'; s.save }
 def set_state_company companies
