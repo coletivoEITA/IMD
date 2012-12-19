@@ -245,19 +245,20 @@ class Owner
   end
 
   def indirect_controllers reference_date = $share_reference_date
-    def __recursion company, reference_date, percentage = nil, route = Set.new
+    def __recursion company, reference_date, participation = nil, route = Set.new
       company.owners_shares(reference_date).map do |owner_share|
         owner = owner_share.owner
         next if owner_share.percentage.nil?
         next if route.include? company
 
-        p = percentage ? (owner_share.percentage*percentage)/100 : owner_share.percentage
+        i_part = owner_share.participation*100
+        p = participation ? (i_part*participation)/100 : i_part
         owners = __recursion owner, reference_date, p, route+[company]
 
         li = "•• "
         sep = li*(route.size+1)
-        participation = "#{owner_share.percentage.c}%, final=#{p.c}%"
-        title = "#{sep}#{owner.name.first} (#{participation})"
+        part_text = "#{owner_share.percentage.c 1}%/#{i_part.c 1}%/#{p.c 1}%"
+        title = "#{sep}#{owner.name.first} (#{part_text})"
         if owners.empty? then
           title
         else
@@ -297,7 +298,7 @@ class Owner
 
   def indirect_parcial_controlled_companies reference_date = $share_reference_date
 
-    def __recursion company, reference_date, control = nil, percentage = nil, route = Set.new
+    def __recursion company, reference_date, control = nil, participation = nil, route = Set.new
       company.owned_shares(reference_date).map do |owned_share|
         owned_company = owned_share.company
         next if owned_share.percentage.nil?
@@ -306,20 +307,21 @@ class Owner
         pair = [company, owned_company]
         next if route.include? pair
 
-        p = percentage ? (owned_share.percentage*percentage)/100 : owned_share.percentage
+        i_part = owned_share.participation*100
+        p = participation ? (i_part*participation)/100 : i_part
         control = control.nil? ? owned_share.control? : (control && owned_share.control?)
         owned = __recursion owned_company, reference_date, control, p, route+[pair]
 
         li = "•• "
         sep = li*(route.size+1)
         title = "#{sep}#{owned_company.name.first}"
-        participation = "#{owned_share.percentage.c}%"
-        participation += ", final=#{p.c}%" unless direct
+        part_text = "#{owned_share.percentage.c 1}%/#{i_part.c 1}%"
+        part_text += "/#{p.c 1}%" unless direct
         if owned.empty?
           next if control == true or direct
-          "#{title} (#{participation})"
+          "#{title} (#{part_text})"
         else
-          "#{title} (#{participation})\n#{owned.join "\n"}"
+          "#{title} (#{part_text})\n#{owned.join "\n"}"
         end
       end.flatten.compact
     end
