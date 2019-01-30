@@ -11,6 +11,9 @@
 # Ignore the default SQLite database.
 /db/*.sqlite3
 
+#Ignore all databases.
+/db
+
 # Ignore all logfiles and tempfiles.
 /log/*.log
 /tmp
@@ -20,3 +23,4 @@
 
 # Ignore config files
 /config/mongo.yml
+
